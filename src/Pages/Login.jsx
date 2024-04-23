@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { userExists } from "../redux/reducers/userReducer";
 import axios from "axios";
+import ReelLoader from "../Components/ReelLoader";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen bg-zinc-100 relative overflow-hidden">
+      {isLoading && <ReelLoader message={"Loging in..."}/>}
       <div className="absolute w-48 h-48 rounded-full overflow-hidden top-1/4 left-[10vw]">
         <img src="/assets/logo.png" alt="" />
       </div>
