@@ -27,7 +27,7 @@ const OtherUser = () => {
   );
   const [followUser] = useFollowToaUserMutation();
   const follow = () => {
-    const data = { userId: user._id, followerId: userMe._id };
+    const data = { userId: user._id };
     followUser(data)
       .unwrap()
       .then((data) => {

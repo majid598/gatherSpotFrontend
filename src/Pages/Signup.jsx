@@ -47,7 +47,7 @@ const Signup = () => {
       <div className="w-full h-[100vw] -top-40 -right-[45%] rounded-full bg-sky-500 absolute"></div>
       <div className="w-full h-full relative flex items-center justify-center">
         <form onSubmit={handleSubmit}>
-          <div className="bg-white w-[30rem] h-[80vh] rounded-2xl shadow-sm p-10">
+          <div className="bg-white w-[30rem] h-[] rounded-2xl shadow-sm p-10">
             <h1 className="text-2xl font-bold text-center">
               Sign up to start <br />{" "}
               <span className="text-sky-500">Gathering</span>
