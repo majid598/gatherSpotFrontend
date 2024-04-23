@@ -72,7 +72,7 @@ const Signup = () => {
                   value={userDetails.fullName}
                   onChange={handleChange}
                   name="fullName"
-                  placeholder="Your email or phone number"
+                  placeholder="Type your full name"
                 />
               </label>
               <label className="w-full">
@@ -83,7 +83,7 @@ const Signup = () => {
                   value={userDetails.username}
                   onChange={handleChange}
                   name="username"
-                  placeholder="Your email or phone number"
+                  placeholder="What we call you ?"
                 />
               </label>
               <label className="w-full relative">
@@ -94,7 +94,7 @@ const Signup = () => {
                   value={userDetails.password}
                   onChange={handleChange}
                   name="password"
-                  placeholder="Your email or phone number"
+                  placeholder="Create strong password"
                 />
                 {userDetails.password.length > 0 && (
                   <button

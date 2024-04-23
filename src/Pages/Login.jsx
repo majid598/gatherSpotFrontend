@@ -73,7 +73,7 @@ const Login = () => {
                   value={userDetails.password}
                   onChange={handleChange}
                   name="password"
-                  placeholder="Your email or phone number"
+                  placeholder="Your password"
                 />
                 {userDetails.password.length > 0 && (
                   <button
