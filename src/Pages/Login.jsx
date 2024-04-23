@@ -12,6 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isShow, setIsShow] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [userDetails, setUserDetails] = useState({
     email: "",
     password: "",
@@ -24,6 +25,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const { data } = await axios.post(
         `${server}/api/v1/user/login`,
@@ -35,8 +37,10 @@ const Login = () => {
       // navigate("/profile");
       dispatch(userExists(true));
       toast.success(data?.message);
+      setIsLoading(false);
     } catch (error) {
       toast.error(error?.response?.data?.message);
+      setIsLoading(false);
     }
   };
 
