@@ -131,7 +131,7 @@ const NewPost = () => {
                   } rounded-2xl max-h-[55vh] flex px-6 relative items-center justify-center`}
                 >
                   {url ? (
-                    <ContentDisplay src={previewUrl} h="100%" autoPlay={true} />
+                    <ContentDisplay src={previewUrl} h="full" autoPlay={true} />
                   ) : (
                     <div className="w-full flex flex-col items-center">
                       Choose an image or video

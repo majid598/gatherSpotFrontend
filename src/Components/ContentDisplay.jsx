@@ -3,14 +3,7 @@ import Loader from "./Loader";
 import { BsPlay } from "react-icons/bs";
 import { FaPlay } from "react-icons/fa6";
 
-const ContentDisplay = ({
-  src,
-  autoPlay,
-  controls,
-  muted,
-  icon,
-  h = "",
-}) => {
+const ContentDisplay = ({ src, autoPlay, controls, muted, icon, h = "" }) => {
   const [contentType, setContentType] = useState(null);
   useEffect(() => {
     const getResourceType = async () => {
@@ -38,14 +31,10 @@ const ContentDisplay = ({
   return (
     <div className="w-full h-full">
       {contentType === "photo" && (
-        <img
-          src={src}
-          className={`w-full h-full`}
-          alt={src}
-        />
+        <img src={src} className={`w-full h-full`} alt={src} />
       )}
       {contentType === "video" && (
-        <div className={`w-full h-[${h}] relative`}>
+        <div className={`w-full h-[${h}] h-${h} relative`}>
           {icon && (
             <FaPlay className="text-xl absolute top-2 right-2 text-white" />
           )}
