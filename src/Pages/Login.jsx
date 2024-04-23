@@ -86,7 +86,7 @@ const Login = () => {
                 )}
               </label>
               <button className="w-full p-3 bg-sky-500 mt-4 text-white rounded-lg font-bold transition-all duration-300 hover:bg-sky-600">
-                Sign up
+                Log in
               </button>
               <span className="w-full text-center flex gap-1 justify-center">
                 Don&apos;t have an account?
@@ -94,7 +94,7 @@ const Login = () => {
                   to={"/signup"}
                   className="underline transition-all duration-300 hover:text-sky-500 font-semibold"
                 >
-                  Log in
+                  Sign up
                 </Link>
               </span>
             </div>
