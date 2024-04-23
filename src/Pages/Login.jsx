@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaFacebook, FaFacebookSquare } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { server } from "../redux/api/api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -8,9 +9,9 @@ import { userExists } from "../redux/reducers/userReducer";
 import axios from "axios";
 
 const Login = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [isShow, setIsShow] = useState(false);
   const [userDetails, setUserDetails] = useState({
     email: "",
     password: "",
@@ -31,7 +32,7 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      navigate("/profile")
+      navigate("/profile");
       dispatch(userExists(true));
       toast.success(data?.message);
     } catch (error) {
@@ -40,58 +41,68 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full h-screen py-10 px-20">
-      <div className="w-full h-full flex flex-col items-center">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full flex flex-col items-center border border-black/20 py-8"
-        >
-          <div className="w-3/5">
-            <img src="/assets/Instagram_logo.svg" alt="" />
-          </div>
-          <div className="w-4/5 mt-6 px-4">
-            <input
-              type="text"
-              className="w-full p-2 border border-black/30 focus:border-black/50 rounded-sm bg-zinc-50 text-sm outline-none"
-              placeholder="Phone number, user, or email"
-              name="email"
-              value={userDetails.email}
-              onChange={handleChange}
-            />
-            <input
-              type="password"
-              className="w-full p-2 mt-2 border border-black/30 focus:border-black/50 rounded-sm bg-zinc-50 text-sm outline-none"
-              placeholder="Password"
-              value={userDetails.password}
-              name="password"
-              onChange={handleChange}
-            />
-            <button className="w-full bg-sky-400 hover:bg-sky-500 transition-all duration-300 rounded-md p-1.5 mt-2 text-white font-bold">
-              Log in
-            </button>
-            <div className="w-full mt-4 flex gap-3 items-center">
-              <div className="w-[40%] h-[1px] bg-black/30 rounded-xl"></div>
-              <span className="text-sm text-zinc-600">OR</span>
-              <div className="w-[40%] h-[1px] bg-black/30 rounded-xl"></div>
-            </div>
-            <div className="w-full mt-4 px-6 flex flex-col items-center">
-              <button className="flex items-center gap-2 justify-center">
-                <FaFacebookSquare className="text-xl text-blue-700" /> Log in
-                with Facebook
+    <div className="w-full h-screen bg-zinc-100 relative overflow-hidden">
+      <div className="absolute w-48 h-48 rounded-full overflow-hidden top-1/4 left-[10vw]">
+        <img src="/assets/logo.png" alt="" />
+      </div>
+      <div className="w-full h-[100vw] -top-40 -right-[45%] rounded-full bg-sky-500 absolute"></div>
+      <div className="w-full h-full relative flex items-center justify-center">
+        <form onSubmit={handleSubmit}>
+          <div className="bg-white w-[30rem]  rounded-2xl shadow-sm p-10">
+            <h1 className="text-2xl font-bold text-center">
+              Login to continue <br />{" "}
+              <span className="text-sky-500">Gathering</span>
+            </h1>
+            <div className="flex flex-col gap-3 mt-10 px-12">
+              <label className="w-full">
+                Email or Phone
+                <input
+                  type="text"
+                  className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                  value={userDetails.email}
+                  onChange={handleChange}
+                  name="email"
+                  placeholder="Your email or phone number"
+                />
+              </label>
+              <label className="w-full relative">
+                Password
+                <input
+                  type={isShow ? "text" : "password"}
+                  className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                  value={userDetails.password}
+                  onChange={handleChange}
+                  name="password"
+                  placeholder="Your email or phone number"
+                />
+                {userDetails.password.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setIsShow((prev) => !prev)}
+                    className="top-[2.3vw] text-zinc-500 transition-all text-xl duration-300 hover:text-sky-500 right-2 absolute"
+                  >
+                    {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                  </button>
+                )}
+              </label>
+              <button className="w-full p-3 bg-sky-500 mt-4 text-white rounded-lg font-bold transition-all duration-300 hover:bg-sky-600">
+                Sign up
               </button>
-              <Link className="text-xs mt-4 inline-block">
-                Forgot password?
-              </Link>
+              <span className="w-full text-center flex gap-1 justify-center">
+                Don&apos;t have an account?
+                <Link
+                  to={"/signup"}
+                  className="underline transition-all duration-300 hover:text-sky-500 font-semibold"
+                >
+                  Sign up
+                </Link>
+              </span>
             </div>
           </div>
         </form>
-        <div className="w-full border border-black/20 flex justify-center py-5 mt-3 text-sm gap-1">
-          <h2>Don't have an account?</h2>
-          <Link to="/signup" className="text-sky-500 font-semibold">
-            Sign up
-          </Link>
-        </div>
       </div>
+
+      <div className="w-[24rem] absolute -bottom-40 -left-40 h-[24rem] rounded-full bg-sky-500"></div>
     </div>
   );
 };

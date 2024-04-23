@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaFacebookSquare } from "react-icons/fa";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { server } from "../redux/api/api";
 import { toast } from "react-toastify";
@@ -8,6 +8,7 @@ import { userExists } from "../redux/reducers/userReducer";
 import axios from "axios";
 
 const Signup = () => {
+  const [isShow, setIsShow] = useState(false);
   const dispatch = useDispatch();
   const [userDetails, setUserDetails] = useState({
     email: "",
@@ -39,107 +40,90 @@ const Signup = () => {
   };
 
   return (
-    <div className="w-full min-h-screen lg:h-[82vh] lg:overflow-y-scroll lg:w-[20rem] lg:px-0 md:w-[20rem] md:px-0 sm:w-[20rem] sm:px-0 mx-auto py-4 px-20">
-      <div className="w-full h-full flex flex-col items-center">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full flex flex-col items-center border border-black/20 py-8"
-        >
-          <div className="w-3/5">
-            <img src="/assets/Instagram_logo.svg" alt="" />
-          </div>
-          <div className="w-full px-12">
-            <p className="text-center font-semibold text-zinc-500">
-              Sign up to see photos and videos from your friends.
-            </p>
-            <button className="flex mt-4 items-center rounded-md py-2 w-full bg-sky-500 text-white font-bold text-sm gap-2 justify-center">
-              <FaFacebookSquare className="text-xl text-white" /> Log in with
-              Facebook
-            </button>
-          </div>
-          <div className="w-full px-12 mt-4 flex gap-3 justify-center items-center">
-            <div className="w-[40%] h-[1px] bg-black/30 rounded-xl"></div>
-            <span className="text-sm text-zinc-600">OR</span>
-            <div className="w-[40%] h-[1px] bg-black/30 rounded-xl"></div>
-          </div>
-          <div className="w-4/5 mt-6 px-4">
-            <input
-              type="text"
-              className="w-full p-2 border border-black/30 focus:border-black/50 rounded-sm bg-zinc-50 text-sm outline-none"
-              placeholder="Phone number, user, or email"
-              name="email"
-              value={userDetails.email}
-              onChange={handleChange}
-            />
-            <input
-              type="text"
-              className="w-full p-2 border mt-2 border-black/30 focus:border-black/50 rounded-sm bg-zinc-50 text-sm outline-none"
-              placeholder="Full Name"
-              value={userDetails.fullName}
-              name="fullName"
-              onChange={handleChange}
-            />
-            <input
-              type="text"
-              className="w-full p-2 border mt-2 border-black/30 focus:border-black/50 rounded-sm bg-zinc-50 text-sm outline-none"
-              placeholder="Username"
-              value={userDetails.username}
-              name="username"
-              onChange={handleChange}
-            />
-            <input
-              type="password"
-              className="w-full p-2 mt-2 border border-black/30 focus:border-black/50 rounded-sm bg-zinc-50 text-sm outline-none"
-              placeholder="Password"
-              value={userDetails.password}
-              name="password"
-              onChange={handleChange}
-            />
-            <p className="text-xs text-center w-full tracking-tighter mt-4 text-zinc-500">
-              People who use our service may have uploaded your contact
-              information to Instagram.{" "}
-              <Link
-                className="text-zinc-700"
-                to="https://www.facebook.com/help/instagram/261704639352628"
-              >
-                Learn More
-              </Link>
-            </p>
-            <p className="text-xs text-center w-full tracking-tighter mt-4 text-zinc-500">
-              By signing up, you agree to our{" "}
-              <Link
-                className="text-zinc-700"
-                to="https://help.instagram.com/581066165581870/?locale=en_US"
-              >
-                Terms
-              </Link>{" "}
-              ,{" "}
-              <Link
-                className="text-zinc-700"
-                to="https://www.facebook.com/privacy/policy"
-              >
-                Privacy Policy
-              </Link>{" "}
-              and{" "}
-              <Link
-                className="text-zinc-700"
-                to="https://www.instagram.com/legal/cookies/"
-              >
-                Cookies Policy .
-              </Link>
-            </p>
-            <button className="w-full bg-sky-400 hover:bg-sky-500 transition-all duration-300 rounded-md p-1.5 mt-2 text-white font-bold">
-              Sign up
-            </button>
+    <div className="w-full h-screen bg-zinc-100 relative overflow-hidden">
+      <div className="absolute w-48 h-48 rounded-full overflow-hidden top-1/4 left-[10vw]">
+        <img src="/assets/logo.png" alt="" />
+      </div>
+      <div className="w-full h-[100vw] -top-40 -right-[45%] rounded-full bg-sky-500 absolute"></div>
+      <div className="w-full h-full relative flex items-center justify-center">
+        <form onSubmit={handleSubmit}>
+          <div className="bg-white w-[30rem] h-[80vh] rounded-2xl shadow-sm p-10">
+            <h1 className="text-2xl font-bold text-center">
+              Sign up to start <br />{" "}
+              <span className="text-sky-500">Gathering</span>
+            </h1>
+            <div className="flex flex-col gap-3 mt-10 px-12">
+              <label className="w-full">
+                Email or Phone
+                <input
+                  type="text"
+                  className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                  value={userDetails.email}
+                  onChange={handleChange}
+                  name="email"
+                  placeholder="Your email or phone number"
+                />
+              </label>
+              <label className="w-full">
+                Your Fullname
+                <input
+                  type="text"
+                  className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                  value={userDetails.fullName}
+                  onChange={handleChange}
+                  name="fullName"
+                  placeholder="Your email or phone number"
+                />
+              </label>
+              <label className="w-full">
+                What we call you
+                <input
+                  type="text"
+                  className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                  value={userDetails.username}
+                  onChange={handleChange}
+                  name="username"
+                  placeholder="Your email or phone number"
+                />
+              </label>
+              <label className="w-full relative">
+                Password
+                <input
+                  type={isShow ? "text" : "password"}
+                  className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                  value={userDetails.password}
+                  onChange={handleChange}
+                  name="password"
+                  placeholder="Your email or phone number"
+                />
+                {userDetails.password.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setIsShow((prev) => !prev)}
+                    className="top-[2.3vw] text-zinc-500 transition-all text-xl duration-300 hover:text-sky-500 right-2 absolute"
+                  >
+                    {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                  </button>
+                )}
+              </label>
+              <button className="w-full p-3 bg-sky-500 mt-4 text-white rounded-lg font-bold transition-all duration-300 hover:bg-sky-600">
+                Sign up
+              </button>
+              <span className="w-full text-center flex gap-1 justify-center">
+                Already have an account?
+                <Link
+                  to={"/login"}
+                  className="underline transition-all duration-300 hover:text-sky-500 font-semibold"
+                >
+                  Login
+                </Link>
+              </span>
+            </div>
           </div>
         </form>
-        <div className="w-full border border-black/20 flex justify-center py-5 mt-3 text-sm gap-1">
-          <h2>Have an account?</h2>
-          <Link to="/login" className="text-sky-500 font-semibold">
-            Log in
-          </Link>
-        </div>
       </div>
+
+      <div className="w-[24rem] absolute -bottom-40 -left-40 h-[24rem] rounded-full bg-sky-500"></div>
     </div>
   );
 };

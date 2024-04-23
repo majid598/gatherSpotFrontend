@@ -43,15 +43,6 @@ const Profile = () => {
   //     setLoading(false);
   //   }, 5000);
   // }, []);
-  const logoutHandler = async () => {
-    await axios
-      .get(`${server}/api/v1/user/logout`, { withCredentials: true })
-      .then(({ data }) => {
-        navigate("/");
-        toast.success(data?.message);
-        dispatch(userNotExists());
-      });
-  };
   return (
     <Layout>
       <div className="w-full h-full overflow-hidden px-10 py-10">

@@ -20,20 +20,20 @@ const LandPage = () => {
     <div className="w-full h-screen bg-zinc-100 relative flex overflow-hidden">
       <div className="w-full h-[100vw] -top-40 -right-[45%] rounded-full bg-sky-500 absolute"></div>
 
-      <div className="w-2/5 h-full flex flex-col px-20 py-48">
+      <div className="w-2/5 h-full flex flex-col px-20 pt-32">
         <div className="w-20 h-20 rounded-full bg-zinc-200 overflow-hidden">
           <img src="/assets/logo.png" className="w-full h-full" alt="" />
         </div>
         <h1 className="uppercase mt-5 text-7xl font-bold">
           Gather<span className="text-sky-500">Spot</span>
         </h1>
-        <p className="text-xl font-semibold mt-5">
-          <span className="text-sky-500">Discover</span>, Connect, and Share
+        <p className="text-xl font-semibold relative z-50 mt-5">
+          <span className="text-sky-500 ">Discover</span>, Connect, and Share
           Your Stories with GatherSpot – Where Every Voice Matters!
         </p>
       </div>
-      <div className="w-3/5 h-full flex gap-16 py-20">
-        <div className="w-[22rem] h-full bg-white overflow-hidden whitespace-nowrap rounded-2xl shadow-sm relative">
+      <div className="w-3/5 h-full flex gap-16 lg-justify-end pr-10 items-center">
+        <div className="w-[22rem] mobile bg-white overflow-hidden h-5/6 whitespace-nowrap rounded-2xl shadow-sm relative">
           <div className="w-full h-4/6 bg--300">
             <Swiper
               grabCursor={true}
@@ -93,7 +93,7 @@ const LandPage = () => {
             </Link>
           </div>
         </div>
-        <div className="w-[22rem] h-full bg-white rounded-2xl shadow-sm relative overflow-hidden">
+        <div className="w-[22rem] mobile h-5/6 bg-white rounded-2xl shadow-sm relative overflow-hidden">
           <div className="w-full h-full absolute left-0 top-0 z-50"></div>
           <div className="header w-full h-[5rem] flex border-b items-center justify-between px-4">
             <div className="bg-sky-500 text-white p-2 rounded-md">
@@ -105,7 +105,7 @@ const LandPage = () => {
               <FaSearch className="text-xl" />
             </div>
           </div>
-          <div className="w-full p-10 flex flex-col gap-5">
+          <div className="w-full p-10 lg-pt-5 flex flex-col gap-5 lg-gap-3">
             <div>
               <div className="w-20 h-20 rounded-full overflow-hidden mx-auto">
                 <img
@@ -118,15 +118,15 @@ const LandPage = () => {
                 john doe
               </h2>
             </div>
-            <div className="w-full min-h-20 shadow-sm flex flex-col gap-1 py-4 items-center justify-center rounded-2xl">
+            <div className="w-full min-h-20 shadow-sm flex flex-col gap-1 py-4 lg-p-3 items-center justify-center rounded-2xl">
               <h2 className="font-semibold">Credits</h2>
               <span className="font-bold">67</span>
             </div>
-            <div className="w-full min-h-20 shadow-sm flex flex-col gap-1 py-4 items-center justify-center rounded-2xl">
+            <div className="w-full min-h-20 shadow-sm flex flex-col gap-1 py-4 lg-p-3 items-center justify-center rounded-2xl">
               <h2 className="font-semibold">Exchange</h2>
               <span className="font-bold">67C = {67 * 5} PKR</span>
             </div>
-            <div className="w-full min-h-20 shadow-sm flex flex-col gap-1 py-4 items-center justify-center rounded-2xl">
+            <div className="w-full min-h-20 shadow-sm flex flex-col gap-1 py-4 lg-p-3 items-center justify-center rounded-2xl">
               <span className="font-semibold">
                 {" "}
                 <img

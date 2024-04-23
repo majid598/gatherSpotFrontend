@@ -102,3 +102,21 @@ body {
     width: 100%;
   }
 }
+
+@media only screen and (max-width: 1400px) {
+  .mobile {
+    width: 20rem;
+  }
+  .lg-justify-end{
+    justify-content: flex-end;
+  }
+  .lg-gap-3{
+    gap: 12px;
+  }
+  .lg-pt-5{
+    padding-top: 15px;
+  }
+  .lg-p-3{
+    padding: 12px;
+  }
+}

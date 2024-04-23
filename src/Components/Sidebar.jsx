@@ -1,13 +1,20 @@
+import axios from "axios";
+import { BiLogOut } from "react-icons/bi";
 import { FaPlay, FaSearch } from "react-icons/fa";
 import { FaRegSquarePlus, FaSquarePlus } from "react-icons/fa6";
 import { GoHome, GoHomeFill } from "react-icons/go";
 import { IoIosNotifications, IoIosNotificationsOutline } from "react-icons/io";
 import { RiMessengerFill, RiMessengerLine } from "react-icons/ri";
 import { VscDiffAdded } from "react-icons/vsc";
-import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { userNotExists } from "../redux/reducers/userReducer";
+import { server } from "../redux/api/api";
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const location = useLocation();
   const buttons = [
@@ -48,6 +55,16 @@ const Sidebar = () => {
     //   icon2: <GoHomeFill />,
     // },
   ];
+
+  const logoutHandler = async () => {
+    await axios
+      .get(`${server}/api/v1/user/logout`, { withCredentials: true })
+      .then(({ data }) => {
+        navigate("/");
+        toast.success(data?.message);
+        dispatch(userNotExists());
+      });
+  };
 
   return (
     <div className="lg:w-[30rem] md:w-[30rem] sm:w-16 lg:block md:block sm:block hidden h-full lg:p-10 md:p-10 lg md:border-r border-zinc-500">
@@ -92,6 +109,13 @@ const Sidebar = () => {
             </div>
             <h2 className="leading-none text-xl font-semibold">Profile</h2>
           </Link>
+          <button
+            onClick={logoutHandler}
+            className="flex px-4 w-full py-4 rounded-xl items-center hover:bg-zinc-200 gap-4"
+          >
+            <BiLogOut className="text-3xl" />
+            <h2 className="leading-none text-xl font-semibold">Logout</h2>
+          </button>
         </div>
       </div>
       <div className="w-[24rem] absolute -bottom-40 -left-40 h-[24rem] blur-xl rounded-full bg-sky-500"></div>
