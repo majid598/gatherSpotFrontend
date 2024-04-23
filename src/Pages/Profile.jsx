@@ -4,8 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import Loader from "../Components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { BiLink, BiLogOut } from "react-icons/bi";
-import { FaPlay } from "react-icons/fa";
-import { server, useLogoutQuery } from "../redux/api/api";
+import { FaCamera, FaPlay } from "react-icons/fa";
+import {
+  server,
+  useEditProfileMutation,
+  useLogoutQuery,
+} from "../redux/api/api";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ContentDisplay from "../Components/ContentDisplay";
@@ -34,25 +38,65 @@ const Profile = () => {
   const [posts, setPosts] = useState(false);
   const [reels, setReels] = useState(false);
   const [favourites, setFavourites] = useState(false);
+  const [image, setImage] = useState("");
   const { user } = useSelector((state) => state.auth);
+  const [bio, setBio] = useState(user?.bio);
 
   const amount = user.credits * 5;
   const [loading, setLoading] = useState(false);
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 5000);
-  // }, []);
+
+  const [editProfile] = useEditProfileMutation();
+
+  const imageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    let url;
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", "insta-cloud");
+    formData.append("cloud_name", "dfmcsvthn");
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dfmcsvthn/image/upload",
+        formData
+      );
+      url = response.data.url;
+      console.log(url);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+    const data = {
+      profile: url,
+      bio,
+    };
+    editProfile(data)
+      .unwrap()
+      .then((data) => {
+        setIsEdit(false);
+        toast.success(data?.message);
+      })
+      .catch((err) => toast.error(err?.data?.message));
+  };
+
   return (
     <Layout>
       <div className="w-full h-full overflow-hidden px-10 py-10">
         <div className="w-full flex gap-10 h-full">
           <div className="min-w-[25rem] min-h-[80vh] p-10 pb-0 bg-white shadow-sm flex flex-col items-center rounded-3xl">
             <div
-              className="profile bg-zinc-500 w-28 h-28
+              className="profile bg-zinc-500 w-28 h-28 relative
             rounded-full overflow-hidden"
             >
               <img src={user?.profile} className="w-full h-full" alt="" />
+              <div className="w-full h-full absolute top-0 left-0 transition-all duration-300 opacity-0 hover:opacity-100 bg-black/30 flex items-center justify-center">
+                <label htmlFor="file" className=" cursor-pointer">
+                  <FaCamera className="text-2xl text-white" />
+                  <input type="file" hidden id="file" onChange={imageChange} />
+                </label>
+              </div>
             </div>
             <h2 className="text-zinc-600 mt-2">{user.username}</h2>
             <div className="w-full px-12">
@@ -133,7 +177,7 @@ const Profile = () => {
               {isEdit && (
                 <div className="w-full flex justify-end mt-2">
                   <button
-                    onClick={() => setIsEdit(false)}
+                    onClick={handleEdit}
                     className="px-4 py-2 rounded-md text-white bg-sky-500 hover:bg-sky-600 transition-all duration-300 font-semibold"
                   >
                     Submit

@@ -105,7 +105,7 @@ const Sidebar = () => {
             className="flex px-4 w-full py-4 rounded-xl items-center hover:bg-zinc-200 gap-4"
           >
             <div className="w-12 h-12 rounded-full overflow-hidden">
-              <img src="/assets/pfl.jpg" alt="" />
+              {user?.profile && <img src={user?.profile} className="w-full h-full" alt="" />}
             </div>
             <h2 className="leading-none text-xl font-semibold">Profile</h2>
           </Link>
