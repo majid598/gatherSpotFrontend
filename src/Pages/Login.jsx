@@ -32,7 +32,7 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      navigate("/profile");
+      // navigate("/profile");
       dispatch(userExists(true));
       toast.success(data?.message);
     } catch (error) {
