@@ -48,7 +48,7 @@ const Signup = () => {
       <div className="w-full h-full relative flex items-center justify-center">
         <form onSubmit={handleSubmit}>
           <div className="bg-white w-[30rem] h-[] rounded-2xl shadow-sm p-10">
-            <h1 className="text-2xl font-bold text-center">
+            <h1 className="text-3xl font-bold text-center">
               Sign up to start <br />{" "}
               <span className="text-sky-500">Gathering</span>
             </h1>

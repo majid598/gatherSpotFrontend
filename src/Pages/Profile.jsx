@@ -41,6 +41,8 @@ const Profile = () => {
   const [image, setImage] = useState("");
   const { user } = useSelector((state) => state.auth);
   const [bio, setBio] = useState(user?.bio);
+  const [username, setUsername] = useState(user?.username);
+  const [fullName, setFullName] = useState(user?.fullName);
 
   const amount = user.credits * 5;
   const [loading, setLoading] = useState(false);
@@ -85,7 +87,7 @@ const Profile = () => {
     <Layout>
       <div className="w-full h-full overflow-hidden px-10 py-10">
         <div className="w-full flex gap-10 h-full">
-          <div className="min-w-[25rem] min-h-[80vh] p-10 pb-0 bg-white shadow-sm flex flex-col items-center rounded-3xl">
+          <div className="min-w-[25rem] profileside min-h-[80vh] p-10 pb-0 bg-white shadow-sm flex flex-col items-center rounded-3xl">
             <div
               className="profile bg-zinc-500 w-28 h-28 relative
             rounded-full overflow-hidden"
@@ -117,7 +119,8 @@ const Profile = () => {
                 <input
                   type="text"
                   readOnly={!isEdit}
-                  value={user.fullName}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   className="outline-none bg-transparent text-sm border-none"
                 />
               </div>
@@ -130,7 +133,8 @@ const Profile = () => {
                 <input
                   type="text"
                   readOnly={!isEdit}
-                  value={user.username}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="outline-none bg-transparent text-sm border-none"
                 />
               </div>

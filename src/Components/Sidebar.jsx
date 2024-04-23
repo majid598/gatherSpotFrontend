@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BiLogOut } from "react-icons/bi";
-import { FaPlay, FaSearch } from "react-icons/fa";
+import { FaPlay, FaSearch, FaUser } from "react-icons/fa";
 import { FaRegSquarePlus, FaSquarePlus } from "react-icons/fa6";
 import { GoHome, GoHomeFill } from "react-icons/go";
 import { IoIosNotifications, IoIosNotificationsOutline } from "react-icons/io";
@@ -11,6 +11,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { userNotExists } from "../redux/reducers/userReducer";
 import { server } from "../redux/api/api";
+import Svg from "./Svg";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -33,8 +34,8 @@ const Sidebar = () => {
     {
       name: "Reels",
       path: "/reels",
-      icon: <FaSearch className="text-3xl text-zinc-600" />,
-      icon2: <FaSearch className="text-3xl text-sky-500" />,
+      icon: <Svg className="text-zinc-600" />,
+      icon2: <Svg className="text-sky-500" />,
     },
     {
       name: "Notifications",
@@ -67,7 +68,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="lg:w-[30rem] md:w-[30rem] sm:w-16 lg:block md:block sm:block hidden h-full lg:p-10 md:p-10 lg md:border-r border-zinc-500">
+    <div className="lg:w-[30rem] sidebar md:w-[30rem] sm:w-16 lg:block md:block sm:block hidden h-full lg:p-10 md:p-10 lg md:border-r border-zinc-500">
       <div className="w-full h-full bg-white relative z-50 rounded-2xl py-10 shadow-sm">
         <div className="w-full text-center flex items-center gap-2 px-4">
           <img
@@ -79,18 +80,18 @@ const Sidebar = () => {
             GatherSpot
           </h2>
         </div>
-        <div className="w-full h- flex py-10 flex-col items-center">
+        <div className="w-full flex py-10 lg-pb-0 lg-pt-0 flex-col items-center">
           {buttons.map((button) => (
             <Link
               key={button.name}
               to={button.path}
-              className={`flex px-4 w-full py-4 -xl items-center hover:bg-zinc-200 gap-4 ${
+              className={`grid grid-col-2 px-4 w-full py-4 items-center hover:bg-zinc-200 gap-4 ${
                 location.pathname === button.path && "bg-zinc-200"
               }`}
             >
               {location.pathname === button.path ? button.icon2 : button.icon}{" "}
               <h2
-                className={`leading-none lg:block ${
+                className={`leading-none lg-text-sm lg:block ${
                   location.pathname === button.path && "text-sky-500"
                 } md:block hidden text-xl font-semibold`}
               >
@@ -99,22 +100,28 @@ const Sidebar = () => {
             </Link>
           ))}
         </div>
-        <div className="flex py-10 flex-col items-center gap-2">
+        <div className="flex py-10 lg-py-6 flex-col items-center gap-2">
           <Link
             to={`/users/${user.username}`}
-            className="flex px-4 w-full py-4 rounded-xl items-center hover:bg-zinc-200 gap-4"
+            className=" px-4 w-full py-4 grid grid-col-2 rounded-xl items-center hover:bg-zinc-200 gap-4"
           >
-            <div className="w-12 h-12 rounded-full overflow-hidden">
-              {user?.profile && <img src={user?.profile} className="w-full h-full" alt="" />}
-            </div>
-            <h2 className="leading-none text-xl font-semibold">Profile</h2>
+              {user?.profile ? (
+                <div className="w-full h-full rounded-full overflow-hidden">
+                <img src={user?.profile} className="w-full h-full" alt="" />
+                </div>
+              ) : (
+                <FaUser className="text-xl" />
+              )}
+            <h2 className="leading-none text-xl lg-text-sm font-semibold">Profile</h2>
           </Link>
           <button
             onClick={logoutHandler}
-            className="flex px-4 w-full py-4 rounded-xl items-center hover:bg-zinc-200 gap-4"
+            className="grid grid-col-2 px-4 w-full py-4 rounded-xl items-center hover:bg-zinc-200 gap-4"
           >
-            <BiLogOut className="text-3xl" />
-            <h2 className="leading-none text-xl font-semibold">Logout</h2>
+            <BiLogOut className="text-3xl w-full" />
+            <h2 className="leading-none text-start lg-text-sm text-xl font-semibold">
+              Logout
+            </h2>
           </button>
         </div>
       </div>

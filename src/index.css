@@ -107,16 +107,38 @@ body {
   .mobile {
     width: 20rem;
   }
-  .lg-justify-end{
+  .lg-justify-end {
     justify-content: flex-end;
   }
-  .lg-gap-3{
+  .lg-gap-3 {
     gap: 12px;
   }
-  .lg-pt-5{
+  .lg-pt-5 {
     padding-top: 15px;
   }
-  .lg-p-3{
+  .lg-p-3 {
     padding: 12px;
   }
+  .sidebar {
+    max-width: 20rem;
+  }
+  .profileside {
+    min-width: 18rem;
+  }
+  .lg-text-sm {
+    font-size: 15px;
+  }
+  .lg-pb-0 {
+    padding-bottom: 0;
+  }
+  .lg-pt-6 {
+    padding-top: 20px;
+  }
+  .lg-py-6 {
+    padding: 10px 0;
+  }
+}
+
+.grid-col-2 {
+  grid-template-columns: 10% 80%;
 }

@@ -94,7 +94,7 @@ const Login = () => {
                   to={"/signup"}
                   className="underline transition-all duration-300 hover:text-sky-500 font-semibold"
                 >
-                  Sign up
+                  Log in
                 </Link>
               </span>
             </div>

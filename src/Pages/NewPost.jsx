@@ -116,19 +116,19 @@ const NewPost = () => {
 
         <div className="w-full h-full shadow-sm bg-white p-10 lg:rounded-2xl md:rounded-2xl">
           <h2 className="text-2xl font-semibold">New Post</h2>
-          <div className="w-full lg:flex md:flex hidden px-4 items-center gap-2 py-4 justify-end">
+          <div className="w-full lg:flex md:flex hidden px-4 items-center gap-2 py-3 justify-end">
             <h2 className="font-semibold">{user?.username}</h2>
             <div className="w-12 h-12 rounded-full overflow-hidden">
               <img src={user?.profile} className="w-full h-full" alt="" />
             </div>
           </div>
-          <div className="flex lg:flex-row md:flex-row flex-col h-full pt-12">
+          <div className="flex lg:flex-row md:flex-row flex-col h-full pt-12 lg-pt-6">
             <div className="lg:w-2/5 md:w-2/5 lg:h-full md:h-full">
-              <div className="h-full relative">
+              <div className="h-full relative px-5">
                 <div
                   className={`w-full lg:h-[60vh] md:h-[60vh] h-[40vh] ${
                     !url && "border-2"
-                  } rounded-2xl max-h-[60vh] flex px-6 relative items-center justify-center`}
+                  } rounded-2xl max-h-[55vh] flex px-6 relative items-center justify-center`}
                 >
                   {url ? (
                     <ContentDisplay src={previewUrl} autoPlay={true} />
