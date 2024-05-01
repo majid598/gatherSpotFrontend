@@ -69,9 +69,8 @@ const NewReel = () => {
 
   return (
     <Layout>
-    <div className="w-full h-full p-10">
-        {isLoading && <ReelLoader message={"Uploading Post..."} />}
-
+      <div className="w-full h-full p-10">
+        {isLoading && <ReelLoader message={"Uploading Reel..."} />}
         <div className="w-full h-full shadow-sm bg-white p-10 rounded-2xl">
           <h2 className="text-2xl font-semibold">New Post</h2>
           <div className="w-full px-4 items-center gap-2 py-4 flex justify-end">
@@ -89,8 +88,11 @@ const NewReel = () => {
                   } rounded-2xl max-h-[60vh] flex px-6 items-center justify-center`}
                 >
                   {url ? (
-                    <img
+                    <video
                       src={previewUrl}
+                      autoPlay
+                      loop
+                      muted
                       alt=""
                       className="w-full h-full rounded-2xl"
                     />
@@ -128,8 +130,8 @@ const NewReel = () => {
                   type="text"
                   className="w-full p-2 resize-none outline-none rounded-md transition-all duration-300 hover:border-black/30 focus:border-sky-500 border-2"
                   placeholder="Add title here..."
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  value={captionText}
+                  onChange={(e) => setCaptionText(e.target.value)}
                 />
               </label>
               <label>
@@ -142,21 +144,13 @@ const NewReel = () => {
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </label>
-              <button className="w-full p-3 text-white bg-sky-500 font-bold rounded-md">
+              <button
+                onClick={submitHandler}
+                className="w-full p-3 text-white bg-sky-500 hover:bg-sky-600 transition-all duration-300 font-bold rounded-md"
+              >
                 Upload
               </button>
             </div>
-            {caption && (
-              <div className="w-full px-4 mt-4">
-                <input
-                  type="text"
-                  className="w-full outline-none p-2"
-                  placeholder="Add caption"
-                  value={captionText}
-                  onChange={(e) => setCaptionText(e.target.value)}
-                />
-              </div>
-            )}
           </div>
         </div>
       </div>

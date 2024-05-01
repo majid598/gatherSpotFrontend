@@ -54,7 +54,6 @@ const NewPost = () => {
       console.error("Error uploading file:", error);
     }
     const data = {
-      userId: user._id,
       title,
       caption: captionText,
       attachMent,

@@ -102,7 +102,7 @@ const Sidebar = () => {
         </div>
         <div className="flex py-10 lg-py-6 flex-col items-center gap-2">
           <Link
-            to={`/users/${user.username}`}
+            to={`/users/${user?.username}`}
             className=" px-4 w-full py-4 grid grid-col-2 rounded-xl items-center hover:bg-zinc-200 gap-4"
           >
               {user?.profile ? (

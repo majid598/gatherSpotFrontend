@@ -40,6 +40,7 @@ const Post = ({ post }) => {
       <ContentDisplay
         src={post.attachMent}
         icon={true}
+        h="full"
         autoPlay={true}
         muted={true}
       />

@@ -79,11 +79,10 @@ const api = createApi({
       providesTags: ["Story"],
     }),
     likePost: builder.mutation({
-      query: (data) => ({
-        url: `post/like`,
+      query: (postId) => ({
+        url: `post/like/${postId}`,
         method: "PUT",
         credentials: "include",
-        body: data,
       }),
       invalidatesTags: ["Post"],
     }),
@@ -172,6 +171,14 @@ const api = createApi({
       query: (id) => ({ url: `post/reel/with/${id}`, credentials: "include" }),
       providesTags: ["Reel"],
     }),
+    deletePost: builder.mutation({
+      query: (id) => ({
+        url: `post/delete/${id}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+      invalidatesTags: ["Post"],
+    }),
   }),
 });
 
@@ -199,5 +206,6 @@ export const {
   useAddCommentToReelMutation,
   useGetReelByIdQuery,
   useAddToFavofitesMutation,
+  useDeletePostMutation,
 } = api;
 export default api;

@@ -47,7 +47,7 @@ const Notifications = () => {
           <div className="w-full p-2 flex flex-col-reverse">
             {data?.notifications?.map((notification, index) => (
               <div
-                key={index}
+                key={notification._id}
                 className="w-full flex justify-between items-center py-1 mt-4"
               >
                 <div className="w-full flex items-start gap-2">

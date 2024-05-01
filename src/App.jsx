@@ -49,7 +49,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={user ? <Home /> : <LandPage />} />
-        <Route element={<ProtectedRoute user={user} />}>
+        {/* <Route element={<ProtectedRoute user={user} />}> */}
           <Route path="/users/:username" element={<Profile />} />
           <Route path="/feeds" element={<Posts />} />
           <Route path="/search" element={<Search />} />
@@ -75,7 +75,7 @@ const App = () => {
             path="/other/user/:id/following"
             element={<OtherUserFollowing />}
           />
-        </Route>
+        {/* </Route> */}
         <Route element={<ProtectedRoute user={!user} redirect="/" />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

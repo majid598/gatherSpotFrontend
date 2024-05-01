@@ -15,19 +15,7 @@ import { toast } from "react-toastify";
 import ContentDisplay from "../Components/ContentDisplay";
 import { userNotExists } from "../redux/reducers/userReducer";
 import { BsBank } from "react-icons/bs";
-
-// const user = {
-//   fullName: "Majid ali",
-//   username: "code_with_raju_01",
-//   profile: "/assets/pfl.jpg",
-//   posts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-//   reels: [1, 2, 3],
-//   followers: [1, 2, 3],
-//   following: [1, 2, 3],
-//   bio: "I am a fullstack webdeveloper",
-//   credits: 77,
-//   easypesa: true,
-// };
+import ReelLoader from "../Components/ReelLoader";
 
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
@@ -43,8 +31,12 @@ const Profile = () => {
   const [bio, setBio] = useState(user?.bio);
   const [username, setUsername] = useState(user?.username);
   const [fullName, setFullName] = useState(user?.fullName);
+  const [followerLength, setFollowerLength] = useState(user?.followers.length);
+  const [followingLength, setFollowingLength] = useState(
+    user?.following.length
+  );
 
-  const amount = user.credits * 5;
+  const amount = user.credits * 1;
   const [loading, setLoading] = useState(false);
 
   const [editProfile] = useEditProfileMutation();
@@ -54,6 +46,7 @@ const Profile = () => {
   };
 
   const handleEdit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     let url;
     const formData = new FormData();
@@ -72,26 +65,45 @@ const Profile = () => {
     }
     const data = {
       profile: url,
+      fullName,
+      username,
       bio,
     };
     editProfile(data)
       .unwrap()
       .then((data) => {
         setIsEdit(false);
+        setLoading(false);
         toast.success(data?.message);
       })
-      .catch((err) => toast.error(err?.data?.message));
+      .catch((err) => {
+        setLoading(false);
+        toast.error(err?.data?.message);
+      });
   };
+  const followerDisplay = () => {
+    const formatted =
+      user?.followers?.length >= 1000 && user?.followers?.length < 2000
+        ? `${(user?.followers?.length / 1000).toFixed(1)}k`
+        : user?.followers?.length;
+    setFollowerLength(formatted);
+    const following =
+      user?.following?.length >= 1000 && user?.following?.length < 2000
+        ? `${(user?.following?.length / 1000).toFixed(1)}k`
+        : user?.following?.length;
+    setFollowingLength(following);
+  };
+  useEffect(() => {
+    followerDisplay();
+  }, []);
 
   return (
     <Layout>
-      <div className="w-full h-full overflow-hidden px-10 py-10">
-        <div className="w-full flex gap-10 h-full">
-          <div className="min-w-[25rem] profileside min-h-[80vh] p-10 pb-0 bg-white shadow-sm flex flex-col items-center rounded-3xl">
-            <div
-              className="profile bg-zinc-500 w-28 h-28 relative
-            rounded-full overflow-hidden"
-            >
+      <div className="w-full h-full overflow-hidden overflow-y-scroll px-10 py-10">
+        {loading && <ReelLoader message={"Profile Editing..."} />}
+        <div className="w-full flex lg:flex-row md:flow-row flex-col gap-10 h-full">
+          <div className="min-w-[25rem] profileside min-h-[80vh] p-10 pb-0 bg-white shadow-sm lg:flex md:flex sm:flex hidden flex-col items-center rounded-3xl">
+            <div className="profile bg-zinc-500 w-28 h-28 relative rounded-full overflow-hidden">
               <img src={user?.profile} className="w-full h-full" alt="" />
               <div className="w-full h-full absolute top-0 left-0 transition-all duration-300 opacity-0 hover:opacity-100 bg-black/30 flex items-center justify-center">
                 <label htmlFor="file" className=" cursor-pointer">
@@ -191,7 +203,13 @@ const Profile = () => {
             </div>
           </div>
           <div className="w-full flex flex-col">
-            <div className="w-full grid grid-cols-3 gap-5 pb-10">
+            <div className="mx-auto my-10 lg:hidden md:hidden sm:hidden flex flex-col">
+              <div className="w-32 h-32 rounded-full bg-zinc-300 overflow-hidden">
+                <img src={user?.profile} className="w-full h-full" alt="" />
+              </div>
+              <h2 className="text-center mt-5 font-semibold">{user?.fullName}</h2>
+            </div>
+            <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-5 pb-10">
               <div className="w-full min-h-28 p-4 justify-between rounded-2xl bg-white shadow-sm flex flex-col items-center">
                 <h3 className="font-bold">Credits</h3>
                 <div className="w-full min-h-12 rounded-lg flex items-center justify-center bg-sky-100">
@@ -232,7 +250,7 @@ const Profile = () => {
                     className="flex flex-col gap-1 items-center"
                   >
                     <span className="leading-none font-semibold">
-                      {user?.followers?.length}
+                      {followerLength}
                     </span>
                     <h3 className="leading-none">followers</h3>
                   </Link>
@@ -241,7 +259,7 @@ const Profile = () => {
                     className="flex flex-col gap-1 items-center"
                   >
                     <span className="leading-none font-semibold">
-                      {user?.following?.length}
+                      {followingLength}
                     </span>
                     <h3 className="leading-none">following</h3>
                   </Link>
@@ -338,8 +356,11 @@ const Profile = () => {
                 {all && (
                   <>
                     {user?.posts?.map((post, index) => (
-                      <div key={index} className="w-full h-64 bg-zinc-300">
-                        <ContentDisplay src={post.attachMent} />
+                      <div
+                        key={index}
+                        className="w-full inline-block h-64 bg-zinc-300"
+                      >
+                        <ContentDisplay src={post.attachMent} h="full" />
                       </div>
                     ))}
                   </>
