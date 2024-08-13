@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BiMessageRounded, BiSend } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
@@ -5,7 +6,6 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDeletePostMutation, useLikePostMutation } from "../redux/api/api";
-import { useEffect, useState } from "react";
 import ContentDisplay from "./ContentDisplay";
 
 const PostCard = ({ post }) => {
@@ -40,10 +40,6 @@ const PostCard = ({ post }) => {
         toast.error(err?.data?.message);
       });
   };
-
-  // useEffect(() => {
-  //   setIsLiked();
-  // }, [isLiked]);
 
   return (
     <div id={post._id} className="w-full bg-white">
@@ -130,10 +126,10 @@ const PostCard = ({ post }) => {
       <div className="px-2">
         <h2>Liked by majid and others</h2>
         <div className="mt-2">
-          <div className="flex gap-2 items-center mb-2">
-            <h2 className="font-semibold">{post?.user?.name}</h2>{" "}
-            <p className="text-zinc-600">{post?.description}</p>
-          </div>
+          {/* <div className="flex gap-2 items-center mb-2">
+            <h2 className="font-semibold">{post?.user?.fullName}</h2>{" "}
+            <p className="text-zinc-600">{post?.caption}</p>
+          </div> */}
           <div className="w-full border-b border-black/20">
             <input
               type="text"

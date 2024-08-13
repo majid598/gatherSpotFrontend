@@ -1,25 +1,19 @@
-import ReactPlayer from "react-player";
-import { SwiperSlide } from "swiper/react";
-import { IoHeartOutline } from "react-icons/io5";
-import { FaComments } from "react-icons/fa6";
-import { BiMessageRounded, BiSend } from "react-icons/bi";
+import "emoji-mart/package.json";
+import { useEffect, useState } from "react";
+import { FaCommentDots } from "react-icons/fa";
 import { GoHeart, GoHeartFill } from "react-icons/go";
+import { PiShareFatFill } from "react-icons/pi";
+import ReactPlayer from "react-player";
 import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
-  server,
   useAddCommentToReelMutation,
   useAddToFavofitesMutation,
   useLikeReelMutation,
   useMyChatsQuery,
-  useSendMessageMutation,
+  useSendMessageMutation
 } from "../redux/api/api";
-import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
-import "emoji-mart/package.json";
-import { Picker } from "emoji-mart";
-import { PiShareFatFill } from "react-icons/pi";
-import { FaCommentDots } from "react-icons/fa";
 const Reel = ({ index, reel, playerRefs, currentIndex }) => {
   const { user } = useSelector((state) => state.auth);
   const [isComment, setIsComment] = useState(false);
@@ -46,8 +40,7 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
 
   const likeToReel = (reelId) => {
     const data = {
-      reelId,
-      userId: user._id,
+      reelId
     };
     likeReel(data)
       .unwrap()
@@ -189,19 +182,19 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
         </div>
       )}
       <div className="h-full w-24">
-      <ReactPlayer
-        ref={(player) => (playerRefs.current[index] = player)}
-        url={reel.attachMent}
-        playing={index === currentIndex}
-        style={{ position: "absolute"}}
-        height="100%"
-        width="100%"
-        loop={true}
-        onClick={() => {
-          handleVideoClick(index);
-          setIsComment(false);
-        }} // Prevent slider from changing when clicking on video controls
-      />
+        <ReactPlayer
+          ref={(player) => (playerRefs.current[index] = player)}
+          url={reel.attachMent}
+          playing={index === currentIndex}
+          style={{ position: "absolute" }}
+          height="100%"
+          width="100%"
+          loop={true}
+          onClick={() => {
+            handleVideoClick(index);
+            setIsComment(false);
+          }} // Prevent slider from changing when clicking on video controls
+        />
       </div>
       <div className="w-12 h-12 rounded-full overflow-hidden right-5 bg-zinc-500 to-1/3">
         <img src={reel?.user?.profile} alt="" />
@@ -223,9 +216,8 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
         </div>
       </div>
       <div
-        className={`${
-          isComment ? "bottom-0" : "-bottom-full"
-        } absolute transition-all duration-300 left-0 w-full h-1/2 bg-black/70 z-[999]`}
+        className={`${isComment ? "bottom-0" : "-bottom-full"
+          } absolute transition-all duration-300 left-0 w-full h-1/2 bg-black/70 z-[999]`}
       >
         <div className="w-full h-1/5 border-b border-white/30">
           <input
@@ -354,9 +346,8 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
                   </div>
                   <button
                     onClick={() => setSelectedChat(chat)}
-                    className={`w-5 h-5 ${
-                      selectedChat?._id === chat._id ? "bg-sky-500" : "bg-white"
-                    } border border-white rounded-full`}
+                    className={`w-5 h-5 ${selectedChat?._id === chat._id ? "bg-sky-500" : "bg-white"
+                      } border border-white rounded-full`}
                   ></button>
                   <div className="absolute px-4 bottom-0 left-0 w-full">
                     <button
@@ -374,9 +365,8 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
         )}
         <button onClick={addToFavorites}>
           <div
-            className={`w-6 h-8 rounded-sm ${
-              isFavorited ? "bg-black" : ""
-            } after:bg-white z-[999] border-2 border-black border-b-0 after:content-[''] after:absolute after:w-full after:h-4 after:border-2 transition-all duration-300 after:border-black
+            className={`w-6 h-8 rounded-sm ${isFavorited ? "bg-black" : ""
+              } after:bg-white z-[999] border-2 border-black border-b-0 after:content-[''] after:absolute after:w-full after:h-4 after:border-2 transition-all duration-300 after:border-black
                    after:-bottom-2 overflow-hidden after:left-2/5 after:-translate-x-1/2 relative after:rotate-45 after:border-b-0 after:border-r-0`}
           ></div>
           <span className="text-sm text-center">

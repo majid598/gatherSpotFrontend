@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -9,11 +9,11 @@ import "swiper/css/effect-creative";
 import "./styles.css";
 
 // import required modules
-import { EffectCreative } from "swiper/modules";
-import { IoArrowBackOutline } from "react-icons/io5";
-import { GoHeart } from "react-icons/go";
 import { FaSearch } from "react-icons/fa";
+import { GoHeart } from "react-icons/go";
+import { IoArrowBackOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { EffectCreative } from "swiper/modules";
 
 const LandPage = () => {
   return (
@@ -124,7 +124,7 @@ const LandPage = () => {
             </div>
             <div className="w-full min-h-20 shadow-sm flex flex-col gap-1 py-4 lg-p-3 items-center justify-center rounded-2xl">
               <h2 className="font-semibold">Exchange</h2>
-              <span className="font-bold">67C = {67 * 5} PKR</span>
+              <span className="font-bold">67C = {67 * 1} PKR</span>
             </div>
             <div className="w-full min-h-20 shadow-sm flex flex-col gap-1 py-4 lg-p-3 items-center justify-center rounded-2xl">
               <span className="font-semibold">
@@ -135,7 +135,7 @@ const LandPage = () => {
                   className="mx-auto"
                   alt=""
                 />{" "}
-                {67 * 5} PKR
+                {67 * 1} PKR
               </span>
               <button className="w-4/5 p-2 text-white bg-sky-500 rounded-lg font-bold">
                 Withdraw

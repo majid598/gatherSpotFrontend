@@ -1,21 +1,16 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../Layout/Layout";
-import { Link, useNavigate } from "react-router-dom";
-import Loader from "../Components/Loader";
-import { useDispatch, useSelector } from "react-redux";
-import { BiLink, BiLogOut } from "react-icons/bi";
-import { FaCamera, FaPlay } from "react-icons/fa";
-import {
-  server,
-  useEditProfileMutation,
-  useLogoutQuery,
-} from "../redux/api/api";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { BsBank } from "react-icons/bs";
+import { FaCamera, FaPlay } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ContentDisplay from "../Components/ContentDisplay";
-import { userNotExists } from "../redux/reducers/userReducer";
-import { BsBank } from "react-icons/bs";
 import ReelLoader from "../Components/ReelLoader";
+import Layout from "../Layout/Layout";
+import {
+  useEditProfileMutation
+} from "../redux/api/api";
 
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);

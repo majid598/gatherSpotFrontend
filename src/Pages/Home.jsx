@@ -13,14 +13,14 @@ const Home = () => {
   const stories = storyData?.stories;
   return (
     <Layout>
-      <div className="w-full h-full lg:p-10 md:p-10 sm:p-8 p-0 overflow-hidden">
-        <div className="w-full h-full bg-white lg:rounded-2xl md:rounded-2xl overflow-hidden overflow-y-scroll sm:rounded-2xl shadow-sm">
+      <div className="w-full h-full overflow-hidden">
+        <div className="w-full h-full bg-white overflow-hidden overflow-y-scroll">
           <div className="w-full border-b border-black/20 relative p-2 pt-6 whitespace-nowrap  overflow-y-hidden overscroll-x-scroll bg-[#FAFAFA]">
             <Link
               to={
                 user?.story
                   ? `/user/story/${user?.story?._id}`
-                  : `/users/${user.username}`
+                  : `/users/${user?.username}`
               }
               className="w-20 h-20 rounded-full bg-zinc-400 relative inline-block mx-3 border-2 border-red-500"
             >

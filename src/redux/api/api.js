@@ -80,7 +80,7 @@ const api = createApi({
     }),
     likePost: builder.mutation({
       query: (postId) => ({
-        url: `post/like/${postId}`,
+        url: `post/like/post/${postId}`,
         method: "PUT",
         credentials: "include",
       }),

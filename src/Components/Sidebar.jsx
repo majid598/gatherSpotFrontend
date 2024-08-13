@@ -1,16 +1,14 @@
 import axios from "axios";
 import { BiLogOut } from "react-icons/bi";
-import { FaPlay, FaSearch, FaUser } from "react-icons/fa";
+import { FaSearch, FaUser } from "react-icons/fa";
 import { FaRegSquarePlus, FaSquarePlus } from "react-icons/fa6";
 import { GoHome, GoHomeFill } from "react-icons/go";
 import { IoIosNotifications, IoIosNotificationsOutline } from "react-icons/io";
-import { RiMessengerFill, RiMessengerLine } from "react-icons/ri";
-import { VscDiffAdded } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { userNotExists } from "../redux/reducers/userReducer";
 import { server } from "../redux/api/api";
+import { userNotExists } from "../redux/reducers/userReducer";
 import Svg from "./Svg";
 
 const Sidebar = () => {
@@ -68,8 +66,8 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="lg:w-[30rem] sidebar md:w-[30rem] sm:w-16 lg:block md:block sm:block hidden h-full lg:p-10 md:p-10 lg md:border-r border-zinc-500">
-      <div className="w-full h-full bg-white relative z-50 rounded-2xl py-10 shadow-sm">
+    <div className="sidebar lg:w-[22rem] md:w-[20rem] sm:w-16 lg:block md:block sm:block hidden h-full md:border-r border-zinc-500">
+      <div className="w-full h-full bg-white relative z-50 py-10">
         <div className="w-full text-center flex items-center gap-2 px-4">
           <img
             src="/assets/logo.png"
@@ -112,14 +110,14 @@ const Sidebar = () => {
               ) : (
                 <FaUser className="text-xl" />
               )}
-            <h2 className="leading-none text-xl lg-text-sm font-semibold">Profile</h2>
+            <h2 className="leading-none md:block hidden text-xl lg-text-sm font-semibold">Profile</h2>
           </Link>
           <button
             onClick={logoutHandler}
             className="grid grid-col-2 px-4 w-full py-4 rounded-xl items-center hover:bg-zinc-200 gap-4"
           >
             <BiLogOut className="text-3xl w-full" />
-            <h2 className="leading-none text-start lg-text-sm text-xl font-semibold">
+            <h2 className="leading-none md:block hidden text-start lg-text-sm text-xl font-semibold">
               Logout
             </h2>
           </button>
