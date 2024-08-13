@@ -154,7 +154,7 @@ const Profile = () => {
                 <textarea
                   type="text"
                   readOnly={!isEdit}
-                  value={user.bio}
+                  value={bio}
                   className="outline-none resize-none bg-transparent text-sm border-none"
                 />
               </div>
@@ -181,7 +181,6 @@ const Profile = () => {
                   <BsBank />
                   <BsBank />
                   <BsBank />
-
                   <button>Add Account+</button>
                 </div>
               )}
