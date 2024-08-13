@@ -5,7 +5,7 @@ import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDeletePostMutation, useLikePostMutation } from "../redux/api/api";
+import { useLikePostMutation } from "../redux/api/api";
 import ContentDisplay from "./ContentDisplay";
 
 const PostCard = ({ post }) => {
@@ -27,18 +27,8 @@ const PostCard = ({ post }) => {
       });
   };
 
-  const [deletePost] = useDeletePostMutation();
   const deleteHandler = () => {
-    deletePost(post._id)
-      .unwrap()
-      .then((data) => {
-        setMenu(false);
-        toast.success(data?.message);
-      })
-      .catch((err) => {
-        setMenu(false);
-        toast.error(err?.data?.message);
-      });
+
   };
 
   return (
