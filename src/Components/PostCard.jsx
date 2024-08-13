@@ -85,12 +85,7 @@ const PostCard = ({ post }) => {
         </div>
       </div>
       <div className="w-full h-auto">
-        <ContentDisplay
-          src={post?.attachMent}
-          autoPlay={false}
-          controls={true}
-          h="60vh"
-        />
+        <img src={post?.attachMent} />
       </div>
       <div className="w-full justify-between flex items-center py-3 px-2 pr-5">
         <div className="flex gap-4">
