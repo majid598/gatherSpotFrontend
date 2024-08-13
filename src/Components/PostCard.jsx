@@ -85,7 +85,7 @@ const PostCard = ({ post }) => {
         </div>
       </div>
       <div className="w-full h-auto">
-        <img src={post?.attachMent} />
+        <img src={post?.attachMent} className="w-full" />
       </div>
       <div className="w-full justify-between flex items-center py-3 px-2 pr-5">
         <div className="flex gap-4">
