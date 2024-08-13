@@ -2,8 +2,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const server = import.meta.env.VITE_SERVER;
 
-// Create an axios baseQuery function
-
 const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: `${server}/api/v1/` }),
@@ -15,6 +13,9 @@ const api = createApi({
         method: "PUT",
         credentials: "include",
         body: data,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["User"],
     }),
@@ -24,6 +25,9 @@ const api = createApi({
         method: "PUT",
         credentials: "include",
         body: data,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["User"],
     }),
@@ -33,6 +37,9 @@ const api = createApi({
         method: "PUT",
         credentials: "include",
         body: data,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["User"],
     }),
@@ -42,6 +49,9 @@ const api = createApi({
         method: "POST",
         credentials: "include",
         body: post,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["Post"],
     }),
@@ -50,6 +60,9 @@ const api = createApi({
         url: "post/all",
         method: "GET",
         credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       providesTags: ["Post"],
     }),
@@ -58,6 +71,9 @@ const api = createApi({
         url: `user/other/${id}`,
         method: "GET",
         credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       providesTags: ["User", "Post"],
     }),
@@ -67,22 +83,37 @@ const api = createApi({
         method: "POST",
         credentials: "include",
         body: story,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["Story", "User"],
     }),
     getStories: builder.query({
-      query: () => ({ url: `user/story/all`, credentials: "include" }),
+      query: () => ({
+        url: `user/story/all`, credentials: "include", headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
       providesTags: ["Story", "User"],
     }),
     getStory: builder.query({
-      query: (id) => ({ url: `user/story/${id}`, credentials: "include" }),
+      query: (id) => ({
+        url: `user/story/${id}`, credentials: "include", headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
       providesTags: ["Story"],
     }),
     likePost: builder.mutation({
-      query: (postId) => ({
-        url: `post/like/post/${postId}`,
+      query: (data) => ({
+        url: `post/like`,
         method: "PUT",
         credentials: "include",
+        body: data,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["Post"],
     }),
@@ -92,11 +123,18 @@ const api = createApi({
         method: "POST",
         credentials: "include",
         body: reel,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["Reel"],
     }),
     allReels: builder.query({
-      query: () => ({ url: "post/reel/all", credentials: "include" }),
+      query: () => ({
+        url: "post/reel/all", credentials: "include", headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
       providesTags: ["Reel"],
     }),
     likeReel: builder.mutation({
@@ -105,6 +143,9 @@ const api = createApi({
         method: "PUT",
         credentials: "include",
         body: data,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["Reel"],
     }),
@@ -114,11 +155,18 @@ const api = createApi({
         method: "PUT",
         credentials: "include",
         body: data,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["Reel"],
     }),
     logout: builder.query({
-      query: () => ({ url: "user/logout", credentials: "include" }),
+      query: () => ({
+        url: "user/logout", credentials: "include", headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
       providesTags: ["User"],
     }),
     newChat: builder.mutation({
@@ -127,19 +175,34 @@ const api = createApi({
         method: "POST",
         credentials: "include",
         body: chadIds,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["Chat"],
     }),
     getChat: builder.query({
-      query: (id) => ({ url: `chat/${id}`, credentials: "include" }),
+      query: (id) => ({
+        url: `chat/${id}`, credentials: "include", headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
       providesTags: ["Chat", "User"],
     }),
     allMessages: builder.query({
-      query: (id) => ({ url: `chat/messages/${id}`, credentials: "include" }),
+      query: (id) => ({
+        url: `chat/messages/${id}`, credentials: "include", headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
       providesTags: ["Message"],
     }),
     myChats: builder.query({
-      query: (id) => ({ url: `chat/my/all?id=${id}`, credentials: "include" }),
+      query: (id) => ({
+        url: `chat/my/all?id=${id}`, credentials: "include", headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
       providesTags: ["Message"],
     }),
     sendMessage: builder.mutation({
@@ -148,6 +211,9 @@ const api = createApi({
         method: "POST",
         credentials: "include",
         body: message,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["Message"],
     }),
@@ -155,6 +221,9 @@ const api = createApi({
       query: (id) => ({
         url: `user/notifications/my?id=${id}`,
         credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       providesTags: ["Notification", "User"],
     }),
@@ -164,20 +233,19 @@ const api = createApi({
         method: "POST",
         credentials: "include",
         body: comment,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
       invalidatesTags: ["Reel"],
     }),
     getReelById: builder.query({
-      query: (id) => ({ url: `post/reel/with/${id}`, credentials: "include" }),
-      providesTags: ["Reel"],
-    }),
-    deletePost: builder.mutation({
       query: (id) => ({
-        url: `post/delete/${id}`,
-        method: "DELETE",
-        credentials: "include",
+        url: `post/reel/with/${id}`, credentials: "include", headers: {
+          "token": localStorage.getItem("token")
+        }
       }),
-      invalidatesTags: ["Post"],
+      providesTags: ["Reel"],
     }),
   }),
 });
@@ -206,6 +274,5 @@ export const {
   useAddCommentToReelMutation,
   useGetReelByIdQuery,
   useAddToFavofitesMutation,
-  useDeletePostMutation,
 } = api;
 export default api;

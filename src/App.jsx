@@ -79,8 +79,8 @@ const App = () => {
         <Route element={<ProtectedRoute user={!user} redirect="/" />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/test" element={<Test />} />
         </Route>
+          <Route path="/test" element={<Test />} />
       </Routes>
       <ToastContainer />
     </Router>
