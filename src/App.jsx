@@ -38,7 +38,12 @@ const App = () => {
 
   useEffect(() => {
     axios
-      .get(`${server}/api/v1/user/me`, { withCredentials: true })
+      .get(`${server}/api/v1/user/me`, {
+        withCredentials: true,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
+      })
       .then(({ data }) => {
         dispatch(userExists(data?.user));
       })
@@ -50,37 +55,37 @@ const App = () => {
       <Routes>
         <Route path="/" element={user ? <Home /> : <LandPage />} />
         {/* <Route element={<ProtectedRoute user={user} />}> */}
-          <Route path="/users/:username" element={<Profile />} />
-          <Route path="/feeds" element={<Posts />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/post/new" element={<NewPost />} />
-          <Route path="/reels" element={<Reels />} />
-          <Route path="/chats" element={<Chat />} />
-          <Route path="/profile/edit" element={<EditProfile />} />
-          <Route path="/story/upload" element={<CreateStory />} />
-          <Route path="/user/:id" element={<OtherUser />} />
-          <Route path="/user/story/:id" element={<Story />} />
-          <Route path="/user/followers" element={<Followers />} />
-          <Route path="/user/following" element={<Following />} />
-          <Route path="/reel/new" element={<NewReel />} />
-          <Route path="/user/:id/chat/create" element={<NewChat />} />
-          <Route path="/chat/:id" element={<GetChat />} />
-          <Route path="/reel/:id" element={<GetReel />} />
-          <Route
-            path="/other/user/:id/followers"
-            element={<OtherUserFollowers />}
-          />
-          <Route
-            path="/other/user/:id/following"
-            element={<OtherUserFollowing />}
-          />
+        <Route path="/users/:username" element={<Profile />} />
+        <Route path="/feeds" element={<Posts />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/post/new" element={<NewPost />} />
+        <Route path="/reels" element={<Reels />} />
+        <Route path="/chats" element={<Chat />} />
+        <Route path="/profile/edit" element={<EditProfile />} />
+        <Route path="/story/upload" element={<CreateStory />} />
+        <Route path="/user/:id" element={<OtherUser />} />
+        <Route path="/user/story/:id" element={<Story />} />
+        <Route path="/user/followers" element={<Followers />} />
+        <Route path="/user/following" element={<Following />} />
+        <Route path="/reel/new" element={<NewReel />} />
+        <Route path="/user/:id/chat/create" element={<NewChat />} />
+        <Route path="/chat/:id" element={<GetChat />} />
+        <Route path="/reel/:id" element={<GetReel />} />
+        <Route
+          path="/other/user/:id/followers"
+          element={<OtherUserFollowers />}
+        />
+        <Route
+          path="/other/user/:id/following"
+          element={<OtherUserFollowing />}
+        />
         {/* </Route> */}
         <Route element={<ProtectedRoute user={!user} redirect="/" />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Route>
-          <Route path="/test" element={<Test />} />
+        <Route path="/test" element={<Test />} />
       </Routes>
       <ToastContainer />
     </Router>

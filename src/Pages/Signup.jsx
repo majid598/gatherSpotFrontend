@@ -32,6 +32,7 @@ const Signup = () => {
           withCredentials: true,
         }
       );
+      localStorage.setItem("token", data?.token)
       dispatch(userExists(data?.user));
       toast.success(data?.message);
     } catch (error) {

@@ -36,6 +36,7 @@ const Login = () => {
         }
       );
       // navigate("/profile");
+      localStorage.setItem("token", data?.token)
       dispatch(userExists(true));
       toast.success(data?.message);
       setIsLoading(false);
@@ -47,7 +48,7 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen bg-zinc-100 relative overflow-hidden">
-      {isLoading && <ReelLoader message={"Loging in..."}/>}
+      {isLoading && <ReelLoader message={"Loging in..."} />}
       <div className="absolute w-48 h-48 rounded-full overflow-hidden top-1/4 left-[10vw]">
         <img src="/assets/logo.png" alt="" />
       </div>
