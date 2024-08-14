@@ -2,6 +2,7 @@ import { useAllPostsQuery } from "../redux/api/api";
 import PostCard from "../Components/PostCard";
 import Layout from "../Layout/Layout";
 import ContentDisplay from "../Components/ContentDisplay";
+import RenderAttachment, { fileFormat } from "../Components/RenderAttachment";
 
 const Search = () => {
   const { data } = useAllPostsQuery();
@@ -37,13 +38,7 @@ export default Search;
 const Post = ({ post }) => {
   return (
     <div className="lg:w-[14rem] md:w-[14rem] w-full lg:h-[40vh] md:h-[40vh]">
-      <ContentDisplay
-        src={post.attachMent}
-        icon={true}
-        h="full"
-        autoPlay={true}
-        muted={true}
-      />
+      {RenderAttachment(fileFormat(post.attachMent), post.attachMent)}
     </div>
   );
 };
