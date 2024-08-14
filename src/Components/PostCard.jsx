@@ -5,8 +5,9 @@ import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useLikePostMutation } from "../redux/api/api";
+import { server, useLikePostMutation } from "../redux/api/api";
 import ContentDisplay from "./ContentDisplay";
+import axios from "axios";
 
 const PostCard = ({ post }) => {
   const { user } = useSelector((state) => state.auth);
@@ -28,7 +29,12 @@ const PostCard = ({ post }) => {
   };
 
   const deleteHandler = () => {
-
+    axios.delete(`${server}/api/v1/post/delete/${post?._id}`, {
+      withCredentials: true,
+      headers: {
+        "token": localStorage.getItem("token")
+      }
+    })
   };
 
   return (
