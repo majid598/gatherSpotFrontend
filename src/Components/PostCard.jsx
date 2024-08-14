@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { server, useLikePostMutation } from "../redux/api/api";
 import ContentDisplay from "./ContentDisplay";
 import axios from "axios";
+import RenderAttachment, { fileFormat } from "./RenderAttachment";
 
 const PostCard = ({ post }) => {
   const { user } = useSelector((state) => state.auth);
@@ -91,7 +92,7 @@ const PostCard = ({ post }) => {
         </div>
       </div>
       <div className="w-full h-auto">
-        <img src={post?.attachMent} className="w-full" />
+        {RenderAttachment(fileFormat(post?.attachMent), post?.attachMent)}
       </div>
       <div className="w-full justify-between flex items-center py-3 px-2 pr-5">
         <div className="flex gap-4">
