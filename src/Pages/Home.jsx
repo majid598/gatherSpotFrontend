@@ -8,14 +8,7 @@ import { useSelector } from "react-redux";
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
   const { data, isLoading, isError } = useAllPostsQuery();
-  const posts = [
-    { attachMent: "/assets/profile.avif" },
-    { attachMent: "/assets/profile.avif" },
-    { attachMent: "/assets/profile.avif" },
-    { attachMent: "/assets/profile.avif" },
-    { attachMent: "/assets/profile.avif" },
-    { attachMent: "/assets/profile.avif" },
-  ]
+  const posts = data?.posts
   const { data: storyData } = useGetStoriesQuery();
   const stories = storyData?.stories;
   return (
@@ -76,7 +69,7 @@ const Home = () => {
             ))}
           </div>
           <div className="w-full h-full flex justify-center">
-            <div className="pt-4 bg-white w-[38rem] pb-72 flex flex-col gap-4">
+            <div className="pt-4 bg-white w-[35rem] pb-72 flex flex-col gap-4">
               {posts?.map((post, index) => (
                 <PostCard key={post._id} post={post} />
               ))}
