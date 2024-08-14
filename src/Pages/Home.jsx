@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import PostCard from "../Components/PostCard";
 import { useAllPostsQuery, useGetStoriesQuery } from "../redux/api/api";
 import { useSelector } from "react-redux";
-import { shuffleArray } from "../Components/RenderAttachment";
 
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
