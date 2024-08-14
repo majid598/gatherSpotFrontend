@@ -9,7 +9,7 @@ import { shuffleArray } from "../Components/RenderAttachment";
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
   const { data, isLoading, isError } = useAllPostsQuery();
-  const posts = shuffleArray(data?.posts)
+  const posts = data?.posts
   const { data: storyData } = useGetStoriesQuery();
   const stories = storyData?.stories;
   return (
