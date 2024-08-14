@@ -1,36 +1,37 @@
+import { useEffect, Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./Pages/Home";
-import Posts from "./Pages/Posts";
-import Search from "./Pages/Search";
-import Notifications from "./Pages/Notifications";
-import Reels from "./Pages/Reels";
-import Chat from "./Pages/Chat";
-import Profile from "./Pages/Profile";
-import Login from "./Pages/Login";
-import Signup from "./Pages/Signup";
-import ProtectedRoute from "./Components/ProtectedRoute";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
-import { useEffect } from "react";
+import { ToastContainer } from "react-toastify";
 import { userExists, userNotExists } from "./redux/reducers/userReducer";
-import axios from "axios";
 import { server } from "./redux/api/api";
-import Followers from "./Pages/Followers";
-import Following from "./Pages/Following";
-import EditProfile from "./Pages/EditProfile";
-import NewPost from "./Pages/NewPost";
-import OtherUser from "./Pages/OtherUser";
-import OtherUserFollowers from "./Pages/OtherUserFollowers";
-import OtherUserFollowing from "./Pages/OtherUserFollowing";
-import CreateStory from "./Pages/CreateStory";
-import Story from "./Pages/Story";
-import Test from "./Test";
-import NewReel from "./Pages/NewReel";
-import GetChat from "./Pages/GetChat";
-import NewChat from "./Pages/NewChat";
-import GetReel from "./Pages/GetReel";
+import axios from "axios";
+import ProtectedRoute from "./Components/ProtectedRoute";
+const Home = lazy(() => import("./Pages/Home"));
+const Posts = lazy(() => import("./Pages/Posts"));
+const Search = lazy(() => import("./Pages/Search"));
+const Notifications = lazy(() => import("./Pages/Notifications"));
+const Reels = lazy(() => import("./Pages/Reels"));
+const Chat = lazy(() => import("./Pages/Chat"));
+const Profile = lazy(() => import("./Pages/Profile"));
+const Login = lazy(() => import("./Pages/Login"));
+const Signup = lazy(() => import("./Pages/Signup"));
+const Followers = lazy(() => import("./Pages/Followers"));
+const Following = lazy(() => import("./Pages/Following"));
+const EditProfile = lazy(() => import("./Pages/EditProfile"));
+const NewPost = lazy(() => import("./Pages/NewPost"));
+const OtherUser = lazy(() => import("./Pages/OtherUser"));
+const OtherUserFollowers = lazy(() => import("./Pages/OtherUserFollowers"));
+const OtherUserFollowing = lazy(() => import("./Pages/OtherUserFollowing"));
+const CreateStory = lazy(() => import("./Pages/CreateStory"));
+const Story = lazy(() => import("./Pages/Story"));
+const Test = lazy(() => import("./Test"))
+const NewReel = lazy(() => import("./Pages/NewReel"));
+const GetChat = lazy(() => import("./Pages/GetChat"));
+const NewChat = lazy(() => import("./Pages/NewChat"));
+const GetReel = lazy(() => import("./Pages/GetReel"));
 import LandPage from "./Layout/LandPage";
+import { LuLoader } from "react-icons/lu";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -52,41 +53,45 @@ const App = () => {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={user ? <Home /> : <LandPage />} />
-        {/* <Route element={<ProtectedRoute user={user} />}> */}
-        <Route path="/users/:username" element={<Profile />} />
-        <Route path="/feeds" element={<Posts />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/post/new" element={<NewPost />} />
-        <Route path="/reels" element={<Reels />} />
-        <Route path="/chats" element={<Chat />} />
-        <Route path="/profile/edit" element={<EditProfile />} />
-        <Route path="/story/upload" element={<CreateStory />} />
-        <Route path="/user/:id" element={<OtherUser />} />
-        <Route path="/user/story/:id" element={<Story />} />
-        <Route path="/user/followers" element={<Followers />} />
-        <Route path="/user/following" element={<Following />} />
-        <Route path="/reel/new" element={<NewReel />} />
-        <Route path="/user/:id/chat/create" element={<NewChat />} />
-        <Route path="/chat/:id" element={<GetChat />} />
-        <Route path="/reel/:id" element={<GetReel />} />
-        <Route
-          path="/other/user/:id/followers"
-          element={<OtherUserFollowers />}
-        />
-        <Route
-          path="/other/user/:id/following"
-          element={<OtherUserFollowing />}
-        />
-        {/* </Route> */}
-        <Route element={<ProtectedRoute user={!user} redirect="/" />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Route>
-        <Route path="/test" element={<Test />} />
-      </Routes>
+      <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">
+        <LuLoader className="loader text-5xl"/>
+      </div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          {/* <Route element={<ProtectedRoute user={user} />}> */}
+          <Route path="/users/:username" element={<Profile />} />
+          <Route path="/feeds" element={<Posts />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/post/new" element={<NewPost />} />
+          <Route path="/reels" element={<Reels />} />
+          <Route path="/chats" element={<Chat />} />
+          <Route path="/profile/edit" element={<EditProfile />} />
+          <Route path="/story/upload" element={<CreateStory />} />
+          <Route path="/user/:id" element={<OtherUser />} />
+          <Route path="/user/story/:id" element={<Story />} />
+          <Route path="/user/followers" element={<Followers />} />
+          <Route path="/user/following" element={<Following />} />
+          <Route path="/reel/new" element={<NewReel />} />
+          <Route path="/user/:id/chat/create" element={<NewChat />} />
+          <Route path="/chat/:id" element={<GetChat />} />
+          <Route path="/reel/:id" element={<GetReel />} />
+          <Route
+            path="/other/user/:id/followers"
+            element={<OtherUserFollowers />}
+          />
+          <Route
+            path="/other/user/:id/following"
+            element={<OtherUserFollowing />}
+          />
+          {/* </Route> */}
+          <Route element={<ProtectedRoute user={!user} redirect="/" />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Route>
+          <Route path="/test" element={<Test />} />
+        </Routes>
+      </Suspense>
       <ToastContainer />
     </Router>
   );

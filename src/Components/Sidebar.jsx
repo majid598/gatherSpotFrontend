@@ -2,7 +2,7 @@ import axios from "axios";
 import { BiLogOut } from "react-icons/bi";
 import { FaSearch, FaUser } from "react-icons/fa";
 import { FaRegSquarePlus, FaSquarePlus } from "react-icons/fa6";
-import { GoHome, GoHomeFill } from "react-icons/go";
+import { GoBell, GoBellFill, GoHome, GoHomeFill, GoSearch, GoSignOut } from "react-icons/go";
 import { IoIosNotifications, IoIosNotificationsOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -26,20 +26,20 @@ const Sidebar = () => {
     {
       name: "Search",
       path: "/search",
-      icon: <FaSearch className="text-3xl text-zinc-600" />,
-      icon2: <FaSearch className="text-3xl text-sky-500" />,
+      icon: <GoSearch  className="text-3xl text-zinc-600" />,
+      icon2: <GoSearch className="text-3xl text-sky-500" />,
     },
     {
       name: "Reels",
       path: "/reels",
-      icon: <Svg className="text-zinc-600" />,
-      icon2: <Svg className="text-sky-500" />,
+      icon: <Svg className="text-zinc-600 ml-1" />,
+      icon2: <Svg className="text-sky-500 ml-1" />,
     },
     {
       name: "Notifications",
       path: "/notifications",
-      icon: <IoIosNotificationsOutline className="text-3xl" />,
-      icon2: <IoIosNotifications className="text-3xl text-sky-500" />,
+      icon: <GoBell  className="text-3xl" />,
+      icon2: <GoBellFill  className="text-3xl text-sky-500" />,
     },
     {
       name: "Create",
@@ -66,7 +66,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="sidebar lg:w-[22rem] md:w-[20rem] sm:w-16 lg:block md:block sm:block hidden h-full md:border-r border-zinc-500">
+    <div className="sidebar lg:w-[22rem] md:w-[16rem] sm:w-16 lg:block md:block sm:block hidden h-full md:border-r border-zinc-500">
       <div className="w-full h-full bg-white relative z-50 py-10">
         <div className="w-full text-center flex items-center gap-2 px-4">
           <img
@@ -101,7 +101,7 @@ const Sidebar = () => {
         <div className="flex py-10 lg-py-6 flex-col items-center gap-2">
           <Link
             to={`/users/${user?.username}`}
-            className=" px-4 w-full py-4 grid grid-col-2 rounded-xl items-center hover:bg-zinc-200 gap-4"
+            className="px-4 w-full py-4 grid grid-col-2 items-center hover:bg-zinc-200 gap-4"
           >
               {user?.profile ? (
                 <div className="w-full h-full rounded-full overflow-hidden">
@@ -114,9 +114,9 @@ const Sidebar = () => {
           </Link>
           <button
             onClick={logoutHandler}
-            className="grid grid-col-2 px-4 w-full py-4 rounded-xl items-center hover:bg-zinc-200 gap-4"
+            className="grid grid-col-2 px-4 w-full py-4 items-center hover:bg-zinc-200 gap-4"
           >
-            <BiLogOut className="text-3xl w-full" />
+            <GoSignOut className="text-3xl w-full" />
             <h2 className="leading-none md:block hidden text-start lg-text-sm text-xl font-semibold">
               Logout
             </h2>

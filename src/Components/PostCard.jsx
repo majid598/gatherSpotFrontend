@@ -32,7 +32,7 @@ const PostCard = ({ post }) => {
   };
 
   return (
-    <div id={post._id} className="w-full bg-white">
+    <div id={post._id} className="w-full bg-white border-2 p-10">
       <div className="header w-full p-3 flex justify-between">
         <div className="flex gap-4">
           <Link
