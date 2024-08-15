@@ -5,7 +5,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { FaImage, FaMusic, FaVideo } from "react-icons/fa6";
 import { IoMdShare } from "react-icons/io";
 import { RiEdit2Fill } from "react-icons/ri";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import ReelLoader from "../Components/ReelLoader";
