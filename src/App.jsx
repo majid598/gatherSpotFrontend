@@ -32,6 +32,7 @@ const NewChat = lazy(() => import("./Pages/NewChat"));
 const GetReel = lazy(() => import("./Pages/GetReel"));
 import LandPage from "./Layout/LandPage";
 import { LuLoader } from "react-icons/lu";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -54,7 +55,7 @@ const App = () => {
   return (
     <Router>
       <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">
-        <LuLoader className="loader text-5xl"/>
+        <LuLoader className="loader text-5xl" />
       </div>}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -92,7 +93,7 @@ const App = () => {
           <Route path="/test" element={<Test />} />
         </Routes>
       </Suspense>
-      <ToastContainer />
+      <Toaster position="top-center" />
     </Router>
   );
 };
