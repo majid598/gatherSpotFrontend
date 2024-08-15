@@ -15,7 +15,7 @@ export const fileFormat = (url = "") => {
         fileExt === "jpeg" ||
         fileExt === "webp" ||
         fileExt === "avif" ||
-        fileExt === "gif"
+        fileExt === "gif" || "svg"
     )
         return "image";
 
@@ -41,7 +41,7 @@ export const previewFileFormat = (url = "") => {
 
     const videoFormats = ["mp4", "webm", "ogg"];
     const audioFormats = ["mp3", "wav"];
-    const imageFormats = ["png", "jpg", "jpeg", "webp", "avif", "gif"];
+    const imageFormats = ["png", "jpg", "jpeg", "webp", "avif", "gif", "svg"];
 
     if (videoFormats.includes(fileExt)) return "video";
     if (audioFormats.includes(fileExt)) return "audio";

@@ -1,4 +1,4 @@
-import { Dialog } from "@mui/material";
+import { Avatar, Dialog } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -56,7 +56,7 @@ const Profile = () => {
 
   const [editProfile] = useEditProfileMutation();
 
- 
+
 
   const handleEdit = async (e) => {
     setLoading(true);
@@ -246,7 +246,7 @@ const Profile = () => {
                 <div className="w-full h-full absolute -top-1/2 flex items-center justify-between">
                   <div className="flex items-center gap-5">
                     <button onClick={() => setOpenProfilePhoto(true)} className="w-20 h-20 overflow-hidden rounded-full">
-                      <img src={user?.profile} className="w-full h-full object-contain scal-150" alt="" />
+                      <Avatar src={user?.profile?.url} style={{ width: "100%", height: "100%" }} alt="" />
                     </button>
                     <div>
                       <h2 className="font-bold">{user?.fullName}</h2>

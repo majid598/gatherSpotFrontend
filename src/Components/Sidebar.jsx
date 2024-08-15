@@ -26,7 +26,7 @@ const Sidebar = () => {
     {
       name: "Search",
       path: "/search",
-      icon: <GoSearch  className="text-3xl text-zinc-600" />,
+      icon: <GoSearch className="text-3xl text-zinc-600" />,
       icon2: <GoSearch className="text-3xl text-sky-500" />,
     },
     {
@@ -38,8 +38,8 @@ const Sidebar = () => {
     {
       name: "Notifications",
       path: "/notifications",
-      icon: <GoBell  className="text-3xl" />,
-      icon2: <GoBellFill  className="text-3xl text-sky-500" />,
+      icon: <GoBell className="text-3xl" />,
+      icon2: <GoBellFill className="text-3xl text-sky-500" />,
     },
     {
       name: "Create",
@@ -59,9 +59,11 @@ const Sidebar = () => {
     await axios
       .get(`${server}/api/v1/user/logout`, { withCredentials: true })
       .then(({ data }) => {
-        navigate("/");
+        localStorage.removeItem("token")
         toast.success(data?.message);
         dispatch(userNotExists());
+      }).catch((err) => {
+        toast.error(err?.response?.data?.message)
       });
   };
 
@@ -83,15 +85,13 @@ const Sidebar = () => {
             <Link
               key={button.name}
               to={button.path}
-              className={`grid grid-col-2 px-4 w-full py-4 items-center hover:bg-zinc-200 gap-4 ${
-                location.pathname === button.path && "bg-zinc-200"
-              }`}
+              className={`grid grid-col-2 px-4 w-full py-4 items-center hover:bg-zinc-200 gap-4 ${location.pathname === button.path && "bg-zinc-200"
+                }`}
             >
               {location.pathname === button.path ? button.icon2 : button.icon}{" "}
               <h2
-                className={`leading-none lg-text-sm lg:block ${
-                  location.pathname === button.path && "text-sky-500"
-                } md:block hidden text-xl font-semibold`}
+                className={`leading-none lg-text-sm lg:block ${location.pathname === button.path && "text-sky-500"
+                  } md:block hidden text-xl font-semibold`}
               >
                 {button.name}
               </h2>
@@ -103,13 +103,13 @@ const Sidebar = () => {
             to={`/profile?user=${user?.username}`}
             className="px-4 w-full py-4 grid grid-col-2 items-center hover:bg-zinc-200 gap-4"
           >
-              {user?.profile ? (
-                <div className="w-full h-full rounded-full overflow-hidden">
+            {user?.profile ? (
+              <div className="w-full h-full rounded-full overflow-hidden">
                 <img src={user?.profile} className="w-full h-full" alt="" />
-                </div>
-              ) : (
-                <FaUser className="text-xl" />
-              )}
+              </div>
+            ) : (
+              <FaUser className="text-xl" />
+            )}
             <h2 className="leading-none md:block hidden text-xl lg-text-sm font-semibold">Profile</h2>
           </Link>
           <button

@@ -69,3 +69,20 @@ export const useGetMyReels = () => {
 
     return { reels, isLoading }
 }
+
+export const useGetUsers = () => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [users, setUsers] = useState([null])
+    useEffect(() => {
+        axios.get(`${server}/api/v1/user/all`, {
+            withCredentials: true,
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then(({ data }) => setUsers(data?.users)).catch((err) => {
+            console.log(err)
+        })
+    }, [users])
+
+    return { users, isLoading }
+}
