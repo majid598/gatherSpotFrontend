@@ -92,7 +92,7 @@ const PostCard = ({ post }) => {
         </div>
       </div>
       <div className="w-full h-auto">
-        {RenderAttachment(fileFormat(post?.attachMent), post?.attachMent)}
+        {RenderAttachment(fileFormat(post?.attachMent?.url), post?.attachMent?.url)}
       </div>
       <div className="w-full justify-between flex items-center py-3 px-2 pr-5">
         <div className="flex gap-4">

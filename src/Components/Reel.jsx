@@ -18,7 +18,7 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
   const { user } = useSelector((state) => state.auth);
   const [isComment, setIsComment] = useState(false);
   const [isFavorited, setIsFavorited] = useState(
-    reel.favorites.includes(user._id)
+    reel?.favorites?.includes(user?._id)
   );
   const [isLike, setIsLike] = useState(false);
   const [isShareMenu, setIsShareMenu] = useState(false);
@@ -184,7 +184,7 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
       <div className="h-full w-24">
         <ReactPlayer
           ref={(player) => (playerRefs.current[index] = player)}
-          url={reel.attachMent}
+          url={reel?.attachMent?.url}
           playing={index === currentIndex}
           style={{ position: "absolute" }}
           height="100%"

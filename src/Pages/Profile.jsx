@@ -52,8 +52,6 @@ const Profile = () => {
   const [followingLength, setFollowingLength] = useState(
     user?.following.length
   );
-
-  const amount = user.credits * 1;
   const [loading, setLoading] = useState(false);
 
   const [editProfile] = useEditProfileMutation();
