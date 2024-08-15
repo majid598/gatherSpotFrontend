@@ -17,12 +17,14 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 import { toast } from "react-toastify";
 import Reel from "../Components/Reel";
 import axios from "axios";
+import { shuffleArray } from "../Components/RenderAttachment";
+import Loader from "../Components/Loader";
 const Reels = () => {
   const { user } = useSelector((state) => state.auth);
   const [currentIndex, setCurrentIndex] = useState(0);
   const playerRefs = useRef([]);
   const { data, isLoading, isError } = useAllReelsQuery();
-  const reels = data?.reels;
+  const reels = shuffleArray(data?.reels);
 
   const handleSlideChange = (newIndex) => {
     // Pause the previously playing video when the slide changes
@@ -64,7 +66,7 @@ const Reels = () => {
   }, [reels, userId]);
 
   return isLoading ? (
-    <ReelLoader />
+    <Loader />
   ) : (
     <Layout>
       <div className="w-full h-full lg:p-10 md:p-10">

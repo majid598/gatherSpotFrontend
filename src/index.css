@@ -139,3 +139,13 @@ body {
 .grid-col-2 {
   grid-template-columns: 10% 80%;
 }
+
+.nav-button:focus {
+  outline: none;
+}
+
+
+.profile {
+  position: relative;
+  display: inline-block;
+}

@@ -1,38 +1,49 @@
-import { Dialog, IconButton } from "@mui/material";
+import { Dialog } from "@mui/material";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-hot-toast";
 import { FaArrowLeft } from "react-icons/fa";
-import { FaImage, FaMusic, FaVideo } from "react-icons/fa6";
-import { IoMdShare } from "react-icons/io";
+import { IoMdClose, IoMdShare } from "react-icons/io";
 import { RiEdit2Fill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import NewPost from "../Components/Creation/NewPost";
+import { ImageCropper } from "../Components/Hooks/userImageCroper";
+import Liked from "../Components/Profile/Liked";
+import Photos from "../Components/Profile/Photos";
+import Posts from "../Components/Profile/Posts";
+import Reels from "../Components/Profile/Reels";
+import Saved from "../Components/Profile/Saved";
+import Videos from "../Components/Profile/Videos";
 import ReelLoader from "../Components/ReelLoader";
 import Layout from "../Layout/Layout";
 import {
   useEditProfileMutation
 } from "../redux/api/api";
-import { useFileHandler } from "6pp";
-import RenderAttachment, { fileFormat, previewFileFormat } from "../Components/RenderAttachment";
 
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [all, setAll] = useState(true);
-  const [allPosts, setAllPosts] = useState([]);
-  const [posts, setPosts] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [lineStyle, setLineStyle] = useState({});
+  const navRef = useRef(null);
+  const menuRef = useRef(null);
+  const [posts, setPosts] = useState(true);
+  const [photos, setPhotos] = useState(false);
+  const [videos, setVideos] = useState(false);
+  // const [all, setAll] = useState(true);
   const [reels, setReels] = useState(false);
-  const [favourites, setFavourites] = useState(false);
-  const [description, setDescription] = useState("")
+  const [saved, setSaved] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [isShare, setIsShare] = useState(false);
+  const [selectedBtn, setSelectedBtn] = useState("Posts")
+  const [allPosts, setAllPosts] = useState([]);
   const [openProfilePhoto, setOpenProfilePhoto] = useState(false)
   const [image, setImage] = useState("");
-  const [file, setFile] = useState(null)
-  const [filePreview, setFilePreview] = useState(null)
   const { user } = useSelector((state) => state.auth);
   // const user = {
-  //   username: "majid", fullName: "Majid ali", posts: [1, 2, 3], reels: [1, 2, 3], followers: [1, 2, 3], following: [1, 2, 3], profile: { url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D" }
+  //   _id: "1234567890", username: "majid", fullName: "Majid ali", posts: [1, 2, 3], reels: [1, 2, 3], followers: [1, 2, 3], following: [1, 2, 3], profile: { url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D" }
   // }
   const [bio, setBio] = useState(user?.bio);
   const [username, setUsername] = useState(user?.username);
@@ -47,17 +58,7 @@ const Profile = () => {
 
   const [editProfile] = useEditProfileMutation();
 
-  const imageChange = (e) => {
-    const file = e.target.files[0];
-    setFile(file);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFilePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  console.log(file)
+ 
 
   const handleEdit = async (e) => {
     setLoading(true);
@@ -107,13 +108,131 @@ const Profile = () => {
         : user?.following?.length;
     setFollowingLength(following);
   };
+
+  const buttons = [
+    {
+      name: "Posts", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Posts")
+        setPosts(true)
+        setPhotos(false)
+        setVideos(false)
+        setReels(false)
+        setLiked(false)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Photos", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Photos")
+        setPosts(false)
+        setPhotos(true)
+        setVideos(false)
+        setReels(false)
+        setLiked(false)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Videos", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Videos")
+        setPosts(false)
+        setPhotos(false)
+        setVideos(true)
+        setReels(false)
+        setLiked(false)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Reels", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Reels")
+        setPosts(false)
+        setPhotos(false)
+        setVideos(false)
+        setReels(true)
+        setLiked(false)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Liked", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Posts")
+        setPosts(false)
+        setPhotos(false)
+        setVideos(false)
+        setReels(false)
+        setLiked(true)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Saved", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Saved")
+        setPosts(false)
+        setPhotos(false)
+        setVideos(false)
+        setReels(false)
+        setLiked(false)
+        setSaved(true)
+      }
+    },
+  ]
+
+  const frontedUrl = "https://gather-spot-frontend.vercel.app"
+
+  const shareLinks = [
+    { img: "whatsApp.png", address: `https://api.whatsapp.com/send?text=${frontedUrl}/user/${user?._id}` },
+    { img: "facebook.png", address: `https://www.facebook.com/sharer/sharer.php?u=${frontedUrl}/user/${user?._id}` },
+    { img: "instagram.png", address: `https://www.instagram.com/${frontedUrl}/user/${user?._id}` },
+    { img: "linkedIn.png", address: `https://www.linkedin.com/sharing/share-offsite/?url=${frontedUrl}/user/${user?._id}` },
+    { img: "twitter.png", address: `https://twitter.com/intent/tweet?url=${frontedUrl}/user/${user?._id}&text=Check this out!` },
+  ]
+
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setIsShare(false);
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener for clicks
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateLinePosition = () => {
+      if (navRef.current) {
+        const button = navRef.current.children[activeIndex];
+        setLineStyle({
+          width: button.offsetWidth,
+          left: button.offsetLeft,
+        });
+      }
+    };
+
+    updateLinePosition();
+    window.addEventListener('resize', updateLinePosition);
+
+    return () => window.removeEventListener('resize', updateLinePosition);
+  }, [activeIndex]);
   useEffect(() => {
     followerDisplay();
   }, []);
 
   return (
     <Layout>
-      <div className="w-full h-full">
+      <div className="w-full h-full pb-40">
         {loading && <ReelLoader message={"Profile Editing..."} />}
         <div className="w-full flex lg:flex-row md:flow-row flex-col gap-10 h-full">
           <div className="w-full">
@@ -129,7 +248,7 @@ const Profile = () => {
                 <div className="w-full h-full absolute -top-1/2 flex items-center justify-between">
                   <div className="flex items-center gap-5">
                     <button onClick={() => setOpenProfilePhoto(true)} className="w-20 h-20 overflow-hidden rounded-full">
-                      <img src={user?.profile} className="w-full h-full object-contain scale-150" alt="" />
+                      <img src={user?.profile} className="w-full h-full object-contain scal-150" alt="" />
                     </button>
                     <div>
                       <h2 className="font-bold">{user?.fullName}</h2>
@@ -137,59 +256,37 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <button className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
+                    <button onClick={() => setIsEdit(true)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
                       <RiEdit2Fill />  Edit Profile
                     </button>
-                    <button className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
+                    <button onClick={() => setIsShare(!isShare)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
                       <IoMdShare />  Share
                     </button>
                   </div>
                 </div>
               </div>
-              <div className="w-full bg-zinc-100 p-5 border-2 rounded-md">
-                <div className="h-40 w-full bg-white rounded-md relative">
-                  <textarea name="" id="" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full h-full rounded-md resize-none bg-transparent outline-none border-none p-3 placeholder:text-sm pb-12" placeholder="Compose New Post"></textarea>
-                  <div className="w-full absolute bottom-0 left-0 flex">
-                    <input type="file" hidden onChange={imageChange} id="file" />
-                    <IconButton className="text-zinc-500" style={{ padding: "12px" }} onClick={() => { document.getElementById("file").click() }}><FaImage className="text-xl" /></IconButton>
-                    <IconButton className="text-zinc-500" style={{ padding: "12px" }}><FaVideo className="text-xl" /></IconButton>
-                    <IconButton className="text-zinc-500" style={{ padding: "12px" }}><FaMusic className="text-xl" /></IconButton>
-                    <IconButton className="text-zinc-500" style={{ padding: "12px" }}><FaImage className="text-xl" /></IconButton>
-                  </div>
-                </div>
-                <div className="w-full rounded-md overflow-hidden mt-5">
-                  {file && RenderAttachment(previewFileFormat(filePreview), filePreview)}
-                  {/* <img src={filePreview} alt="" className="w-full"/> */}
-                </div>
-                {description.length > 0 ? <div className="w-full flex justify-end pt-4">
-                  <button onClick={() => {
-                    setDescription("")
-                    setFile(null)
-                    setFilePreview(null)
-                    toast.success("Post Saved To Draft")
-                  }} className="font-semibold px-6 py-2 rounded-md text-sky-500">Post Later</button>
-                  <button onClick={() => {
-                    setDescription("")
-                    setFile(null)
-                    setFilePreview(null)
-                    toast.success("Post Uploaded")
-                  }} className="px-10 py-2 rounded-md bg-sky-500 font-bold text-white transition-all duration-300 hover:bg-sky-600">Post</button>
-                </div> : file &&
-                <div className="w-full flex justify-end pt-4">
-                  <button onClick={() => {
-                    setDescription("")
-                    setFile(null)
-                    setFilePreview(null)
-                    toast.success("Post Saved To Draft")
-                  }} className="font-semibold px-6 py-2 rounded-md text-sky-500">Post Later</button>
-                  <button onClick={() => {
-                    setDescription("")
-                    setFile(null)
-                    setFilePreview(null)
-                    toast.success("Post Uploaded")
-                  }} className="px-10 py-2 rounded-md bg-sky-500 font-bold text-white transition-all duration-300 hover:bg-sky-600">Post</button>
-                </div>}
-              </div>
+              <NewPost />
+              <nav ref={navRef} className="flex mt-10 relative gap-12 pb-2" >
+                {buttons.map((button, index) => (
+                  <button
+                    key={index}
+                    className={`nav-button font-semibold ${activeIndex === index ? 'active' : ''} ${selectedBtn === button.name ? "text-black" : "text-zinc-500"} transition-all duration-300`}
+                    onClick={() => button.handler(index)}
+                  >
+                    {button.name}
+                  </button>
+                ))}
+                <div className=" absolute bottom-0 transition-all duration-300 z-50 bg-black h-1" style={lineStyle}></div>
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-zinc-200"></div>
+              </nav>
+              {posts && <Posts />}
+              {photos && <Photos />}
+              {videos && <Videos />}
+              {reels && <Reels />}
+              {liked && <Liked />}
+              {saved && <Saved />}
+              {/* {photos && "Photos"} */}
+              <div className="h-60"></div>
             </div>
           </div>
         </div>
@@ -203,9 +300,28 @@ const Profile = () => {
         },
       }}>
         <div className="w-full h-full">
+          <button className="text-white fixed right-5" onClick={() => setOpenProfilePhoto(false)}><IoMdClose className="text-5xl" /></button>
           <img src={user?.profile} className="w-full h-full object-contain" alt="" />
         </div>
-      </Dialog>}
+      </Dialog>
+      }
+      {isEdit && <Dialog open={isEdit} onClose={() => setIsEdit(false)} PaperProps={{
+        style: {
+          backgroundColor: 'transparent',
+          boxShadow: 'none',
+        },
+      }}>
+        <div className="w-full h-full">
+          <ImageCropper />
+        </div>
+      </Dialog>
+      }
+      <div ref={menuRef} className={`fixed top-[12rem] right-[30rem] transition-all duration-300 ${isShare ? "scale-100" : "scale-0"} flex gap-4 px-6 py-4 rounded-full bg-white border-2`}>
+        {shareLinks.map((link) =>
+          <a href={link.address} className="rounded-full h-6 w-6 inline-block" target="_blank" rel="noopener noreferrer">
+            <img src={`/assets/pngs/${link.img}`} className="w-full h-full object-cover" alt="" />
+          </a>)}
+      </div>
     </Layout>
   );
 };

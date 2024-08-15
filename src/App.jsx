@@ -33,6 +33,7 @@ const GetReel = lazy(() => import("./Pages/GetReel"));
 import LandPage from "./Layout/LandPage";
 import { LuLoader } from "react-icons/lu";
 import { Toaster } from "react-hot-toast";
+import Loader from "./Components/Loader";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -52,11 +53,9 @@ const App = () => {
       .catch((err) => dispatch(userNotExists(true)));
   }, [dispatch]);
 
-  return (
+  return loader ? <Loader /> : (
     <Router>
-      <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">
-        <LuLoader className="loader text-5xl" />
-      </div>}>
+      <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<Home />} />
           {/* <Route element={<ProtectedRoute user={user} />}> */}

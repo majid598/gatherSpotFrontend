@@ -51,10 +51,10 @@ export const previewFileFormat = (url = "") => {
 };
 
 
-const RenderAttachment = (file, url, controls = true) => {
+const RenderAttachment = (file, url, controls = true, autoPlay = false, wHFull = false) => {
     switch (file) {
         case "video":
-            return <video src={url} className="w-full" controls={controls} />;
+            return <video src={url} controls={controls} autoPlay={autoPlay} loop={autoPlay} muted={autoPlay} className={`w-full ${wHFull && "h-full object-cover"}`} />;
 
         case "image":
             return (
@@ -73,12 +73,13 @@ const RenderAttachment = (file, url, controls = true) => {
     }
 };
 
-export const shuffleArray = (array) => {
-    for (let i = array?.length - 1; i > 0; i--) {
+export const shuffleArray = (array = []) => {
+    const mutableArray = [...array]; // Create a mutable copy of the array
+    for (let i = mutableArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        [mutableArray[i], mutableArray[j]] = [mutableArray[j], mutableArray[i]]; // Shuffle the mutable array
     }
-    return array;
+    return mutableArray;
 };
 
 export default RenderAttachment;
