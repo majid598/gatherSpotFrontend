@@ -3,7 +3,7 @@ import { FaFacebook, FaFacebookSquare } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { server } from "../redux/api/api";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { userExists } from "../redux/reducers/userReducer";
 import axios from "axios";
@@ -92,6 +92,9 @@ const Login = () => {
                   </button>
                 )}
               </label>
+              <div className="-mt-2">
+                <Link to={"/forgot/password"} className="text-sm font-semibold text-sky-500 hover:text-sky-600 transition-all duration-300">Forgotten Password</Link>
+              </div>
               <button className="w-full p-3 bg-sky-500 mt-4 text-white rounded-lg font-bold transition-all duration-300 hover:bg-sky-600">
                 Log in
               </button>

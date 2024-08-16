@@ -1,29 +1,15 @@
-import { Avatar, Dialog, IconButton } from "@mui/material";
-import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
-import { toast } from "react-hot-toast";
-import { FaArrowLeft } from "react-icons/fa";
-import { IoMdClose, IoMdShare } from "react-icons/io";
-import { RiEdit2Fill } from "react-icons/ri";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
-import NewPost from "../Components/Creation/NewPost";
-import { ImageCropper } from "../Components/Hooks/userImageCroper";
-import Liked from "../Components/Profile/Liked";
-import Photos from "../Components/Profile/Photos";
-import Posts from "../Components/Profile/Posts";
-import Reels from "../Components/Profile/Reels";
-import Saved from "../Components/Profile/Saved";
-import Videos from "../Components/Profile/Videos";
-import ReelLoader from "../Components/ReelLoader";
-import Layout from "../Layout/Layout";
-import {
-  useEditProfileMutation
-} from "../redux/api/api";
-import { TbCameraPlus } from "react-icons/tb";
 import { useFileHandler, useInputValidation } from "6pp";
-import { userEditBio, userUploadCoverPhoto, userUploadProfilePhoto } from "../Requests/PostRequests";
+import { Avatar, IconButton } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import { FaArrowLeft } from "react-icons/fa";
+import { IoMdShare } from "react-icons/io";
 import { LuLoader } from "react-icons/lu";
+import { RiEdit2Fill } from "react-icons/ri";
+import { TbCameraPlus } from "react-icons/tb";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Layout from "../Layout/Layout";
+import { useChangePassword, useEditBio, useEditProfile, useUploadCoverPhoto, useUploadProfilePhoto } from "../Requests/PostRequests";
 
 const EditProfile = () => {
   const { user } = useSelector((state) => state.auth);
@@ -31,12 +17,19 @@ const EditProfile = () => {
   const menuRef = useRef(null);
   const [isShare, setIsShare] = useState(false);
   const file = useFileHandler("single")
-  const bio = useInputValidation(user?.bio)
   const coverPhoto = useFileHandler("single")
+  const bio = useInputValidation(user?.bio)
+  const fullName = useInputValidation(user?.fullName)
+  const username = useInputValidation(user?.username)
+  const website = useInputValidation(user?.websiteLink)
+  const oldPass = useInputValidation("")
+  const newPass = useInputValidation("")
 
-  const { upload, isLoading } = userUploadCoverPhoto()
-  const { uploadProfile, isLoading: profileLoading } = userUploadProfilePhoto()
-  const { editBio, bioLoading } = userEditBio()
+  const { upload, isLoading } = useUploadCoverPhoto()
+  const { uploadProfile, isLoading: profileLoading } = useUploadProfilePhoto()
+  const { editBio, bioLoading } = useEditBio()
+  const { editProfile, editLoading } = useEditProfile()
+  const { change, passLoading } = useChangePassword()
   const uploadCoverPhoto = () => {
     upload(coverPhoto)
   }
@@ -45,6 +38,22 @@ const EditProfile = () => {
   }
   const editUserBio = () => {
     editBio(bio)
+  }
+  const editMyProfile = () => {
+    const data = {
+      fullName: fullName.value,
+      username: username.value,
+      websiteLink: website.value
+    }
+    editProfile(data)
+  }
+  const changePassword = () => {
+    const data = {
+      oldPassword: oldPass.value,
+      newPassword: newPass.value,
+
+    }
+    change(data)
   }
 
   const frontedUrl = "https://gather-spot-frontend.vercel.app"
@@ -109,10 +118,10 @@ const EditProfile = () => {
                   </div>
                   <div className="flex gap-4">
                     {file.file ?
-                      <button onClick={uploadProfilePhoto} className="px-6 py-2 rounded-full bg-sky-500 text-white flex items-center gap-2 font-bold border-2 border-sky-500 hover:bg-sky-600 hover:border-sky-600 transition-all duration-300">
+                      <button disabled={profileLoading} onClick={uploadProfilePhoto} className="px-6 py-2 rounded-full bg-sky-500 text-white flex items-center gap-2 font-bold border-2 border-sky-500 hover:bg-sky-600 hover:border-sky-600 transition-all duration-300">
                         {profileLoading ? <LuLoader className="mx-3 text-xl loader" /> : "Save"}
                       </button> : coverPhoto.file &&
-                      <button onClick={uploadCoverPhoto} className="px-6 py-2 rounded-full bg-sky-500 text-white flex items-center gap-2 font-bold border-2 border-sky-500 hover:bg-sky-600 hover:border-sky-600 transition-all duration-300">
+                      <button disabled={isLoading} onClick={uploadCoverPhoto} className="px-6 py-2 rounded-full bg-sky-500 text-white flex items-center gap-2 font-bold border-2 border-sky-500 hover:bg-sky-600 hover:border-sky-600 transition-all duration-300">
                         {isLoading ? <LuLoader className="mx-3 text-xl loader" /> : "Save"}
                       </button>
                     }
@@ -125,14 +134,69 @@ const EditProfile = () => {
               <span className="font-semibold text-sky-500 cursor-pointer">Add Bio/About</span>
               <div className="h-32 mt-2 w-full bg-zinc-100 border-2 rounded-md relative">
                 <textarea name="" id="" value={bio.value} onChange={bio.changeHandler} className="w-full h-full rounded-md resize-none bg-transparent outline-none border-none p-3 placeholder:text-sm" placeholder="Write here..."></textarea>
-                {bio?.value !== user?.bio &&
-                  <div className="w-full flex justify-end">
-                    <button onClick={editUserBio} className="px-6 py-2 rounded-md mt-4 bg-sky-500 text-white flex items-center gap-2 font-bold border-2 border-sky-500 hover:bg-sky-600 hover:border-sky-600 transition-all duration-300">
-                      {bioLoading ? <LuLoader className="mx-3 text-xl loader" /> : "Save"}
-                    </button>
-                  </div>
-                }
               </div>
+              {bio?.value !== user?.bio &&
+                <div className="w-full flex justify-end">
+                  <button disabled={bioLoading} onClick={editUserBio} className="px-6 py-2 rounded-md mt-4 bg-sky-500 text-white flex items-center gap-2 font-bold border-2 border-sky-500 hover:bg-sky-600 hover:border-sky-600 transition-all duration-300">
+                    {bioLoading ? <LuLoader className="mx-3 text-xl loader" /> : "Save"}
+                  </button>
+                </div>
+              }
+              <div className="w-full flex gap-10 mt-10">
+                <label className="w-1/2 cursor-pointer">
+                  <span className="font-semibold text-sm text-sky-500 mb-3 inline-block">Change Display Name</span>
+                  <input
+                    type="text"
+                    className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                    value={fullName.value}
+                    onChange={fullName.changeHandler}
+                  />
+                </label>
+                <label className="w-1/2 cursor-pointer">
+                  <span className="font-semibold text-sm text-sky-500 mb-3 inline-block">Change username</span>
+                  <input
+                    type="text"
+                    className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                    value={username.value}
+                    onChange={username.changeHandler}
+                  />
+                </label>
+              </div>
+              <div className="w-full flex gap-10 mt-10">
+                <label className="w-1/2 cursor-pointer">
+                  <span className="font-semibold text-sm text-sky-500 mb-3 inline-block">Website</span>
+                  <input
+                    type="text"
+                    className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                    value={website.value}
+                    onChange={website.changeHandler}
+                  />
+                </label>
+                <label className="w-1/2 cursor-pointer">
+                  <span className="font-semibold text-sm text-sky-500 mb-3 inline-block">Change username</span>
+                  <input type="" className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500" />
+                </label>
+              </div>
+              {
+                <div className="w-full flex justify-end">
+                  <button disabled={editLoading} onClick={editMyProfile} className="px-6 py-2 rounded-md mt-4 bg-sky-500 text-white flex items-center gap-2 font-bold border-2 border-sky-500 hover:bg-sky-600 hover:border-sky-600 transition-all duration-300">
+                    {editLoading ? <LuLoader className="mx-3 text-xl loader" /> : "Save"}
+                  </button>
+                </div>
+              }
+              <div className="w-full flex flex-col gap-3 mt-10">
+                <span className="font-semibold text-sm text-sky-500">Change username</span>
+                <input type="password" value={oldPass.value} onChange={oldPass.changeHandler} className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500" placeholder="Old Password" />
+                <input type="password" className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500" placeholder="New Password" />
+                <input type="password" value={newPass.value} onChange={newPass.changeHandler} className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500" placeholder="Confirm New Password" />
+              </div>
+              {
+                <div className="w-full flex justify-end">
+                  <button disabled={passLoading} onClick={changePassword} className="px-6 py-2 rounded-md mt-4 bg-sky-500 text-white flex items-center gap-2 font-bold border-2 border-sky-500 hover:bg-sky-600 hover:border-sky-600 transition-all duration-300">
+                    {passLoading ? <LuLoader className="mx-3 text-xl loader" /> : "Save"}
+                  </button>
+                </div>
+              }
               <div className="h-60"></div>
             </div>
           </div>

@@ -19,7 +19,6 @@ const LandPage = () => {
   return (
     <div className="w-full h-screen bg-zinc-100 relative flex overflow-hidden">
       <div className="w-full h-[100vw] -top-40 -right-[45%] rounded-full bg-sky-500 absolute"></div>
-
       <div className="w-2/5 h-full flex flex-col px-20 pt-32">
         <div className="w-20 h-20 rounded-full bg-zinc-200 overflow-hidden">
           <img src="/assets/logo.png" className="w-full h-full" alt="" />
@@ -33,7 +32,7 @@ const LandPage = () => {
         </p>
       </div>
       <div className="w-3/5 h-full flex gap-16 lg-justify-end pr-10 items-center">
-        <div className="w-[22rem] mobile bg-white overflow-hidden h-5/6 whitespace-nowrap rounded-2xl shadow-sm relative">
+        <div className="w-[22rem] mobile bg-white overflow-hidden h-4/6 whitespace-nowrap rounded-2xl shadow-sm relative">
           <div className="w-full h-4/6 bg--300">
             <Swiper
               grabCursor={true}
@@ -93,7 +92,7 @@ const LandPage = () => {
             </Link>
           </div>
         </div>
-        <div className="w-[22rem] mobile h-5/6 bg-white rounded-2xl shadow-sm relative overflow-hidden">
+        <div className="w-[22rem] mobile h-4/6 bg-white rounded-2xl shadow-sm relative overflow-hidden">
           <div className="w-full h-full absolute left-0 top-0 z-50"></div>
           <div className="header w-full h-[5rem] flex border-b items-center justify-between px-4">
             <div className="bg-sky-500 text-white p-2 rounded-md">

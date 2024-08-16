@@ -35,7 +35,7 @@ const PostCard = ({ post }) => {
       headers: {
         "token": localStorage.getItem("token")
       }
-    })
+    }).then(({ data }) => toast.success(data?.message)).catch((err) => toast.error(err?.response?.data?.message))
   };
 
   return (

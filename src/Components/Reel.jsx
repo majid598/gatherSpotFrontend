@@ -14,6 +14,7 @@ import {
   useMyChatsQuery,
   useSendMessageMutation
 } from "../redux/api/api";
+import { useViewReel } from "../Requests/PostRequests";
 const Reel = ({ index, reel, playerRefs, currentIndex }) => {
   const { user } = useSelector((state) => state.auth);
   const [isComment, setIsComment] = useState(false);
@@ -37,6 +38,7 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
 
   const [likeReel] = useLikeReelMutation();
   const [addTo] = useAddToFavofitesMutation();
+  const viewPlus = useViewReel(reel?._id)
 
   const likeToReel = (reelId) => {
     const data = {
@@ -148,8 +150,6 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
     setIsShareMenu(true);
   };
 
-  console.log(selectedChat);
-
   const selectChatForShare = (chatId) => {
     if (selectedChat.indexOf(chatId) === -1) {
       setSelectedChat([...selectedChat, chatId]);
@@ -160,13 +160,6 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
   const handleEmojiSelect = (emoji) => {
     setComment(comment + emoji.native);
   };
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLike(false);
-    }, 2000);
-  }, []);
-
   return (
     <div
       onDoubleClick={() => {

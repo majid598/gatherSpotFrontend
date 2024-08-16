@@ -19,20 +19,25 @@ import Reel from "../Components/Reel";
 import axios from "axios";
 import { shuffleArray } from "../Components/RenderAttachment";
 import Loader from "../Components/Loader";
+import { useViewReel } from "../Requests/PostRequests";
 const Reels = () => {
   const { user } = useSelector((state) => state.auth);
   const [currentIndex, setCurrentIndex] = useState(0);
   const playerRefs = useRef([]);
   const { data, isLoading, isError } = useAllReelsQuery();
-  const reels = shuffleArray(data?.reels);
+  const reels = data?.reels;
+
+  const viewPlus = useViewReel()
 
   const handleSlideChange = (newIndex) => {
     // Pause the previously playing video when the slide changes
     if (playerRefs.current[currentIndex]) {
       playerRefs.current[currentIndex].getInternalPlayer().pause();
     }
+    const currentReelId = reels[currentIndex]?._id
     // Update the currentIndex to the new index
     setCurrentIndex(newIndex);
+    viewPlus(currentReelId)
   };
 
   const handleVideoClick = (index) => {
@@ -43,27 +48,6 @@ const Reels = () => {
       player.pause();
     }
   };
-
-  const userId = user?._id;
-  useEffect(() => {
-    // Function to increment view count for a post
-    const incrementViewCount = async (reelId) => {
-      try {
-        await axios.put(
-          `http://localhost:5000/api/v1/post/reel/${reelId}/view`,
-          userId
-        );
-        console.log(`View count incremented for reel ${reelId}`);
-      } catch (error) {
-        console.error("Error incrementing view count:", error);
-      }
-    };
-
-    // Loop through the posts and increment view count for each post
-    reels?.forEach((reel) => {
-      incrementViewCount(reel._id);
-    });
-  }, [reels, userId]);
 
   return isLoading ? (
     <Loader />

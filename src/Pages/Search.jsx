@@ -38,7 +38,7 @@ export default Search;
 const Post = ({ post }) => {
   return (
     <div className="lg:w-[14rem] md:w-[14rem] w-full lg:h-[40vh] md:h-[40vh]">
-      {RenderAttachment(fileFormat(post.attachMent), post.attachMent)}
+      {RenderAttachment(fileFormat(post.attachMent.url), post.attachMent.url)}
     </div>
   );
 };

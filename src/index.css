@@ -144,8 +144,11 @@ body {
   outline: none;
 }
 
-
 .profile {
   position: relative;
   display: inline-block;
+}
+
+.mix {
+  mix-blend-mode: inherit;
 }
