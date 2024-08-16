@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { server } from "../redux/api/api";
 import { userNotExists } from "../redux/reducers/userReducer";
 import Svg from "./Svg";
+import { Avatar } from "@mui/material";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -104,8 +105,8 @@ const Sidebar = () => {
             className="px-4 w-full py-4 grid grid-col-2 items-center hover:bg-zinc-200 gap-4"
           >
             {user?.profile ? (
-              <div className="w-full h-full rounded-full overflow-hidden">
-                <img src={user?.profile} className="w-full h-full" alt="" />
+              <div className="w-10 h-10 rounded-full overflow-hidden">
+                <Avatar src={user?.profile?.url} style={{ width: "100%", height: "100%" }} alt="" />
               </div>
             ) : (
               <FaUser className="text-xl" />

@@ -6,7 +6,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { IoMdClose, IoMdShare } from "react-icons/io";
 import { RiEdit2Fill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import NewPost from "../Components/Creation/NewPost";
 import { ImageCropper } from "../Components/Hooks/userImageCroper";
 import Liked from "../Components/Profile/Liked";
@@ -234,12 +234,17 @@ const Profile = () => {
         {loading && <ReelLoader message={"Profile Editing..."} />}
         <div className="w-full flex lg:flex-row md:flow-row flex-col gap-10 h-full">
           <div className="w-full">
-            <div className="flex gap-4 p-10 items-start w-full">
+            <div className="flex gap-4 p-10 items-start w-full relative z-50">
               <button onClick={() => navigate("/")}><FaArrowLeft className="text-xl text-zinc-600" /></button>
               <div>
                 <h2 className="font-semibold">{user?.fullName}</h2>
                 <span className="font-semibold text-zinc-500 text-sm">{user?.posts?.length} Posts</span>
               </div>
+            </div>
+            <div className="absolute w-full h-72 top-0 flex items-center justify-center">
+              {user?.coverPhoto &&
+                <img src={user?.coverPhoto?.url} className="w-full h-full object-cover" />
+              }
             </div>
             <div className="w-full mt-40 px-10 bg-white min-h-[80vh] relative">
               <div className="w-full h-20 relative">
@@ -254,9 +259,9 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <button onClick={() => setIsEdit(true)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
+                    <Link to={`/profile/edit?user=${user?.fullName}`} onClick={() => setIsEdit(true)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
                       <RiEdit2Fill />  Edit Profile
-                    </button>
+                    </Link>
                     <button onClick={() => setIsShare(!isShare)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
                       <IoMdShare />  Share
                     </button>
@@ -299,7 +304,7 @@ const Profile = () => {
       }}>
         <div className="w-full h-full">
           <button className="text-white fixed right-5" onClick={() => setOpenProfilePhoto(false)}><IoMdClose className="text-5xl" /></button>
-          <img src={user?.profile} className="w-full h-full object-contain" alt="" />
+          <img src={user?.profile?.url} className="w-full h-full object-contain" alt="" />
         </div>
       </Dialog>
       }

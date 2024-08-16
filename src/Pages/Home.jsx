@@ -35,7 +35,7 @@ const Home = () => {
                 </div>
               ) : (
                 <div className="w-full h-full rounded-full overflow-hidden">
-                  <img src={user?.profile} alt="" className="w-full h-full" />
+                  <img src={user?.profile?.url} alt="" className="w-full h-full" />
                 </div>
               )}
               {user?.story ? (
