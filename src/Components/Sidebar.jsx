@@ -58,7 +58,12 @@ const Sidebar = () => {
 
   const logoutHandler = async () => {
     await axios
-      .get(`${server}/api/v1/user/logout`, { withCredentials: true })
+      .get(`${server}/api/v1/user/logout`, {
+        withCredentials: true,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
+      })
       .then(({ data }) => {
         localStorage.removeItem("token")
         toast.success(data?.message);
