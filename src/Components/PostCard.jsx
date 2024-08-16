@@ -50,7 +50,7 @@ const PostCard = ({ post }) => {
             }
             className="w-8 h-8 inline-block rounded-full overflow-hidden"
           >
-            <img src={post?.user?.profile} className="w-full h-full" alt="" />
+            <img src={post?.user?.profile?.url} className="w-full h-full" alt="" />
           </Link>
           <div>
             <Link className="text-sm font-semibold">

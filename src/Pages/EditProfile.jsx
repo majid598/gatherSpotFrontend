@@ -22,7 +22,7 @@ import {
 } from "../redux/api/api";
 import { TbCameraPlus } from "react-icons/tb";
 import { useFileHandler, useInputValidation } from "6pp";
-import { userUploadCoverPhoto, userUploadProfilePhoto } from "../Requests/PostRequests";
+import { userEditBio, userUploadCoverPhoto, userUploadProfilePhoto } from "../Requests/PostRequests";
 import { LuLoader } from "react-icons/lu";
 
 const EditProfile = () => {
@@ -36,11 +36,15 @@ const EditProfile = () => {
 
   const { upload, isLoading } = userUploadCoverPhoto()
   const { uploadProfile, isLoading: profileLoading } = userUploadProfilePhoto()
+  const { editBio, bioLoading } = userEditBio()
   const uploadCoverPhoto = () => {
     upload(coverPhoto)
   }
   const uploadProfilePhoto = () => {
     uploadProfile(file)
+  }
+  const editUserBio = () => {
+    editBio(bio)
   }
 
   const frontedUrl = "https://gather-spot-frontend.vercel.app"
@@ -121,10 +125,10 @@ const EditProfile = () => {
               <span className="font-semibold text-sky-500 cursor-pointer">Add Bio/About</span>
               <div className="h-32 mt-2 w-full bg-zinc-100 border-2 rounded-md relative">
                 <textarea name="" id="" value={bio.value} onChange={bio.changeHandler} className="w-full h-full rounded-md resize-none bg-transparent outline-none border-none p-3 placeholder:text-sm" placeholder="Write here..."></textarea>
-                {bio?.value?.length > 0 &&
+                {bio?.value !== user?.bio &&
                   <div className="w-full flex justify-end">
-                    <button className="px-6 py-2 rounded-md mt-4 bg-sky-500 text-white flex items-center gap-2 font-bold border-2 border-sky-500 hover:bg-sky-600 hover:border-sky-600 transition-all duration-300">
-                      Save
+                    <button onClick={editUserBio} className="px-6 py-2 rounded-md mt-4 bg-sky-500 text-white flex items-center gap-2 font-bold border-2 border-sky-500 hover:bg-sky-600 hover:border-sky-600 transition-all duration-300">
+                      {bioLoading ? <LuLoader className="mx-3 text-xl loader" /> : "Save"}
                     </button>
                   </div>
                 }

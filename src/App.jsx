@@ -51,7 +51,7 @@ const App = () => {
         dispatch(userExists(data?.user));
       })
       .catch((err) => dispatch(userNotExists(true)));
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   return loader ? <Loader /> : (
     <Router>

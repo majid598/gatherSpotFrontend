@@ -79,3 +79,26 @@ export const userUploadProfilePhoto = () => {
     return { uploadProfile, isLoading }
 }
 
+export const userEditBio = () => {
+    const [bioLoading, setBioLoading] = useState(false)
+    const editBio = (bio) => {
+        setBioLoading(true)
+        axios.put(`${server}/api/v1/user/profile/edit/bio`, { bio: bio.value }, {
+            withCredentials: true,
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then(({ data }) => {
+            setBioLoading(false)
+            bio.clear()
+            toast.success(data?.message)
+        }).catch((err) => {
+            setBioLoading(false)
+            toast.error(err?.response?.data?.message)
+            console.log(err)
+        })
+    }
+
+    return { editBio, bioLoading }
+}
+
