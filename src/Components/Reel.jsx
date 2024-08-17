@@ -190,12 +190,12 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
         />
       </div>
       <div className="w-12 h-12 rounded-full overflow-hidden right-5 bg-zinc-500 to-1/3">
-        <img src={reel?.user?.profile} alt="" />
+        <img src={reel?.user?.profile?.url} alt="" />
       </div>
       <div className="w-full z-50 absolute bottom-0 gap-2 p-4">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full overflow-hidden border-white border bg-zinc-500 relative z-50">
-            <img src={reel?.user?.profile} alt="" />
+            <img src={reel?.user?.profile?.url} alt="" />
           </div>
           <h2 className="text-white text-sm">{reel?.user?.username}</h2>
         </div>

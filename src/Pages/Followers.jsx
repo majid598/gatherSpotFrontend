@@ -1,63 +1,30 @@
-import { useSelector } from "react-redux";
-import { useRemoveAFollowerMutation } from "../redux/api/api";
-import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"
+import Layout from "../Layout/Layout"
+import { FaArrowLeft } from "react-icons/fa"
+import { useGetFollowers } from "../Requests/GetRequest"
+import { useSelector } from "react-redux"
+import UserItem from "../Components/User/UserItem"
 
-const Followers = () => {
-  const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
-  const [removeFollower] = useRemoveAFollowerMutation();
-  const deleteHandler = (followerId) => {
-    const data = { userId: user._id, followerId };
-    removeFollower(data)
-      .unwrap()
-      .then((data) => {
-        navigate("/user/followers");
-        toast.success(data.message);
-      })
-      .catch((err) => toast.error(err.data.message));
-  };
+const List = () => {
+  const navigate = useNavigate()
+  const { user } = useSelector(state => state.auth)
+  const { followers } = useGetFollowers(user?._id)
 
   return (
-    <div className="w-full min-h-screen flex flex-col gap-2 py- px-6">
-      <div className="w-full flex py-2">
-        back{" "}
-        <h2 className="text-center w-full font-semibold text-xl">Followers</h2>
-      </div>
-      <div className="w-full flex py-2">
-        <input
-          type="text"
-          className="w-full p-2 bg-zinc-200 rounded-lg outline-none"
-          placeholder="Search"
-        />
-      </div>
-      {user?.followers?.map((follower, index) => (
-        <div
-          key={index}
-          className="w-full justify-between h-12 flex items-center"
-        >
-          <div className="flex gap-3 h-full">
-            <Link
-              to={`/user/${follower._id}`}
-              className="w-12 h-full rounded-full bg-zinc-300 overflow-hidden"
-            >
-              <img src={follower?.profile} alt="" className="w-full h-full" />
-            </Link>
-            <div>
-              <Link to={`/user/${follower._id}`}>{follower.username}</Link>
-              <h2>{follower.fullName}</h2>
-            </div>
+    <Layout>
+      <div className="w-full bg-white h-full">
+        <div className="flex gap-4 p-10 items-start w-full relative border-b-2 z-50">
+          <button onClick={() => navigate("/user/lists")}><FaArrowLeft className="text-xl text-zinc-600" /></button>
+          <div>
+            <h2 className="font-semibold text-sky-500">Followers</h2>
           </div>
-          <button
-            onClick={() => deleteHandler(follower._id)}
-            className="bg-zinc-200 rounded-lg font-semibold p-1.5 px-4"
-          >
-            Remove
-          </button>
         </div>
-      ))}
-    </div>
-  );
-};
+        <div className="w-full flex flex-col gap-4 p-10">
+          {followers.map((follower) => <UserItem key={follower?._id} user={follower} type="follower" />)}
+        </div>
+      </div>
+    </Layout>
+  )
+}
 
-export default Followers;
+export default List

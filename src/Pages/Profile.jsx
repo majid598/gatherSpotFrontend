@@ -1,14 +1,11 @@
 import { Avatar, Dialog } from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { toast } from "react-hot-toast";
 import { FaArrowLeft } from "react-icons/fa";
 import { IoMdClose, IoMdShare } from "react-icons/io";
 import { RiEdit2Fill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import NewPost from "../Components/Creation/NewPost";
-import { ImageCropper } from "../Components/Hooks/userImageCroper";
 import Liked from "../Components/Profile/Liked";
 import Photos from "../Components/Profile/Photos";
 import Posts from "../Components/Profile/Posts";
@@ -20,16 +17,22 @@ import Layout from "../Layout/Layout";
 import {
   useEditProfileMutation
 } from "../redux/api/api";
+import Slider from "../Components/Profile/Slider";
+import { useGetMyAllPosts } from "../Requests/GetRequest";
+import { setIsOpenPost } from "../redux/reducers/misc";
 
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [lineStyle, setLineStyle] = useState({});
   const navRef = useRef(null);
   const menuRef = useRef(null);
   const [posts, setPosts] = useState(true);
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [draft, setDraft] = useState(false);
   const [photos, setPhotos] = useState(false);
   const [videos, setVideos] = useState(false);
   // const [all, setAll] = useState(true);
@@ -42,6 +45,7 @@ const Profile = () => {
   const [openProfilePhoto, setOpenProfilePhoto] = useState(false)
   const [image, setImage] = useState("");
   const { user } = useSelector((state) => state.auth);
+  const { isOpenPost } = useSelector((state) => state.misc);
   // const user = {
   //   _id: "1234567890", username: "majid", fullName: "Majid ali", posts: [1, 2, 3], reels: [1, 2, 3], followers: [1, 2, 3], following: [1, 2, 3], profile: { url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D" }
   // }
@@ -56,44 +60,6 @@ const Profile = () => {
 
   const [editProfile] = useEditProfileMutation();
 
-
-
-  const handleEdit = async (e) => {
-    setLoading(true);
-    e.preventDefault();
-    let url;
-    const formData = new FormData();
-    formData.append("file", image);
-    formData.append("upload_preset", "insta-cloud");
-    formData.append("cloud_name", "dfmcsvthn");
-    try {
-      const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dfmcsvthn/image/upload",
-        formData
-      );
-      url = response.data.url;
-      console.log(url);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-    const data = {
-      profile: url,
-      fullName,
-      username,
-      bio,
-    };
-    editProfile(data)
-      .unwrap()
-      .then((data) => {
-        setIsEdit(false);
-        setLoading(false);
-        toast.success(data?.message);
-      })
-      .catch((err) => {
-        setLoading(false);
-        toast.error(err?.data?.message);
-      });
-  };
   const followerDisplay = () => {
     const formatted =
       user?.followers?.length >= 1000 && user?.followers?.length < 2000
@@ -113,6 +79,36 @@ const Profile = () => {
         setActiveIndex(index)
         setSelectedBtn("Posts")
         setPosts(true)
+        setIsPrivate(false)
+        setDraft(false)
+        setPhotos(false)
+        setVideos(false)
+        setReels(false)
+        setLiked(false)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Private", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Private")
+        setPosts(false)
+        setIsPrivate(true)
+        setDraft(false)
+        setPhotos(false)
+        setVideos(false)
+        setReels(false)
+        setLiked(false)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Draft", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Draft")
+        setPosts(false)
+        setIsPrivate(false)
+        setDraft(true)
         setPhotos(false)
         setVideos(false)
         setReels(false)
@@ -125,6 +121,8 @@ const Profile = () => {
         setActiveIndex(index)
         setSelectedBtn("Photos")
         setPosts(false)
+        setIsPrivate(false)
+        setDraft(false)
         setPhotos(true)
         setVideos(false)
         setReels(false)
@@ -137,6 +135,8 @@ const Profile = () => {
         setActiveIndex(index)
         setSelectedBtn("Videos")
         setPosts(false)
+        setIsPrivate(false)
+        setDraft(false)
         setPhotos(false)
         setVideos(true)
         setReels(false)
@@ -149,6 +149,8 @@ const Profile = () => {
         setActiveIndex(index)
         setSelectedBtn("Reels")
         setPosts(false)
+        setIsPrivate(false)
+        setDraft(false)
         setPhotos(false)
         setVideos(false)
         setReels(true)
@@ -161,6 +163,8 @@ const Profile = () => {
         setActiveIndex(index)
         setSelectedBtn("Posts")
         setPosts(false)
+        setIsPrivate(false)
+        setDraft(false)
         setPhotos(false)
         setVideos(false)
         setReels(false)
@@ -173,6 +177,8 @@ const Profile = () => {
         setActiveIndex(index)
         setSelectedBtn("Saved")
         setPosts(false)
+        setIsPrivate(false)
+        setDraft(false)
         setPhotos(false)
         setVideos(false)
         setReels(false)
@@ -282,10 +288,10 @@ const Profile = () => {
                 <div className=" absolute bottom-0 transition-all duration-300 z-50 bg-black h-1" style={lineStyle}></div>
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-zinc-200"></div>
               </nav>
-              {posts && <Posts />}
-              {photos && <Photos />}
-              {videos && <Videos />}
-              {reels && <Reels />}
+              {posts && <Posts id={user?._id} currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} />}
+              {photos && <Photos id={user?._id} />}
+              {videos && <Videos id={user?._id} />}
+              {reels && <Reels id={user?._id} />}
               {liked && <Liked />}
               {saved && <Saved />}
               {/* {photos && "Photos"} */}
@@ -308,17 +314,21 @@ const Profile = () => {
         </div>
       </Dialog>
       }
-      {isEdit && <Dialog open={isEdit} onClose={() => setIsEdit(false)} PaperProps={{
+      <Dialog open={isOpenPost} onClose={() => dispatch(setIsOpenPost(false))} PaperProps={{
         style: {
           backgroundColor: 'transparent',
           boxShadow: 'none',
+          width: "100%",
+          height: "100%"
         },
       }}>
         <div className="w-full h-full">
-          <ImageCropper />
+          <button className="text-white fixed right-5" onClick={() => dispatch(setIsOpenPost(false))}><IoMdClose className="text-5xl" /></button>
+          <div className="w-full h-full">
+            <Slider posts={useGetMyAllPosts(user?._id).posts} currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} />
+          </div>
         </div>
       </Dialog>
-      }
       <div ref={menuRef} className={`fixed top-[12rem] right-[30rem] transition-all duration-300 ${isShare ? "scale-100" : "scale-0"} flex gap-4 px-6 py-4 rounded-full bg-white border-2`}>
         {shareLinks.map((link) =>
           <a href={link.address} className="rounded-full h-6 w-6 inline-block" target="_blank" rel="noopener noreferrer">

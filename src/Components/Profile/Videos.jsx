@@ -1,8 +1,8 @@
 import { useGetMyVideos } from "../../Requests/GetRequest"
 import renderAttachment, { fileFormat } from '../RenderAttachment'
 
-const Videos = () => {
-  const { videos } = useGetMyVideos()
+const Videos = ({ id }) => {
+  const { videos } = useGetMyVideos(id)
   return (
     <div className="w-full grid grid-cols-4 gap-1">
       {videos?.map((video) =>

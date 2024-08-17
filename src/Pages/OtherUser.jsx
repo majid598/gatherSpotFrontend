@@ -1,207 +1,237 @@
-import { Link, useParams } from "react-router-dom";
-import {
-  useFollowToaUserMutation,
-  useGetOtherUserQuery,
-  useRemoveAFollowerMutation,
-} from "../redux/api/api";
+import { Avatar, Dialog } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import { FaArrowLeft, FaUserPlus } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import Liked from "../Components/Profile/Liked";
+import Photos from "../Components/Profile/Photos";
+import Posts from "../Components/Profile/Posts";
+import Reels from "../Components/Profile/Reels";
+import Saved from "../Components/Profile/Saved";
+import Videos from "../Components/Profile/Videos";
+import ReelLoader from "../Components/ReelLoader";
 import Layout from "../Layout/Layout";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
-import ContentDisplay from "../Components/ContentDisplay";
-import { FaPlay } from "react-icons/fa";
-import { BiLink } from "react-icons/bi";
+import { useGetSingleUser } from "../Requests/GetRequest";
+import { useFollowAUser } from "../Requests/PostRequests";
 
-const OtherUser = () => {
-  const [all, setAll] = useState(true);
-  const [allPosts, setAllPosts] = useState([]);
-  const [posts, setPosts] = useState(false);
+const Profile = () => {
+  const { id } = useParams()
+  const navigate = useNavigate();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [lineStyle, setLineStyle] = useState({});
+  const navRef = useRef(null);
+  const [posts, setPosts] = useState(true);
+  const [photos, setPhotos] = useState(false);
+  const [videos, setVideos] = useState(false);
   const [reels, setReels] = useState(false);
-  const { user: userMe } = useSelector((state) => state.auth);
-  const [removeFollower] = useRemoveAFollowerMutation();
-  const userId = useParams().id;
-  const { data, isLoading, isError } = useGetOtherUserQuery(userId);
-  const user = data?.user;
-  const [isFollowed, setIsFollowed] = useState(
-    user?.followers?.includes(userMe._id)
+  const [saved, setSaved] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [isShare, setIsShare] = useState(false);
+  const [selectedBtn, setSelectedBtn] = useState("Posts")
+  const [openProfilePhoto, setOpenProfilePhoto] = useState(false)
+  const { user } = useGetSingleUser(id)
+  const [followerLength, setFollowerLength] = useState(user?.followers.length);
+  const [followingLength, setFollowingLength] = useState(
+    user?.following.length
   );
-  const [followUser] = useFollowToaUserMutation();
-  const follow = () => {
-    const data = { userId: user._id };
-    followUser(data)
-      .unwrap()
-      .then((data) => {
-        toast.success(data?.message);
-        isFollowed ? setIsFollowed(false) : setIsFollowed(true);
-      })
-      .catch((err) => toast.error(err?.data?.message));
+  const [loading, setLoading] = useState(false)
+  const followerDisplay = () => {
+    const formatted =
+      user?.followers?.length >= 1000 && user?.followers?.length < 2000
+        ? `${(user?.followers?.length / 1000).toFixed(1)}k`
+        : user?.followers?.length;
+    setFollowerLength(formatted);
+    const following =
+      user?.following?.length >= 1000 && user?.following?.length < 2000
+        ? `${(user?.following?.length / 1000).toFixed(1)}k`
+        : user?.following?.length;
+    setFollowingLength(following);
   };
+
+  const follow = useFollowAUser()
+  const { user: me } = useSelector(state => state.auth)
+
+  const buttons = [
+    {
+      name: "Posts", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Posts")
+        setPosts(true)
+        setPhotos(false)
+        setVideos(false)
+        setReels(false)
+        setLiked(false)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Photos", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Photos")
+        setPosts(false)
+        setPhotos(true)
+        setVideos(false)
+        setReels(false)
+        setLiked(false)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Videos", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Videos")
+        setPosts(false)
+        setPhotos(false)
+        setVideos(true)
+        setReels(false)
+        setLiked(false)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Reels", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Reels")
+        setPosts(false)
+        setPhotos(false)
+        setVideos(false)
+        setReels(true)
+        setLiked(false)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Liked", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Posts")
+        setPosts(false)
+        setPhotos(false)
+        setVideos(false)
+        setReels(false)
+        setLiked(true)
+        setSaved(false)
+      }
+    },
+    {
+      name: "Saved", handler: (index) => {
+        setActiveIndex(index)
+        setSelectedBtn("Saved")
+        setPosts(false)
+        setPhotos(false)
+        setVideos(false)
+        setReels(false)
+        setLiked(false)
+        setSaved(true)
+      }
+    },
+  ]
+
+  useEffect(() => {
+    const updateLinePosition = () => {
+      if (navRef.current) {
+        const button = navRef.current.children[activeIndex];
+        setLineStyle({
+          width: button.offsetWidth,
+          left: button.offsetLeft,
+        });
+      }
+    };
+
+    updateLinePosition();
+    window.addEventListener('resize', updateLinePosition);
+
+    return () => window.removeEventListener('resize', updateLinePosition);
+  }, [activeIndex]);
+  useEffect(() => {
+    followerDisplay();
+  }, []);
 
   return (
     <Layout>
-      <div className="w-full h-full bg-white">
-        <div className="w-full pt-4 px-6 lg:px-3 mt-6 md:px-3 justify-between flex items-start">
-          <div className="profile bg-zinc-500 w-24 h-24  lg:w-20 md:w-20 md:h-20 lg:h-20 rounded-full overflow-hidden">
-            <img src={user?.profile} className="w-full h-full" alt="" />
-          </div>
-          <div className="w-3/5">
-            <div className="w-full">
-              <h2 className="w-full font-semibold">{user?.fullName}</h2>
+      <div className="w-full h-full pb-40">
+        {loading && <ReelLoader message={"Profile Editing..."} />}
+        <div className="w-full flex lg:flex-row md:flow-row flex-col gap-10 h-full">
+          <div className="w-full">
+            <div className="flex gap-4 p-10 items-start w-full relative z-50">
+              <button onClick={() => navigate("/")}><FaArrowLeft className="text-xl text-zinc-600" /></button>
+              <div>
+                <h2 className="font-semibold">{user?.fullName}</h2>
+                <span className="font-semibold text-zinc-500 text-sm">{user?.posts?.length} Posts</span>
+              </div>
             </div>
-            <div className="flex w-full gap-2">
-              <button
-                onClick={follow}
-                className={`w-1/2 mt-2 py-1.5 lg:text-xs md:text-xs lg:rounded-md md:rounded-md  rounded-xl ${
-                  isFollowed ? "bg-zinc-200 text-black" : "bg-sky-500 text-white"
-                } font-bold`}
-              >
-                {isFollowed ? "following" : "follow"}
-              </button>
-              <Link
-                to={`/user/${user?._id}/chat/create`}
-                className="w-1/2 text-center mt-2 font-semibold py-1.5 lg:text-xs md:text-xs lg:rounded-md md:rounded-md rounded-xl bg-zinc-200"
-              >
-                Message
-              </Link>
+            <div className="absolute w-full h-72 top-0 flex items-center justify-center">
+              {user?.coverPhoto &&
+                <img src={user?.coverPhoto?.url} className="w-full h-full object-cover" />
+              }
             </div>
-          </div>
-        </div>
-        <div className="w-full px-6 py-6 mt-2 border-b border-black/20">
-          <h2 className="font-semibold">{user?.fullName}</h2>
-          <p className="w-1/2 text-sm">{user?.bio}</p>
-          {user?.websiteLink && (
-            <a
-              href={user?.websiteLink}
-              target="_blank"
-              className="text-xs flex gap-0.5 items-center text-ellipsis font-semibold text-blue-900"
-            >
-              <BiLink className="text-sm" />
-              {user?.websiteLink}
-            </a>
-          )}
-        </div>
-        <div className="w-full py-4 flex justify-between border-b px-16 border-black/20">
-          <div className="flex flex-col gap-1 items-center">
-            <span className="leading-none font-semibold">
-              {user?.posts?.length + user?.reels?.length}
-            </span>
-            <h3 className="leading-none">posts</h3>
-          </div>
-          <Link
-            to={`/other/user/${user?._id}/followers`}
-            className="flex flex-col gap-1 items-center"
-          >
-            <span className="leading-none font-semibold">
-              {user?.followers?.length}
-            </span>
-            <h3 className="leading-none">followers</h3>
-          </Link>
-          <Link
-            to={`/other/user/${user?._id}/following`}
-            className="flex flex-col gap-1 items-center"
-          >
-            <span className="leading-none font-semibold">
-              {user?.following?.length}
-            </span>
-            <h3 className="leading-none">following</h3>
-          </Link>
-        </div>
-        <div className="w-full px-12 flex items-center justify-between transition-all duration-300 py-4 border-b border-black/20">
-          <button
-            onClick={() => {
-              setAll(true);
-              setPosts(false);
-              setReels(false);
-            }}
-          >
-            <div
-              className={`w-5 h-5 border transition-all duration-300 ${
-                all ? "border-sky-500" : "border-black/40"
-              } grid grid-cols-3 grid-rows-3`}
-            >
-              {[...Array(9)].map((_, index) => {
-                return (
-                  <div
-                    className={`w-full h-full border transition-all duration-300 ${
-                      all ? "border-sky-500" : "border-black/40"
-                    }`}
-                  ></div>
-                );
-              })}
-            </div>
-          </button>
-          <button
-            onClick={() => {
-              setAll(false);
-              setPosts(true);
-              setReels(false);
-            }}
-            className="flex w-3 h-5 flex-col gap-0.5"
-          >
-            <div
-              className={`w-full h-0.5 ${
-                posts ? "bg-sky-500" : "bg-black/40"
-              } transition-all duration-300`}
-            ></div>
-            <div
-              className={`w-full h-2.5 border-2 ${
-                posts ? "border-sky-500" : "border-black/40"
-              } transition-all duration-300`}
-            ></div>
-            <div
-              className={`w-full h-0.5 ${
-                posts ? "bg-sky-500" : "bg-black/40"
-              } transition-all duration-300`}
-            ></div>
-          </button>
-          <button
-            onClick={() => {
-              setAll(false);
-              setPosts(false);
-              setReels(true);
-            }}
-            className={`border-[1px] h-5 rounded-md w-5 flex items-center justify-center transition-all duration-300 ${
-              reels ? "border-sky-500" : "border-black/40"
-            }`}
-          >
-            <FaPlay
-              className={`text-[10px] transition-all duration-300 ${
-                reels ? "text-sky-600" : "text-black/40"
-              }`}
-            />
-          </button>
-          <button>faks</button>
-        </div>
-        <div className="w-full grid grid-cols-3 gap-0.5 justify-between bg-white border-t-[1px] border-black/60 h-full">
-          {all && (
-            <>
-              {user?.posts?.map((post, index) => (
-                <div key={index} className="w-full h-40 bg-zinc-300">
-                  <ContentDisplay src={post?.attachMent} />
+            <div className="w-full mt-40 px-10 bg-white min-h-[80vh] relative">
+              <div className="w-full h-20 relative">
+                <div className="w-full h-full absolute -top-1/2 flex items-center justify-between">
+                  <div className="flex items-center gap-5">
+                    <button onClick={() => setOpenProfilePhoto(true)} className="w-20 h-20 overflow-hidden rounded-full">
+                      <Avatar src={user?.profile?.url} style={{ width: "100%", height: "100%" }} alt="" />
+                    </button>
+                    <div>
+                      <h2 className="font-bold">{user?.fullName}</h2>
+                      <h4 className="font-bold text-zinc-500">@{user?.username}</h4>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    {user?.followers?.includes(me?._id) ?
+                      <button onClick={() => follow(user?._id)} className="px-6 py-2 rounded-full bg-sky-500 transition-all duration-300 hover:bg-sky-600 flex items-center gap-2 font-bold text-white border-2 border-sky-500 hover:border-sky-600">
+                        Following
+                      </button> :
+                      <button onClick={() => follow(user?._id)} className="px-6 py-2 rounded-full bg-sky-500 transition-all duration-300 hover:bg-sky-600 flex items-center gap-2 font-bold text-white border-2 border-sky-500 hover:border-sky-600">
+                        Follow
+                      </button>}
+                    <button onClick={() => setIsShare(!isShare)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
+                      <FaUserPlus /> Add
+                    </button>
+                  </div>
                 </div>
-              ))}
-            </>
-          )}
-          {reels && (
-            <>
-              {user?.reels?.map((reel, index) => (
-                <div key={index} className="w-full h-40 bg-zinc-300">
-                  <video
-                    src={reel?.attachMent}
-                    autoPlay
-                    muted
-                    loop
-                    className="w-full h-full"
-                    alt=""
-                  />
-                </div>
-              ))}
-            </>
-          )}
+              </div>
+              <nav ref={navRef} className="flex mt-10 relative gap-12 pb-2" >
+                {buttons.map((button, index) => (
+                  <button
+                    key={index}
+                    className={`nav-button font-semibold ${activeIndex === index ? 'active' : ''} ${selectedBtn === button.name ? "text-black" : "text-zinc-500"} transition-all duration-300`}
+                    onClick={() => button.handler(index)}
+                  >
+                    {button.name}
+                  </button>
+                ))}
+                <div className=" absolute bottom-0 transition-all duration-300 z-50 bg-black h-1" style={lineStyle}></div>
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-zinc-200"></div>
+              </nav>
+              {posts && <Posts id={user?._id} />}
+              {photos && <Photos id={user?._id} />}
+              {videos && <Videos id={user?._id} />}
+              {reels && <Reels id={user?._id} />}
+              {liked && <Liked />}
+              {saved && <Saved />}
+              {/* {photos && "Photos"} */}
+              <div className="h-60"></div>
+            </div>
+          </div>
         </div>
       </div>
+      {openProfilePhoto && <Dialog open={openProfilePhoto} onClose={() => setOpenProfilePhoto(false)} PaperProps={{
+        style: {
+          backgroundColor: 'transparent',
+          boxShadow: 'none',
+          width: "100%",
+          height: "100%"
+        },
+      }}>
+        <div className="w-full h-full">
+          <button className="text-white fixed right-5" onClick={() => setOpenProfilePhoto(false)}><IoMdClose className="text-5xl" /></button>
+          <img src={user?.profile?.url} className="w-full h-full object-contain" alt="" />
+        </div>
+      </Dialog>
+      }
     </Layout>
   );
 };
 
-export default OtherUser;
+export default Profile;

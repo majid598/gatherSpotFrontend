@@ -1,8 +1,8 @@
 import { FaPlay } from "react-icons/fa6"
 import { useGetMyReels } from "../../Requests/GetRequest"
 
-const Reels = () => {
-  const { reels } = useGetMyReels()
+const Reels = ({ id }) => {
+  const { reels } = useGetMyReels(id)
   return (
     <div className="w-full grid grid-cols-4 gap-1">
       {reels?.map((reel) =>

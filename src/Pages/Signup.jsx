@@ -2,14 +2,17 @@ import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { server } from "../redux/api/api";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { userExists } from "../redux/reducers/userReducer";
 import axios from "axios";
+import { UploadingLoader } from "../Components/Loader";
+import PasswordStrengthMeter from "../Components/PasswordStrengthMeter";
 
 const Signup = () => {
   const [isShow, setIsShow] = useState(false);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false)
   const [userDetails, setUserDetails] = useState({
     email: "",
     fullName: "",
@@ -23,6 +26,7 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
+    setIsLoading(true)
     e.preventDefault();
     try {
       const { data } = await axios.post(
@@ -32,16 +36,19 @@ const Signup = () => {
           withCredentials: true,
         }
       );
+      setIsLoading(false)
       localStorage.setItem("token", data?.token)
       dispatch(userExists(data?.user));
       toast.success(data?.message);
     } catch (error) {
       toast.error(error?.response?.data?.message);
+      setIsLoading(false)
     }
   };
 
   return (
     <div className="w-full h-screen bg-zinc-100 relative overflow-hidden">
+      {isLoading && <UploadingLoader />}
       <div className="absolute w-48 h-48 rounded-full overflow-hidden top-1/4 left-[10vw]">
         <img src="/assets/logo.png" alt="" />
       </div>
@@ -89,23 +96,26 @@ const Signup = () => {
               </label>
               <label className="w-full relative">
                 Password
-                <input
-                  type={isShow ? "text" : "password"}
-                  className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
-                  value={userDetails.password}
-                  onChange={handleChange}
-                  name="password"
-                  placeholder="Create strong password"
-                />
-                {userDetails.password.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setIsShow((prev) => !prev)}
-                    className="top-[2.3vw] text-zinc-500 transition-all text-xl duration-300 hover:text-sky-500 right-2 absolute"
-                  >
-                    {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
-                  </button>
-                )}
+                <div className="relative">
+                  <input
+                    type={isShow ? "text" : "password"}
+                    className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                    value={userDetails.password}
+                    onChange={handleChange}
+                    name="password"
+                    placeholder="Create strong password"
+                  />
+                  {userDetails.password.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setIsShow((prev) => !prev)}
+                      className="top-1/2 -translate-y-1/2 text-zinc-500 transition-all text-xl duration-300 hover:text-sky-500 right-2 absolute"
+                    >
+                      {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                    </button>
+                  )}
+                </div>
+                {userDetails.password.length > 0 && <PasswordStrengthMeter password={userDetails.password} />}
               </label>
               <button className="w-full p-3 bg-sky-500 mt-4 text-white rounded-lg font-bold transition-all duration-300 hover:bg-sky-600">
                 Sign up

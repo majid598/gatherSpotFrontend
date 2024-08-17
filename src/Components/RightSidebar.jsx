@@ -1,7 +1,6 @@
 import React from 'react'
-import { FaUserMinus, FaUserPlus } from 'react-icons/fa'
 import { useGetUsers } from '../Requests/GetRequest'
-import { Avatar } from '@mui/material'
+import UserItem from './User/UserItem'
 
 const RightSidebar = () => {
     const { users } = useGetUsers()
@@ -27,20 +26,8 @@ const RightSidebar = () => {
                 <div className='w-full flex flex-col gap-5 mt-5'>
                     {
                         users.map((user) =>
-                            <div key={user?._id} className='w-full flex justify-between items-center'>
-                                <div className='flex gap-3 items-center'>
-                                    <div className='w-14 h-14 rounded-full flex overflow-hidden'>
-                                        <Avatar src={user?.profile?.url} style={{ width: "100%", height: "100%" }} alt="" />
-                                    </div>
-                                    <div>
-                                        <h2 className='font-semibold'>{user?.fullName}</h2>
-                                        <h4 className='text-sm font-semibold text-zinc-500'>{user?.username}</h4>
-                                    </div>
-                                </div>
-                                <button className='p-2 bg-green-200 flex items-center justify-center rounded-full'>
-                                    <FaUserPlus className='text-green-600' />
-                                </button>
-                            </div>)
+                            <UserItem key={user?._id} user={user} />
+                        )
                     }
                 </div>
             </div>

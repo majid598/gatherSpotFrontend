@@ -30,7 +30,11 @@ const NewPost = () => {
         data.append("type", type)
         data.append("caption", description)
         data.append("file", file)
-        createPost(data)
+        createPost(data).then(() => {
+            setType("")
+            setDescription("")
+            setFile("")
+        })
     }
 
     return (

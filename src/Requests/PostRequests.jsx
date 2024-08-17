@@ -6,27 +6,32 @@ import { useNavigate } from "react-router-dom"
 const server = import.meta.env.VITE_SERVER
 
 export const useCreateNewPost = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const createPost = (data) => {
-        setIsLoading(true)
-        axios.post(`${server}/api/v1/post/new`, data, {
-            withCredentials: true,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                "token": localStorage.getItem("token")
-            }
-        }).then(({ data }) => {
-            setIsLoading(false)
-            toast.success(data?.message)
-        }).catch((err) => {
-            setIsLoading(false)
-            toast.error(err?.response?.data?.message)
-            console.log(err)
-        })
-    }
+    const [isLoading, setIsLoading] = useState(false);
 
-    return { createPost, isLoading }
-}
+    const createPost = (data) => {
+        setIsLoading(true);
+        return new Promise((resolve, reject) => {
+            axios.post(`${server}/api/v1/post/new`, data, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    "token": localStorage.getItem("token")
+                }
+            }).then(({ data }) => {
+                setIsLoading(false);
+                toast.success(data?.message);
+                resolve(data); // Resolves the Promise with the response data
+            }).catch((err) => {
+                setIsLoading(false);
+                toast.error(err?.response?.data?.message);
+                console.log(err);
+                reject(err); // Rejects the Promise with the error
+            });
+        });
+    };
+
+    return { createPost, isLoading };
+};
 
 export const useUploadCoverPhoto = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -185,21 +190,56 @@ export const useResetPassword = () => {
     const [isLoading, setIsLoading] = useState(false)
     const reset = (token, password) => {
         setIsLoading(true)
-        axios.post(`${server}/api/v1/user/password/reset/${token}`, { password }, {
-            withCredentials: true,
-            headers: {
-                "token": localStorage.getItem("token")
-            }
-        }).then(({ data }) => {
-            setIsLoading(false)
-            navigate(`/password/reset/${data?.resetToken}`)
-            toast.success(data?.message)
-        }).catch((err) => {
-            setIsLoading(false)
-            toast.error(err?.response?.data?.message)
-            console.log(err)
-        })
+        axios
+            .post(`${server}/api/v1/user/password/reset/${token}`, { password })
+            .then(({ data }) => {
+                setIsLoading(false)
+                navigate(`/login`)
+                toast.success(data?.message)
+            }).catch((err) => {
+                setIsLoading(false)
+                toast.error(err?.response?.data?.message)
+                console.log(err)
+            })
     }
 
     return { reset, isLoading }
+}
+
+export const useLikeAPost = () => {
+    const like = (id) => {
+        axios
+            .get(`${server}/api/v1/post/like/${id}`, {
+                withCredentials: true,
+                headers: {
+                    "token": localStorage.getItem("token")
+                }
+            }).then(({ data }) => {
+                toast.success(data?.message)
+            }).catch((err) => {
+                toast.error(err?.response?.data?.message)
+                console.log(err)
+            })
+    }
+
+    return like
+} 
+
+export const useFollowAUser = () => {
+    const follow = (id) => {
+        axios
+            .get(`${server}/api/v1/user/${id}/follow`, {
+                withCredentials: true,
+                headers: {
+                    "token": localStorage.getItem("token")
+                }
+            }).then(({ data }) => {
+                toast.success(data?.message)
+            }).catch((err) => {
+                toast.error(err?.response?.data?.message)
+                console.log(err)
+            })
+    }
+
+    return follow
 } 

@@ -1,8 +1,8 @@
 import { useGetMyPhotos } from "../../Requests/GetRequest"
 import renderAttachment, { fileFormat } from '../RenderAttachment'
 
-const Photos = () => {
-  const { photos } = useGetMyPhotos()
+const Photos = ({id}) => {
+  const { photos } = useGetMyPhotos(id)
   return (
     <div className="w-full grid grid-cols-4 gap-1">
       {photos?.map((photo) =>

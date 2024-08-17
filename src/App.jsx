@@ -18,6 +18,8 @@ const Login = lazy(() => import("./Pages/Login"));
 const Signup = lazy(() => import("./Pages/Signup"));
 const Followers = lazy(() => import("./Pages/Followers"));
 const Following = lazy(() => import("./Pages/Following"));
+const Friends = lazy(() => import("./Pages/Friends"));
+const List = lazy(() => import("./Pages/List"));
 const EditProfile = lazy(() => import("./Pages/EditProfile"));
 const NewPost = lazy(() => import("./Pages/NewPost"));
 const OtherUser = lazy(() => import("./Pages/OtherUser"));
@@ -72,8 +74,10 @@ const App = () => {
             <Route path="/story/upload" element={<CreateStory />} />
             <Route path="/user/:id" element={<OtherUser />} />
             <Route path="/user/story/:id" element={<Story />} />
-            <Route path="/user/followers" element={<Followers />} />
-            <Route path="/user/following" element={<Following />} />
+            <Route path="/lists/list/followers" element={<Followers />} />
+            <Route path="/user/friends" element={<Friends />} />
+            <Route path="/user/lists" element={<List />} />
+            <Route path="/lists/list/following" element={<Following />} />
             <Route path="/reel/new" element={<NewReel />} />
             <Route path="/user/:id/chat/create" element={<NewChat />} />
             <Route path="/chat/:id" element={<GetChat />} />

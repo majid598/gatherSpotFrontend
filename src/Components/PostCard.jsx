@@ -1,33 +1,20 @@
+import { Avatar } from "@mui/material";
+import axios from "axios";
+import { Heart, Share2 } from "lucide-react";
 import { useState } from "react";
-import { BiMessageRounded, BiSend } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
-import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
+import { MdOutlineInsertComment } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { server, useLikePostMutation } from "../redux/api/api";
-import ContentDisplay from "./ContentDisplay";
-import axios from "axios";
+import { server } from "../redux/api/api";
+import { useLikeAPost } from "../Requests/PostRequests";
 import RenderAttachment, { fileFormat } from "./RenderAttachment";
 
 const PostCard = ({ post }) => {
   const { user } = useSelector((state) => state.auth);
-  const [isLiked, setIsLiked] = useState(post?.likes?.includes(user?._id));
-  const [likePost] = useLikePostMutation();
+  const like = useLikeAPost();
   const [menu, setMenu] = useState(false);
-
-  const likeToPost = (postId) => {
-    likePost(postId)
-      .unwrap()
-      .then((data) => {
-        toast.success(data?.message);
-        isLiked ? setIsLiked(false) : setIsLiked(true);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error(err?.data?.message);
-      });
-  };
 
   const deleteHandler = () => {
     axios.delete(`${server}/api/v1/post/delete/${post?._id}`, {
@@ -39,26 +26,24 @@ const PostCard = ({ post }) => {
   };
 
   return (
-    <div id={post._id} className="w-full bg-white border-2 p-10">
-      <div className="header w-full p-3 flex justify-between">
-        <div className="flex gap-4">
+    <div id={post?._id} className="w-full bg-white p-10">
+      <div className="header w-full py-3 flex items-center justify-between">
+        <div className="flex gap-4 items-center">
           <Link
             to={
               post?.user?._id === user?._id
-                ? `/users/${user?.username}`
+                ? `/profile?user=${user?.username}`
                 : `/user/${post?.user?._id}`
             }
-            className="w-8 h-8 inline-block rounded-full overflow-hidden"
+            className="w-14 h-14 inline-block rounded-full overflow-hidden"
           >
-            <img src={post?.user?.profile?.url} className="w-full h-full" alt="" />
+            <Avatar src={post?.user?.profile?.url} style={{ width: "100%", height: "100%" }} alt="" />
           </Link>
           <div>
-            <Link className="text-sm font-semibold">
+            <Link className="font-semibold">
               {post?.user?.fullName}
             </Link>
-            <h2 className="text-sm font-semibold text-zinc-500">
-              Original audio
-            </h2>
+            <h4 className="text-sm font-semibold text-zinc-500">@{post?.user?.username}</h4>
           </div>
         </div>
         <div className="relative z-[999]">
@@ -94,42 +79,29 @@ const PostCard = ({ post }) => {
       <div className="w-full h-auto">
         {RenderAttachment(fileFormat(post?.attachMent?.url), post?.attachMent?.url)}
       </div>
-      <div className="w-full justify-between flex items-center py-3 px-2 pr-5">
+      <div className="w-full justify-between flex items-center mt-8 py-3 pr-5">
         <div className="flex gap-4">
           <button
-            onClick={() => likeToPost(post?._id)}
+            onClick={() => like(post?._id)}
             className="flex flex-col"
           >
-            {isLiked ? (
-              <TiHeartFullOutline className="text-3xl text-red-500" />
+            {post?.likes?.includes(user?._id) ? (
+              <Heart fill="red" className="text-red-500" />
             ) : (
-              <TiHeartOutline className="text-3xl" />
+              <Heart className="text-3xl text-zinc-500" />
             )}
           </button>
           <button>
-            <BiMessageRounded className="text-3xl" />
+            <MdOutlineInsertComment className="text-2xl text-zinc-500" />
           </button>
           <button>
-            <BiSend className="text-2xl -rotate-[30deg] -mt-3" />
+            <Share2 className="text-zinc-500" />
           </button>
         </div>
-        <button className="w-5 h-6 rounded-sm border-2 border-black border-b-0 after:content-[''] after:absolute after:w-full after:h-4 after:border-2 after:border-black after:-bottom-2 overflow-hidden after:left-1/2 after:-translate-x-1/2 relative after:rotate-45 after:border-b-0 after:border-r-0"></button>
+        <button className="w-5 h-6 rounded-[3px] border-2 border-zinc-500 border-b-0 after:content-[''] after:absolute after:w-full after:h-4 after:border-2 after:border-zinc-500 after:rounded-[4px] after:-bottom-2 overflow-hidden after:left-1/2 after:-translate-x-1/2 relative after:rotate-45 after:border-b-0 after:border-r-0"></button>
       </div>
       <div className="px-2">
-        <h2>Liked by majid and others</h2>
-        <div className="mt-2">
-          {/* <div className="flex gap-2 items-center mb-2">
-            <h2 className="font-semibold">{post?.user?.fullName}</h2>{" "}
-            <p className="text-zinc-600">{post?.caption}</p>
-          </div> */}
-          <div className="w-full border-b border-black/20">
-            <input
-              type="text"
-              className="w-full p-2 outline-none border-none"
-              placeholder="Add"
-            />
-          </div>
-        </div>
+        <h4 className="text-zinc-500 font-semibold">{post?.likes?.length} likes this</h4>
       </div>
     </div>
   );

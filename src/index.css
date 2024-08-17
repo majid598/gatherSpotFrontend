@@ -152,3 +152,90 @@ body {
 .mix {
   mix-blend-mode: inherit;
 }
+
+@keyframes animate {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.newLoader1 {
+  animation: animate 1s infinite linear;
+}
+.newLoader2 {
+  animation: animate 1.3s infinite linear;
+}
+.newLoader3 {
+  animation: animate 1.6s infinite linear;
+}
+
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.post-display {
+  width: 80%;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.post {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.inactive {
+  opacity: 0;
+}
+
+.active {
+  opacity: 1;
+}
+
+.prev-btn, .next-btn {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 24px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.prev-btn {
+  left: 10px;
+}
+
+.next-btn {
+  right: 10px;
+}
+
+.prev-btn:disabled, .next-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.prev-btn:hover:not(:disabled), .next-btn:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { userExists } from "../redux/reducers/userReducer";
 import axios from "axios";
 import ReelLoader from "../Components/ReelLoader";
+import { UploadingLoader } from '../Components/Loader'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen bg-zinc-100 relative overflow-hidden">
-      {isLoading && <ReelLoader message={"Loging in..."} />}
+      {isLoading && <UploadingLoader />}
       <div className="absolute w-48 h-48 rounded-full overflow-hidden top-1/4 left-[10vw]">
         <img src="/assets/logo.png" alt="" />
       </div>
@@ -74,23 +75,25 @@ const Login = () => {
               </label>
               <label className="w-full relative">
                 Password
-                <input
-                  type={isShow ? "text" : "password"}
-                  className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
-                  value={userDetails.password}
-                  onChange={handleChange}
-                  name="password"
-                  placeholder="Your password"
-                />
-                {userDetails.password.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setIsShow((prev) => !prev)}
-                    className="top-[2.3vw] text-zinc-500 transition-all text-xl duration-300 hover:text-sky-500 right-2 absolute"
-                  >
-                    {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
-                  </button>
-                )}
+                <div className="relative">
+                  <input
+                    type={isShow ? "text" : "password"}
+                    className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500"
+                    value={userDetails.password}
+                    onChange={handleChange}
+                    name="password"
+                    placeholder="Create strong password"
+                  />
+                  {userDetails.password.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setIsShow((prev) => !prev)}
+                      className="top-1/2 -translate-y-1/2 text-zinc-500 transition-all text-xl duration-300 hover:text-sky-500 right-2 absolute"
+                    >
+                      {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                    </button>
+                  )}
+                </div>
               </label>
               <div className="-mt-2">
                 <Link to={"/forgot/password"} className="text-sm font-semibold text-sky-500 hover:text-sky-600 transition-all duration-300">Forgotten Password</Link>
