@@ -1,11 +1,11 @@
 import { Avatar } from "@mui/material";
 import axios from "axios";
 import { Heart, Share2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { MdOutlineInsertComment } from "react-icons/md";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { server } from "../redux/api/api";
 import { useLikeAPost } from "../Requests/PostRequests";
@@ -25,8 +25,26 @@ const PostCard = ({ post }) => {
     }).then(({ data }) => toast.success(data?.message)).catch((err) => toast.error(err?.response?.data?.message))
   };
 
+  const location = useLocation();
+
+  const scrollToPost = (postId) => {
+    const element = document.getElementById(`post-${postId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const postId = queryParams.get('post');
+    if (postId) {
+      scrollToPost(postId);
+    }
+  }, [location]);
+
+
   return (
-    <div id={post?._id} className="w-full bg-white p-10">
+    <div id={`post-${post?._id}`} className="w-full bg-white p-10" >
       <div className="header w-full py-3 flex items-center justify-between">
         <div className="flex gap-4 items-center">
           <Link
@@ -103,7 +121,7 @@ const PostCard = ({ post }) => {
       <div className="px-2">
         <h4 className="text-zinc-500 font-semibold">{post?.likes?.length} likes this</h4>
       </div>
-    </div>
+    </div >
   );
 };
 
