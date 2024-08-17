@@ -188,7 +188,7 @@ const Profile = () => {
     },
   ]
 
-  const frontedUrl = "https://gather-spot-frontend.vercel.app"
+  const frontedUrl = import.meta.env.VITE_FRONTEND_URL
 
   const shareLinks = [
     { img: "whatsApp.png", address: `https://api.whatsapp.com/send?text=${frontedUrl}/user/${user?._id}` },

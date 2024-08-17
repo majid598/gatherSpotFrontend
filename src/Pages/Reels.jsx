@@ -20,8 +20,11 @@ import axios from "axios";
 import { shuffleArray } from "../Components/RenderAttachment";
 import Loader from "../Components/Loader";
 import { useViewReel } from "../Requests/PostRequests";
+import { useLocation } from "react-router-dom";
 const Reels = () => {
   const { user } = useSelector((state) => state.auth);
+  const swiperRef = useRef(null);
+  const location = useLocation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const playerRefs = useRef([]);
   const { data, isLoading, isError } = useAllReelsQuery();
@@ -32,7 +35,7 @@ const Reels = () => {
   const handleSlideChange = (newIndex) => {
     // Pause the previously playing video when the slide changes
     if (playerRefs.current[currentIndex]) {
-      playerRefs.current[currentIndex].getInternalPlayer().pause();
+      playerRefs.current[currentIndex].getInternalPlayer()?.pause();
     }
     const currentReelId = reels[currentIndex]?._id
     // Update the currentIndex to the new index
@@ -49,6 +52,17 @@ const Reels = () => {
     }
   };
 
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const reelId = queryParams.get('reel');
+    if (reelId) {
+      const reelIndex = reels?.findIndex(reel => reel?._id === reelId);
+      if (reelIndex !== -1 && swiperRef.current) {
+        swiperRef.current.swiper.slideTo(reelIndex);
+      }
+    }
+  }, [location, reels]);
+
   return isLoading ? (
     <Loader />
   ) : (
@@ -61,11 +75,12 @@ const Reels = () => {
               className="mySwiper"
               slidesPerView={1}
               onSlideChange={({ realIndex }) => handleSlideChange(realIndex)}
+              ref={swiperRef}
             >
               {reels?.map((reel, index) => {
                 // setIsLiked(reel.likes.includes(user._id));
                 return (
-                  <SwiperSlide>
+                  <SwiperSlide id={`reel-${reel.id}`}>
                     <Reel
                       reel={reel}
                       index={index}

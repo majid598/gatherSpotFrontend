@@ -1,4 +1,4 @@
-import { Avatar } from "@mui/material";
+import { Avatar, Dialog } from "@mui/material";
 import axios from "axios";
 import { Heart, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ const PostCard = ({ post }) => {
   const { user } = useSelector((state) => state.auth);
   const like = useLikeAPost();
   const [menu, setMenu] = useState(false);
+  const [isShareMenu, setIsShareMenu] = useState(false)
 
   const deleteHandler = () => {
     axios.delete(`${server}/api/v1/post/delete/${post?._id}`, {
@@ -24,6 +25,17 @@ const PostCard = ({ post }) => {
       }
     }).then(({ data }) => toast.success(data?.message)).catch((err) => toast.error(err?.response?.data?.message))
   };
+
+
+  const frontedUrl = import.meta.env.VITE_FRONTEND_URL
+
+  const shareLinks = [
+    { img: "whatsApp.png", address: `https://api.whatsapp.com/send?text=${frontedUrl}/?post=${post?._id}` },
+    { img: "facebook.png", address: `https://www.facebook.com/sharer/sharer.php?u=${frontedUrl}/?post=${post?._id}` },
+    { img: "instagram.png", address: `https://www.instagram.com/${frontedUrl}/user/${post?._id}` },
+    { img: "linkedIn.png", address: `https://www.linkedin.com/sharing/share-offsite/?url=${frontedUrl}/?post=${post?._id}` },
+    { img: "twitter.png", address: `https://twitter.com/intent/tweet?url=${frontedUrl}/?post=${post?._id}&text=Check this out!` },
+  ]
 
   const location = useLocation();
 
@@ -112,7 +124,7 @@ const PostCard = ({ post }) => {
           <button>
             <MdOutlineInsertComment className="text-2xl text-zinc-500" />
           </button>
-          <button>
+          <button onClick={() => setIsShareMenu(true)}>
             <Share2 className="text-zinc-500" />
           </button>
         </div>
@@ -121,6 +133,19 @@ const PostCard = ({ post }) => {
       <div className="px-2">
         <h4 className="text-zinc-500 font-semibold">{post?.likes?.length} likes this</h4>
       </div>
+      {isShareMenu && <Dialog open={isShareMenu} onClose={() => setIsShareMenu(false)} PaperProps={{
+        style: {
+          backgroundColor: 'transparent',
+          boxShadow: 'none',
+        },
+      }}>
+        <div className={`flex gap-4 px-6 py-4 rounded-full bg-white border-2`}>
+          {shareLinks.map((link) =>
+            <a href={link.address} className="rounded-full h-6 w-6 inline-block" target="_blank" rel="noopener noreferrer">
+              <img src={`/assets/pngs/${link.img}`} className="w-full h-full object-cover" alt="" />
+            </a>)}
+        </div>
+      </Dialog>}
     </div >
   );
 };
