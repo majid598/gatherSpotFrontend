@@ -32,15 +32,14 @@ const Chat = () => {
         <div className="py-6">
           {data?.chats?.map((chat, index) => (
             <Link
+              key={chat?._id}
               to={`/chat/${chat._id}`}
               className="w-full py-2 flex px-4 items-start gap-4 hover:bg-black/20 border-b"
             >
               <div className="w-12 h-12 rounded-full bg-zinc-300 overflow-hidden">
                 <img
                   src={
-                    chat?.user2?._id === user._id
-                      ? chat?.user1?.profile
-                      : chat?.user2?.profile
+                    chat?.avatar
                   }
                   className="w-full h-full"
                   alt=""
@@ -48,9 +47,7 @@ const Chat = () => {
               </div>
               <div>
                 <h2>
-                  {chat?.user2?._id === user._id
-                    ? chat?.user1?.username
-                    : chat?.user2?.username}
+                  {chat?.name}
                 </h2>
                 <h2 className="text-sm">time ago</h2>
               </div>

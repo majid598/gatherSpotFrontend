@@ -7,10 +7,14 @@ import Layout from "../Layout/Layout";
 import { useAllPostsQuery, useGetStoriesQuery } from "../redux/api/api";
 import Stories from "../Components/Home/Stories";
 import { useGetAllPosts } from "../Requests/GetRequest";
+import { getSocket } from "../socket";
 
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
   const { posts } = useGetAllPosts()
+  const socket = getSocket();
+  console.log(socket)
+
   const { data: storyData } = useGetStoriesQuery();
   const stories = storyData?.stories;
   return (

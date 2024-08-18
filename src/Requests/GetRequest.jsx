@@ -82,6 +82,38 @@ export const useGetMyReels = (id) => {
 
     return { reels, isLoading }
 }
+export const useGetMyDrafts = (id) => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [posts, setPosts] = useState([null])
+    useEffect(() => {
+        axios.get(`${server}/api/v1/post/my/drafts?id=${id}`, {
+            withCredentials: true,
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then(({ data }) => setPosts(data?.posts)).catch((err) => {
+            console.log(err)
+        })
+    }, [posts])
+
+    return { posts, isLoading }
+}
+export const useGetMyPrivate = (id) => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [reels, setReels] = useState([null])
+    useEffect(() => {
+        axios.get(`${server}/api/v1/post/my/reels?id=${id}`, {
+            withCredentials: true,
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then(({ data }) => setReels(data?.reels)).catch((err) => {
+            console.log(err)
+        })
+    }, [reels])
+
+    return { reels, isLoading }
+}
 
 export const useGetUsers = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -177,4 +209,63 @@ export const useGetFollowing = (id) => {
     }, [following])
 
     return { following, isLoading }
+}
+
+export const useGetMyRequests = () => {
+    const [isLoading, setIsLoading] = useState(true)
+    const [requests, setRequests] = useState([null])
+    useEffect(() => {
+        axios.get(`${server}/api/v1/user/request/my`, {
+            withCredentials: true,
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then(({ data }) => {
+            setIsLoading(false)
+            console.log(data)
+            setRequests(data?.requests)
+        }).catch((err) => {
+            setIsLoading(false)
+            console.log(err)
+        })
+    }, [requests])
+
+    return { requests, isLoading }
+}
+
+export const useGetMyFriends = () => {
+    const [isLoading, setIsLoading] = useState(true)
+    const [friends, setFriends] = useState([null])
+    useEffect(() => {
+        axios.get(`${server}/api/v1/user/friends/my`, {
+            withCredentials: true,
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then(({ data }) => {
+            setIsLoading(false)
+            setFriends(data?.friends)
+        }).catch((err) => {
+            setIsLoading(false)
+            console.log(err)
+        })
+    }, [friends])
+
+    return { friends, isLoading }
+}
+
+export const useReset = () => {
+    const reset = () => {
+        axios.get(`${server}/api/v1/user/my/reset`, {
+            withCredentials: true,
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then(({ data }) => {
+            console.log(data)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+    return reset
 }

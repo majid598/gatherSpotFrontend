@@ -5,7 +5,7 @@ import { useGetFollowers, useGetFollowing } from "../Requests/GetRequest"
 import { useSelector } from "react-redux"
 import UserItem from "../Components/User/UserItem"
 
-const List = () => {
+const Following = () => {
   const navigate = useNavigate()
   const { user } = useSelector(state => state.auth)
   const { following } = useGetFollowing(user?._id)
@@ -27,4 +27,4 @@ const List = () => {
   )
 }
 
-export default List
+export default Following

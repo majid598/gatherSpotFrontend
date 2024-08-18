@@ -20,6 +20,7 @@ import {
 import Slider from "../Components/Profile/Slider";
 import { useGetMyAllPosts } from "../Requests/GetRequest";
 import { setIsOpenPost } from "../redux/reducers/misc";
+import Draft from "../Components/Profile/Draft";
 
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
@@ -292,6 +293,7 @@ const Profile = () => {
               {photos && <Photos id={user?._id} />}
               {videos && <Videos id={user?._id} />}
               {reels && <Reels id={user?._id} />}
+              {draft && <Draft id={user?._id} />}
               {liked && <Liked />}
               {saved && <Saved />}
               {/* {photos && "Photos"} */}

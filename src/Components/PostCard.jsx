@@ -106,6 +106,7 @@ const PostCard = ({ post }) => {
           )}
         </div>
       </div>
+      <p className="mb-4 font-semibold text-zinc-600">{post?.caption}</p>
       <div className="w-full h-auto">
         {RenderAttachment(fileFormat(post?.attachMent?.url), post?.attachMent?.url)}
       </div>

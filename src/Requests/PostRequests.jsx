@@ -223,7 +223,7 @@ export const useLikeAPost = () => {
     }
 
     return like
-} 
+}
 
 export const useFollowAUser = () => {
     const follow = (id) => {
@@ -242,4 +242,80 @@ export const useFollowAUser = () => {
     }
 
     return follow
+}
+
+export const useSendFriendRequest = () => {
+    const [isLoading, setIsLoading] = useState(false)
+    const sendReq = (id) => {
+        setIsLoading(true)
+        axios
+            .put(`${server}/api/v1/user/send-request`, { userId: id }, {
+                withCredentials: true,
+                headers: {
+                    "token": localStorage.getItem("token")
+                }
+            }).then(({ data }) => {
+                setIsLoading(false)
+                toast.success(data?.message)
+            }).catch((err) => {
+                setIsLoading(false)
+                toast.error(err?.response?.data?.message)
+                console.log(err)
+            })
+    }
+
+    return { sendReq, isLoading }
+}
+
+export const useAcceptFriendRequest = () => {
+    const [isLoading, setIsLoading] = useState(false)
+    const acceptReq = (id, accept) => {
+        setIsLoading(true)
+        axios
+            .put(`${server}/api/v1/user/request/accept/${id}`, { accept }, {
+                withCredentials: true,
+                headers: {
+                    "token": localStorage.getItem("token")
+                }
+            }).then(({ data }) => {
+                setIsLoading(false)
+                toast.success(data?.message)
+            }).catch((err) => {
+                setIsLoading(false)
+                toast.error(err?.response?.data?.message)
+                console.log(err)
+            })
+    }
+
+    return { acceptReq, isLoading }
+}
+
+export const useCreateChat = () => {
+    const navigate = useNavigate()
+    const [isLoading, setIsLoading] = useState(false)
+    const createChat = (id) => {
+        setIsLoading(true)
+        axios
+            .post(`${server}/api/v1/chat/new`, { otherUserId: id }, {
+                withCredentials: true,
+                headers: {
+                    "token": localStorage.getItem("token")
+                }
+            }).then(({ data }) => {
+                if (data.chatAlready) {
+                    navigate(`/chat/${data.chatId}`)
+                    setIsLoading(false)
+                } else {
+                    setIsLoading(false)
+                    toast.success(data?.message)
+                    navigate(`/chat/${data.chat._id}`)
+                }
+            }).catch((err) => {
+                setIsLoading(false)
+                toast.error(err?.response?.data?.message)
+                console.log(err)
+            })
+    }
+
+    return { createChat, isLoading }
 } 

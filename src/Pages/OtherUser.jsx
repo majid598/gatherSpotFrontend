@@ -13,7 +13,7 @@ import Videos from "../Components/Profile/Videos";
 import ReelLoader from "../Components/ReelLoader";
 import Layout from "../Layout/Layout";
 import { useGetSingleUser } from "../Requests/GetRequest";
-import { useFollowAUser } from "../Requests/PostRequests";
+import { useFollowAUser, useSendFriendRequest } from "../Requests/PostRequests";
 
 const Profile = () => {
   const { id } = useParams()
@@ -51,6 +51,8 @@ const Profile = () => {
 
   const follow = useFollowAUser()
   const { user: me } = useSelector(state => state.auth)
+
+  const { sendReq, isLoading } = useSendFriendRequest()
 
   const buttons = [
     {
@@ -185,8 +187,8 @@ const Profile = () => {
                       <button onClick={() => follow(user?._id)} className="px-6 py-2 rounded-full bg-sky-500 transition-all duration-300 hover:bg-sky-600 flex items-center gap-2 font-bold text-white border-2 border-sky-500 hover:border-sky-600">
                         Follow
                       </button>}
-                    <button onClick={() => setIsShare(!isShare)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
-                      <FaUserPlus /> Add
+                    <button onClick={() => sendReq(user?._id)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
+                      {isLoading ? "Sending..." : <><FaUserPlus /> Add</>}
                     </button>
                   </div>
                 </div>

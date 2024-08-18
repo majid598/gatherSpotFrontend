@@ -1,12 +1,17 @@
-import { useEffect, Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import "react-toastify/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
-import { userExists, userNotExists } from "./redux/reducers/userReducer";
-import { server } from "./redux/api/api";
 import axios from "axios";
+import { lazy, Suspense, useEffect } from "react";
+import { Toaster } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import "react-toastify/ReactToastify.css";
+import Loader from "./Components/Loader";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import LandPage from "./Layout/LandPage";
+import ForgotPassword from "./Pages/ForgotPassword";
+import ResetPassword from "./Pages/ResetPassword";
+import { server } from "./redux/api/api";
+import { userExists, userNotExists } from "./redux/reducers/userReducer";
+import { SocketProvider } from "./socket";
 const Home = lazy(() => import("./Pages/Home"));
 const Posts = lazy(() => import("./Pages/Posts"));
 const Search = lazy(() => import("./Pages/Search"));
@@ -32,12 +37,6 @@ const NewReel = lazy(() => import("./Pages/NewReel"));
 const GetChat = lazy(() => import("./Pages/GetChat"));
 const NewChat = lazy(() => import("./Pages/NewChat"));
 const GetReel = lazy(() => import("./Pages/GetReel"));
-import LandPage from "./Layout/LandPage";
-import { LuLoader } from "react-icons/lu";
-import { Toaster } from "react-hot-toast";
-import Loader from "./Components/Loader";
-import ForgotPassword from "./Pages/ForgotPassword";
-import ResetPassword from "./Pages/ResetPassword";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -61,8 +60,12 @@ const App = () => {
     <Router>
       <Suspense fallback={<Loader />}>
         <Routes>
-          <Route path="/" element={user ? <Home /> : <LandPage />} />
-          <Route element={<ProtectedRoute user={user} />}>
+          <Route element={
+            <SocketProvider>
+              <ProtectedRoute user={user} redirect="/login" />
+            </SocketProvider>
+          }>
+            <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/feeds" element={<Posts />} />
             <Route path="/search" element={<Search />} />
