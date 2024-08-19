@@ -2,11 +2,10 @@ import axios from "axios";
 import { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, useParams } from "react-router-dom";
 import "react-toastify/ReactToastify.css";
 import Loader from "./Components/Loader";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import LandPage from "./Layout/LandPage";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
 import { server } from "./redux/api/api";
@@ -26,21 +25,21 @@ const Following = lazy(() => import("./Pages/Following"));
 const Friends = lazy(() => import("./Pages/Friends"));
 const List = lazy(() => import("./Pages/List"));
 const EditProfile = lazy(() => import("./Pages/EditProfile"));
-const NewPost = lazy(() => import("./Pages/NewPost"));
 const OtherUser = lazy(() => import("./Pages/OtherUser"));
 const OtherUserFollowers = lazy(() => import("./Pages/OtherUserFollowers"));
 const OtherUserFollowing = lazy(() => import("./Pages/OtherUserFollowing"));
 const CreateStory = lazy(() => import("./Pages/CreateStory"));
 const Story = lazy(() => import("./Pages/Story"));
 const Test = lazy(() => import("./Test"))
-const NewReel = lazy(() => import("./Pages/NewReel"));
 const GetChat = lazy(() => import("./Pages/GetChat"));
 const NewChat = lazy(() => import("./Pages/NewChat"));
 const GetReel = lazy(() => import("./Pages/GetReel"));
+import { ToastContainer } from 'react-toastify'
 
 const App = () => {
   const dispatch = useDispatch();
   const { user, loader } = useSelector((state) => state.auth);
+  const id = useParams().id
 
   useEffect(() => {
     axios
@@ -70,7 +69,6 @@ const App = () => {
             <Route path="/feeds" element={<Posts />} />
             <Route path="/search" element={<Search />} />
             <Route path="/notifications" element={<Notifications />} />
-            <Route path="/post/new" element={<NewPost />} />
             <Route path="/reels" element={<Reels />} />
             <Route path="/chats" element={<Chat />} />
             <Route path="/profile/edit" element={<EditProfile />} />
@@ -81,9 +79,8 @@ const App = () => {
             <Route path="/user/friends" element={<Friends />} />
             <Route path="/user/lists" element={<List />} />
             <Route path="/lists/list/following" element={<Following />} />
-            <Route path="/reel/new" element={<NewReel />} />
             <Route path="/user/:id/chat/create" element={<NewChat />} />
-            <Route path="/chat/:id" element={<GetChat />} />
+            <Route path="/chat/:id" element={<GetChat user={user} chatId={id} />} />
             <Route path="/reel/:id" element={<GetReel />} />
             <Route
               path="/other/user/:id/followers"
@@ -104,6 +101,7 @@ const App = () => {
         </Routes>
       </Suspense>
       <Toaster position="top-center" />
+      <ToastContainer position="top-center" />
     </Router>
   );
 };

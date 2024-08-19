@@ -1,187 +1,273 @@
-import { Link, useParams } from "react-router-dom";
+import { useInfiniteScrollTop } from "6pp";
 import {
-  useAllMessagesQuery,
-  useGetChatQuery,
-  useSendMessageMutation,
-} from "../redux/api/api";
-import moment from "moment";
-import { useSelector } from "react-redux";
-import { BiLoader, BiSend } from "react-icons/bi";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
-import LocomotiveScroll from "locomotive-scroll";
+  AttachFile as AttachFileIcon,
+  Send as SendIcon,
+} from "@mui/icons-material";
+import { IconButton, Skeleton, Stack } from "@mui/material";
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import MessageComponent from "../Components/shared/MessageComponent";
+import { grayColor, orange } from "../Constants/color";
+import {
+  ALERT,
+  CHAT_JOINED,
+  CHAT_LEAVED,
+  NEW_MESSAGE,
+  START_TYPING,
+  STOP_TYPING,
+} from "../Constants/events";
+import { useErrors, useSocketEvents } from "../Hooks/hook";
+import { useChatDetailsQuery, useGetMessagesQuery, useSendAttachmentsMutation } from "../redux/api/api";
+import { removeNewMessagesAlert } from "../redux/reducers/chat";
+// import { setIsFileMenu, setUploadingLoader } from "../redux/reducers/misc";
+import { getSocket } from "../socket";
+// import VoiceRecorder from "../components/specific/VioceRecorder";
+import toast from "react-hot-toast";
+import { InputBox } from "../Components/Custom/custom";
 import Layout from "../Layout/Layout";
-import Loader from "../Components/Loader";
 
-const GetChat = () => {
-  const chatContainerRef = useRef(null);
-  const [content, setContent] = useState("");
+
+const GetChat = ({ user }) => {
+  const socket = getSocket();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const params = useParams()
+  const chatId = params.id
+
+  const containerRef = useRef(null);
+  const bottomRef = useRef(null);
+
+  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const chatId = useParams().id;
-  const { user } = useSelector((state) => state.auth);
-  const { data, isLoading } = useGetChatQuery(chatId);
-  const {
-    data: messagesData,
-    isError,
-    isLoading: messageLoading,
-  } = useAllMessagesQuery(chatId);
+  const [page, setPage] = useState(1);
+  const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
 
-  const getMessageDateTime = (createdAt) => {
-    const messageDate = moment(createdAt);
-    const currentDate = moment();
+  const [IamTyping, setIamTyping] = useState(false);
+  const [userTyping, setUserTyping] = useState(false);
+  const typingTimeout = useRef(null);
+  const [sendAttachments] = useSendAttachmentsMutation();
 
-    // Check if the message was created today
-    if (messageDate.isSame(currentDate, "day")) {
-      // Format as 24-hour time if created today
-      return messageDate.format("HH:mm");
-    } else if (messageDate.isSame(currentDate, "week")) {
-      // Format as date and time if created within the same week
-      return messageDate.format("dddd, HH:mm");
-    } else {
-      // Format as date and time if created on a different day within the same week
-      return messageDate.format("MMM D, HH:mm");
+  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
+
+  const oldMessagesChunk = useGetMessagesQuery({ chatId, page });
+
+  const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
+    containerRef,
+    oldMessagesChunk.data?.totalPages,
+    page,
+    setPage,
+    oldMessagesChunk.data?.messages
+  );
+
+  const errors = [
+    { isError: chatDetails.isError, error: chatDetails.error },
+    { isError: oldMessagesChunk.isError, error: oldMessagesChunk.error },
+  ];
+
+  const members = chatDetails?.data?.chat?.members;
+
+  const messageOnChange = (e) => {
+    setMessage(e.target.value);
+
+    if (!IamTyping) {
+      socket.emit(START_TYPING, { members, chatId });
+      setIamTyping(true);
     }
+
+    if (typingTimeout.current) clearTimeout(typingTimeout.current);
+
+    typingTimeout.current = setTimeout(() => {
+      socket.emit(STOP_TYPING, { members, chatId });
+      setIamTyping(false);
+    }, [2000]);
   };
 
-  const [messageSend] = useSendMessageMutation();
-
-  const sendMessage = () => {
-    const message = {
-      otherUserId: data?.chat?.members[0],
-      content,
-      chatId: data?.chat?._id,
-    };
-    messageSend(message)
-      .unwrap()
-      .then((data) => {
-        toast.success(data?.message);
-        setContent("");
-      })
-      .catch((err) => toast.error(err?.data?.message));
+  const handleFileOpen = (e) => {
+    dispatch(setIsFileMenu(true));
+    setFileMenuAnchor(e.currentTarget);
   };
 
-  const renderMessageContent = (content) => {
-    // Regular expression to detect URLs
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    // Check if content is a link
-    if (urlRegex.test(content)) {
-      return (
-        <a href={content} target="_blank" rel="noopener noreferrer">
-          {content}
-        </a>
-      );
-    } else {
-      return content;
-    }
+  const submitHandler = (e) => {
+    e.preventDefault();
+    
+    if (!message.trim()) return;
+    
+    // Emitting the message to the server
+    socket.emit(NEW_MESSAGE, { chatId, members, message });
+    setMessage("");
   };
 
   useEffect(() => {
-    // Scroll to the bottom of the chat container when the component mounts or when chatID changes
-    scrollToBottom();
-  }, []);
+    socket.emit(CHAT_JOINED, { userId: user._id, members });
+    dispatch(removeNewMessagesAlert(chatId));
 
-  const scrollToBottom = () => {
-    // Scroll to the bottom of the chat container
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+    return () => {
+      setMessages([]);
+      setMessage("");
+      setOldMessages([]);
+      setPage(1);
+      socket.emit(CHAT_LEAVED, { userId: user._id, members });
+    };
+  }, [chatId]);
+
+  useEffect(() => {
+    if (bottomRef.current)
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  useEffect(() => {
+    if (chatDetails.isError) return navigate("/");
+  }, [chatDetails.isError]);
+
+  const newMessagesListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+
+      setMessages((prev) => [...prev, data.message]);
+    },
+    [chatId]
+  );
+
+  const startTypingListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+
+      setUserTyping(true);
+    },
+    [chatId]
+  );
+
+  const stopTypingListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      setUserTyping(false);
+    },
+    [chatId]
+  );
+
+  const alertListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      const messageForAlert = {
+        content: data.message,
+        sender: {
+          _id: "djasdhajksdhasdsadasdas",
+          name: "Admin",
+        },
+        chat: chatId,
+        createdAt: new Date().toISOString(),
+      };
+
+      setMessages((prev) => [...prev, messageForAlert]);
+    },
+    [chatId]
+  );
+
+  const handleVoice = async (voice) => {
+    dispatch(setUploadingLoader(true));
+    const toastId = toast.loading(`Sending voice...`);
+    try {
+      const myForm = new FormData();
+      myForm.append("chatId", chatId);
+      myForm.append("files", voice, 'voiceMessage.mp3');
+      const res = await sendAttachments(myForm);
+
+      if (res.data) toast.success(`Voice sent successfully`, { id: toastId });
+      else toast.error(`Failed to send voice`, { id: toastId });
+
+      // Fetching Here
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    } finally {
+      dispatch(setUploadingLoader(false));
     }
   };
 
-  if (isError) return toast.error("Chat Id Expired");
+  const eventHandler = {
+    [ALERT]: alertListener,
+    [NEW_MESSAGE]: newMessagesListener,
+    [START_TYPING]: startTypingListener,
+    [STOP_TYPING]: stopTypingListener,
+  };
 
-  return isLoading ? <Loader /> : (
+  useSocketEvents(socket, eventHandler);
+
+  useErrors(errors);
+
+  const allMessages = [...oldMessages, ...messages];
+
+  return chatDetails.isLoading ? (
+    <Skeleton />
+  ) : (
     <Layout>
-      <div className="w-full h-screen relative bg-white">
+      <div className="w-full h-screen relative overflow-hidden">
         <div
-          ref={chatContainerRef}
-          className="w-full max-h-screen overflow-y-scroll pb-20"
+          ref={containerRef}
+          className="w-full flex flex-col gap-[1rem] p-[1rem] h-[90%] overflow-hidden overflow-y-scroll"
         >
-          <div className="w-full flex px-4 py-2 justify-between">
-            <Link to="/">Back</Link>
-            <h2>{user?.username}</h2>
-            <div></div>
-          </div>
-          <div className="w-full p-5">
-            <div className="h-52">
-              <div className="w-20 h-20 rounded-full bg-zinc-300 overflow-hidden mx-auto">
-                <img
-                  src={data?.chat?.avatar}
-                  className="w-full h-full"
-                  alt=""
-                />
-              </div>
-              <h2 className="w-full text-center mt-2 font-bold text-xl">
-                {data?.chat?.name}
-              </h2>
-              <h2 className="w-full text-center font-semibold">
-                {data?.chat?.name}{" "}
-                - Instagram
-              </h2>
-            </div>
-            {messageLoading ? (
-              <div>loading...</div>
-            ) : (
-              <div className="w-full flex flex-col gap-4">
-                {messagesData?.messages?.map((message, index) => (
-                  <div key={index} className="w-full">
-                    <div
-                      className={`w-full flex items-end gap-3 ${message?.sender?._id === user._id
-                        ? "justify-end"
-                        : "justify-start"
-                        }`}
-                    >
-                      {message?.sender?._id === user._id ? (
-                        ""
-                      ) : (
-                        <div className="w-6 h-6 overflow-hidden rounded-full bg-zinc-300">
-                          <img src={message?.sender?.profile} alt="" />
-                        </div>
-                      )}
-                      <div
-                        className={`w-1/2 h-full px-3 py-2 ${message?.sender?._id === user._id
-                          ? "bg-[#3797F0] text-white rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-sm "
-                          : "bg-black/10 text-zinc-800 rounded-xl"
-                          }`}
-                      >
-                        <p className="text-sm">
-                          {renderMessageContent(message?.content)}
-                        </p>
-                      </div>
-                      {/* <h4 className="text-xs text-zinc-500">
-          {timeAgo(message?.createdAt)}
-        </h4> */}
-                    </div>
-                    <div className="w-full py-5 text-center justify-center">
-                      <h5 className="text-xs text-zinc-500">
-                        {getMessageDateTime(message?.createdAt)}
-                      </h5>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {allMessages.map((i) => (
+            <MessageComponent key={i._id} message={i} user={user} />
+          ))}
+
+          {userTyping && "typing..."}
+
+          <div ref={bottomRef} />
         </div>
-        <div className="w-full h-20 absolute bottom-0 left-0 bg-white flex items-center justify-between px-4">
-          <input
-            type="text"
-            className="outline-none border-2 rounded-full px-4 py-2 w-full pr-24
-        "
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="message..."
-          />
-          {content.length > 0 && (
-            <button
-              onClick={sendMessage}
-              className="absolute right-8 text-sm font-semibold text-sky-500 p-1.5 px-4 hover:bg-black/10 rounded-full"
+
+        <form
+          className="w-full h-[10%] absolute bottom-0"
+          onSubmit={submitHandler}
+        >
+          <Stack
+            direction={"row"}
+            height={"100%"}
+            padding={"10px 1rem"}
+            alignItems={"center"}
+            position={"relative"}
+          >
+            <IconButton
+              sx={{
+                position: "absolute",
+                left: "1.5rem",
+                rotate: "30deg",
+              }}
+            // onClick={handleFileOpen}
             >
-              Send
-            </button>
-          )}
-        </div>
+              <AttachFileIcon />
+            </IconButton>
+
+            <InputBox
+              placeholder="Type Message Here..."
+              value={message}
+              onChange={messageOnChange}
+            />
+            {/* <VoiceRecorder onSendVoiceMessage={handleVoice} /> */}
+            <IconButton
+              type="submit"
+              sx={{
+                rotate: "-30deg",
+                bgcolor: orange,
+                color: "white",
+                marginLeft: "1rem",
+                padding: "0.5rem",
+                "&:hover": {
+                  bgcolor: "error.dark",
+                },
+              }}
+            >
+              <SendIcon />
+            </IconButton>
+          </Stack>
+        </form>
       </div>
+      {/* <FileMenu anchorE1={fileMenuAnchor} chatId={chatId} /> */}
     </Layout>
   );
 };

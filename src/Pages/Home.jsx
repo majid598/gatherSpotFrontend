@@ -12,8 +12,6 @@ import { getSocket } from "../socket";
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
   const { posts } = useGetAllPosts()
-  const socket = getSocket();
-  console.log(socket)
 
   const { data: storyData } = useGetStoriesQuery();
   const stories = storyData?.stories;

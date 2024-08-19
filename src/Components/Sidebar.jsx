@@ -8,21 +8,28 @@ import { MdGroups2 } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { server } from "../redux/api/api";
+import { server, useMyChatsQuery } from "../redux/api/api";
 import { userNotExists } from "../redux/reducers/userReducer";
 import Svg from "./Svg";
 import { useReset } from "../Requests/GetRequest";
 import { useKnowIsChat } from "../Utils/features";
 import ChatList from "./Chat/ChatList";
+import { useCallback, useEffect, useState } from "react";
+import { getSocket } from "../socket";
+import { useErrors, useSocketEvents } from '../Hooks/hook'
+import { NEW_MESSAGE_ALERT, NEW_REQUEST, ONLINE_USERS, REFETCH_CHATS } from "../Constants/events";
+import { getOrSaveFromStorage } from "../lib/features";
+import { incrementNotification, setNewMessagesAlert } from "../redux/reducers/chat";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const location = useLocation();
+  const socket = getSocket();
   const reset = useReset()
-  const { id } = useParams()
-  const isChat = useKnowIsChat(location, id)
+  const { id: chatId } = useParams()
+  const isChat = useKnowIsChat(location, chatId)
   const buttons = [
     {
       name: "Home",
@@ -83,27 +90,91 @@ const Sidebar = () => {
     // },
   ];
 
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
-  const logoutHandler = async () => {
-    await axios
-      .get(`${server}/api/v1/user/logout`, {
-        withCredentials: true,
-        headers: {
-          "token": localStorage.getItem("token")
-        }
-      })
-      .then(({ data }) => {
-        localStorage.removeItem("token")
-        toast.success(data?.message);
-        dispatch(userNotExists());
-      }).catch((err) => {
-        toast.error(err?.response?.data?.message)
-      });
+  const { newMessagesAlert } = useSelector((state) => state.chat);
+
+  const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
+
+  useErrors([{ isError, error }]);
+
+  useEffect(() => {
+    getOrSaveFromStorage({ key: NEW_MESSAGE_ALERT, value: newMessagesAlert });
+  }, [newMessagesAlert]);
+
+  const handleDeleteChat = (e, chatId, groupChat) => {
+    dispatch(setIsDeleteMenu(true));
+    dispatch(setSelectedDeleteChat({ chatId, groupChat }));
+    deleteMenuAnchor.current = e.currentTarget;
   };
+
+  const newMessageAlertListener = useCallback(
+    (data) => {
+      if (data.chatId === chatId) return;
+      dispatch(setNewMessagesAlert(data));
+      console.log(data)
+    },
+    [chatId]
+  );
+
+  const newRequestListener = useCallback(() => {
+    dispatch(incrementNotification());
+  }, [dispatch]);
+
+  const refetchListener = useCallback(() => {
+    refetch();
+    navigate("/");
+  }, [refetch, navigate]);
+
+  const onlineUsersListener = useCallback((data) => {
+    setOnlineUsers(data);
+  }, []);
+
+  const eventHandlers = {
+    [NEW_MESSAGE_ALERT]: newMessageAlertListener,
+    [NEW_REQUEST]: newRequestListener,
+    [REFETCH_CHATS]: refetchListener,
+    [ONLINE_USERS]: onlineUsersListener,
+  };
+
+  useSocketEvents(socket, eventHandlers);
+  const logoutHandler = async () => {
+    toast.info("new message")
+    // await axios
+    //   .get(`${server}/api/v1/user/logout`, {
+    //     withCredentials: true,
+    //     headers: {
+    //       "token": localStorage.getItem("token")
+    //     }
+    //   })
+    //   .then(({ data }) => {
+    //     localStorage.removeItem("token")
+    //     toast.success(data?.message);
+    //     dispatch(userNotExists());
+    //   }).catch((err) => {
+    //     toast.error(err?.response?.data?.message)
+    //   });
+  };
+
+  useEffect(() => {
+    socket.on(NEW_MESSAGE_ALERT, (data) => {
+      if (data.chatId === chatId) return
+      // toast.info(`New message in chat ${data.chatId}`)
+    });
+  }, [socket]);
 
   return (
     <div className="sidebar lg:w-[22rem] md:w-[16rem] sm:w-16 lg:block md:block sm:block hidden h-full md:border-r border-zinc-500">
-      {isChat ? <ChatList /> :
+      {isChat ? <>
+        <Link to="/">Home</Link>
+        <ChatList
+          chats={data?.chats}
+          chatId={chatId}
+          handleDeleteChat={handleDeleteChat}
+          newMessagesAlert={newMessagesAlert}
+          onlineUsers={onlineUsers}
+        />
+      </> :
         <div className="w-full h-full bg-white relative z-50 py-10">
           <div className="w-full text-center flex items-center gap-2 px-10">
             <img
@@ -157,7 +228,6 @@ const Sidebar = () => {
           </div>
         </div>
       }
-      <div className="w-[24rem] absolute -bottom-40 -left-40 h-[24rem] blur-xl rounded-full bg-sky-500"></div>
     </div >
   );
 };

@@ -19,6 +19,7 @@ const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+
     followToaUser: builder.mutation({
       query: (data) => ({
         url: `user/follow`,
@@ -191,19 +192,13 @@ const api = createApi({
     }),
     allMessages: builder.query({
       query: (id) => ({
-        url: `chat/messages/${id}`, credentials: "include", headers: {
+        url: `chat/messages/${id}`,
+        credentials: "include",
+        headers: {
           "token": localStorage.getItem("token")
         }
       }),
-      providesTags: ["Message"],
-    }),
-    myChats: builder.query({
-      query: (id) => ({
-        url: `chat/my/all?id=${id}`, credentials: "include", headers: {
-          "token": localStorage.getItem("token")
-        }
-      }),
-      providesTags: ["Message"],
+      keepUnusedDataFor: 0,
     }),
     sendMessage: builder.mutation({
       query: (message) => ({
@@ -247,6 +242,205 @@ const api = createApi({
       }),
       providesTags: ["Reel"],
     }),
+    myChats: builder.query({
+      query: () => ({
+        url: "chat/my",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
+      providesTags: ["Chat"],
+    }),
+
+    searchUser: builder.query({
+      query: (name) => ({
+        url: `user/search?name=${name}`,
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
+      providesTags: ["User"],
+    }),
+
+    sendFriendRequest: builder.mutation({
+      query: (data) => ({
+        url: "user/sendrequest",
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        },
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    getNotifications: builder.query({
+      query: () => ({
+        url: `user/notifications`,
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
+      keepUnusedDataFor: 0,
+    }),
+
+    acceptFriendRequest: builder.mutation({
+      query: (data) => ({
+        url: "user/acceptrequest",
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        },
+        body: data,
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    chatDetails: builder.query({
+      query: ({ chatId, populate = false }) => {
+        let url = `chat/${chatId}`;
+        if (populate) url += "?populate=true";
+        return {
+          url,
+          credentials: "include",
+          headers: {
+            "token": localStorage.getItem("token")
+          },
+        };
+      },
+      providesTags: ["Chat"],
+    }),
+
+    getMessages: builder.query({
+      query: ({ chatId, page }) => ({
+        url: `chat/message/${chatId}?page=${page}`,
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
+      keepUnusedDataFor: 0,
+    }),
+
+    sendAttachments: builder.mutation({
+      query: (data) => ({
+        url: "chat/message",
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        },
+        body: data,
+      }),
+    }),
+
+    myGroups: builder.query({
+      query: () => ({
+        url: "chat/my/groups",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        }
+      }),
+      providesTags: ["Chat"],
+    }),
+
+    availableFriends: builder.query({
+      query: (chatId) => {
+        let url = `user/friends`;
+        if (chatId) url += `?chatId=${chatId}`;
+
+        return {
+          url,
+          credentials: "include",
+          headers: {
+            "token": localStorage.getItem("token")
+          }
+        };
+      },
+      providesTags: ["Chat"],
+    }),
+
+    newGroup: builder.mutation({
+      query: ({ name, members }) => ({
+        url: "chat/new",
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        },
+        body: { name, members },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    renameGroup: builder.mutation({
+      query: ({ chatId, name }) => ({
+        url: `chat/${chatId}`,
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        },
+        body: { name },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    removeGroupMember: builder.mutation({
+      query: ({ chatId, userId }) => ({
+        url: `chat/removemember`,
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        },
+        body: { chatId, userId },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    addGroupMembers: builder.mutation({
+      query: ({ members, chatId }) => ({
+        url: `chat/addmembers`,
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        },
+        body: { members, chatId },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    deleteChat: builder.mutation({
+      query: (chatId) => ({
+        url: `chat/${chatId}`,
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    leaveGroup: builder.mutation({
+      query: (chatId) => ({
+        url: `chat/leave/${chatId}`,
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
   }),
 });
 
@@ -266,7 +460,6 @@ export const {
   useLogoutQuery,
   useGetChatQuery,
   useAllMessagesQuery,
-  useMyChatsQuery,
   useLikeReelMutation,
   useSendMessageMutation,
   useNewChatMutation,
@@ -274,5 +467,21 @@ export const {
   useAddCommentToReelMutation,
   useGetReelByIdQuery,
   useAddToFavofitesMutation,
+  useMyChatsQuery,
+  useLazySearchUserQuery,
+  useSendFriendRequestMutation,
+  useGetNotificationsQuery,
+  useAcceptFriendRequestMutation,
+  useChatDetailsQuery,
+  useGetMessagesQuery,
+  useSendAttachmentsMutation,
+  useMyGroupsQuery,
+  useAvailableFriendsQuery,
+  useNewGroupMutation,
+  useRenameGroupMutation,
+  useRemoveGroupMemberMutation,
+  useAddGroupMembersMutation,
+  useDeleteChatMutation,
+  useLeaveGroupMutation,
 } = api;
 export default api;

@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import toast from "react-hot-toast";
+
 const useSocketEvents = (socket, handlers) => {
     useEffect(() => {
         Object.entries(handlers).forEach(([event, handler]) => {
@@ -12,4 +15,15 @@ const useSocketEvents = (socket, handlers) => {
     }, [socket, handlers]);
 };
 
-export { useSocketEvents }
+const useErrors = (errors = []) => {
+    useEffect(() => {
+        errors.forEach(({ isError, error, fallback }) => {
+            if (isError) {
+                if (fallback) fallback();
+                else toast.error(error?.data?.message || "Something went wrong");
+            }
+        });
+    }, [errors]);
+};
+
+export { useSocketEvents, useErrors }
