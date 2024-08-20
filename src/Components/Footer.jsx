@@ -43,14 +43,14 @@ const Footer = () => {
   ];
 
   return (
-    <div className="w-full sm:hidden h-16 bottom-0 left-0 z-[999] bg-black">
+    <div className="w-full sm:hidden h-16 bottom-0 left-0 z-[999] bg-white">
       <div className="w-full h-full relative z-50 px-6">
         <div className="w-full h-full grid grid-cols-5 relative justify-between rounded-tl-3xl rounded-tr-3xl items-center">
           {buttons.map((button) => (
             <Link
               key={button.name}
               to={button.path}
-              className={`flex w-full h-full p-2 items-center rounded-full justify-center gap-4 ${location.pathname === button.path
+              className={`flex w-full h-full p-2 items-center hover:bg-sky-200 justify-center gap-4 ${location.pathname === button.path
                 ? "bg-sky-500"
                 : ""
                 }`}
