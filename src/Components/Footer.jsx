@@ -4,6 +4,7 @@ import { GoBell, GoBellFill, GoHome, GoHomeFill, GoSearch } from "react-icons/go
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import Svg from "./Svg";
+import { IoChatbubbleEllipsesOutline, IoChatbubbleEllipsesSharp } from "react-icons/io5";
 
 const Footer = () => {
   const { user } = useSelector((state) => state.auth);
@@ -29,9 +30,9 @@ const Footer = () => {
     },
     {
       name: "Notifications",
-      path: "/notifications",
-      icon: <GoBell className="text-2xl text-zinc-500" />,
-      icon2: <GoBellFill className="text-2xl text-white" />,
+      path: "/chats",
+      icon: <IoChatbubbleEllipsesOutline className="text-2xl text-zinc-500" />,
+      icon2: <IoChatbubbleEllipsesSharp className="text-2xl text-sky-500" />,
     },
 
     // {
@@ -43,7 +44,7 @@ const Footer = () => {
   ];
 
   return (
-    <div className="w-full sm:hidden h-16 bottom-0 left-0 z-[999] bg-white">
+    <div className="w-full sm:hidden h-16 bottom-0 left-0 z-[999] bg-white border-t-2">
       <div className="w-full h-full relative z-50 px-6">
         <div className="w-full h-full grid grid-cols-5 relative justify-between rounded-tl-3xl rounded-tr-3xl items-center">
           {buttons.map((button) => (
