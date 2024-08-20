@@ -139,34 +139,33 @@ const Sidebar = () => {
 
   useSocketEvents(socket, eventHandlers);
   const logoutHandler = async () => {
-    toast.info("new message")
-    // await axios
-    //   .get(`${server}/api/v1/user/logout`, {
-    //     withCredentials: true,
-    //     headers: {
-    //       "token": localStorage.getItem("token")
-    //     }
-    //   })
-    //   .then(({ data }) => {
-    //     localStorage.removeItem("token")
-    //     toast.success(data?.message);
-    //     dispatch(userNotExists());
-    //   }).catch((err) => {
-    //     toast.error(err?.response?.data?.message)
-    //   });
+    await axios
+      .get(`${server}/api/v1/user/logout`, {
+        withCredentials: true,
+        headers: {
+          "token": localStorage.getItem("token")
+        }
+      })
+      .then(({ data }) => {
+        localStorage.removeItem("token")
+        toast.success(data?.message);
+        dispatch(userNotExists());
+      }).catch((err) => {
+        toast.error(err?.response?.data?.message)
+      });
   };
 
   useEffect(() => {
     socket.on(NEW_MESSAGE_ALERT, (data) => {
       if (data.chatId === chatId) return
-      // toast.info(`New message in chat ${data.chatId}`)
+      toast.info(`You have a new message ${data.chatId}`)
     });
   }, [socket]);
 
   return (
     <div className="sidebar lg:w-[22rem] md:w-[16rem] sm:w-16 lg:block md:block sm:block hidden h-full md:border-r border-zinc-500">
       {isChat ? <>
-        <Link to="/">Home</Link>
+        <Link to="/" className="absolute">Home</Link>
         <ChatList
           chats={data?.chats}
           chatId={chatId}

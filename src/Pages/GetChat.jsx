@@ -3,7 +3,7 @@ import {
   AttachFile as AttachFileIcon,
   Send as SendIcon,
 } from "@mui/icons-material";
-import { IconButton, Skeleton, Stack } from "@mui/material";
+import { Avatar, IconButton, Skeleton, Stack } from "@mui/material";
 import React, {
   Fragment,
   useCallback,
@@ -20,11 +20,12 @@ import {
   CHAT_JOINED,
   CHAT_LEAVED,
   NEW_MESSAGE,
+  ONLINE_USERS,
   START_TYPING,
   STOP_TYPING,
 } from "../Constants/events";
 import { useErrors, useSocketEvents } from "../Hooks/hook";
-import { useChatDetailsQuery, useGetMessagesQuery, useSendAttachmentsMutation } from "../redux/api/api";
+import { useChatDetailsQuery, useGetChatNamePhotoQuery, useGetMessagesQuery, useSendAttachmentsMutation } from "../redux/api/api";
 import { removeNewMessagesAlert } from "../redux/reducers/chat";
 // import { setIsFileMenu, setUploadingLoader } from "../redux/reducers/misc";
 import { getSocket } from "../socket";
@@ -32,6 +33,9 @@ import { getSocket } from "../socket";
 import toast from "react-hot-toast";
 import { InputBox } from "../Components/Custom/custom";
 import Layout from "../Layout/Layout";
+import { FaArrowLeft } from "react-icons/fa";
+import { getLastActive } from "../lib/features";
+import { useGetSingleUser } from "../Requests/GetRequest";
 
 
 const GetChat = ({ user }) => {
@@ -47,7 +51,8 @@ const GetChat = ({ user }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(1);
-  const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
 
   const [IamTyping, setIamTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
@@ -55,6 +60,7 @@ const GetChat = ({ user }) => {
   const [sendAttachments] = useSendAttachmentsMutation();
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
+  const headerChat = useGetChatNamePhotoQuery(chatId)
 
   const oldMessagesChunk = useGetMessagesQuery({ chatId, page });
 
@@ -96,9 +102,9 @@ const GetChat = ({ user }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    
+
     if (!message.trim()) return;
-    
+
     // Emitting the message to the server
     socket.emit(NEW_MESSAGE, { chatId, members, message });
     setMessage("");
@@ -190,12 +196,21 @@ const GetChat = ({ user }) => {
     }
   };
 
+  const onlineUsersListener = useCallback((data) => {
+    setOnlineUsers(data);
+  }, []);
+
   const eventHandler = {
     [ALERT]: alertListener,
     [NEW_MESSAGE]: newMessagesListener,
     [START_TYPING]: startTypingListener,
     [STOP_TYPING]: stopTypingListener,
+    [ONLINE_USERS]: onlineUsersListener,
   };
+
+  const isOnline = headerChat?.data?.chat?.members?.some((member) =>
+    onlineUsers.includes(member._id)
+  );
 
   useSocketEvents(socket, eventHandler);
 
@@ -203,26 +218,41 @@ const GetChat = ({ user }) => {
 
   const allMessages = [...oldMessages, ...messages];
 
+
   return chatDetails.isLoading ? (
     <Skeleton />
   ) : (
     <Layout>
       <div className="w-full h-screen relative overflow-hidden">
+        <div className="flex gap-4 px-10 py-7 items-center w-full relative bg-white border-b-2 z-50">
+          <button onClick={() => navigate("/chats")}><FaArrowLeft className="text-xl text-zinc-600" /></button>
+          <button className="w-12 h-12">
+            <Avatar style={{ width: "100%", height: "100%" }} src={headerChat?.data?.chat?.avatar} />
+          </button>
+          <div>
+            <h2 className="font-semibold">{headerChat?.data?.chat?.name}</h2>
+            <h5 className="text-xs font-semibold text-sky-500">
+              {
+                userTyping ?
+                  "Typing..." : isOnline ? "online" : <>last active: {getLastActive(headerChat?.data?.chat?.members?.map((member) => member.lastSeen))}</>
+              }
+            </h5>
+          </div>
+        </div>
         <div
           ref={containerRef}
-          className="w-full flex flex-col gap-[1rem] p-[1rem] h-[90%] overflow-hidden overflow-y-scroll"
+          className="w-full flex flex-col gap-[1rem] p-[1rem] h-[80%] overflow-hidden overflow-y-scroll"
         >
           {allMessages.map((i) => (
             <MessageComponent key={i._id} message={i} user={user} />
           ))}
 
-          {userTyping && "typing..."}
 
           <div ref={bottomRef} />
         </div>
 
         <form
-          className="w-full h-[10%] absolute bottom-0"
+          className="w-full h-[10%] py-4"
           onSubmit={submitHandler}
         >
           <Stack
@@ -242,7 +272,6 @@ const GetChat = ({ user }) => {
             >
               <AttachFileIcon />
             </IconButton>
-
             <InputBox
               placeholder="Type Message Here..."
               value={message}
@@ -253,7 +282,7 @@ const GetChat = ({ user }) => {
               type="submit"
               sx={{
                 rotate: "-30deg",
-                bgcolor: orange,
+                bgcolor: "red",
                 color: "white",
                 marginLeft: "1rem",
                 padding: "0.5rem",

@@ -441,6 +441,16 @@ const api = createApi({
       }),
       invalidatesTags: ["Chat"],
     }),
+    getChatNamePhoto: builder.query({
+      query: (chatId) => ({
+        url: `chat/get/${chatId}`,
+        credentials: "include",
+        headers: {
+          "token": localStorage.getItem("token")
+        },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
   }),
 });
 
@@ -483,5 +493,6 @@ export const {
   useAddGroupMembersMutation,
   useDeleteChatMutation,
   useLeaveGroupMutation,
+  useGetChatNamePhotoQuery
 } = api;
 export default api;
