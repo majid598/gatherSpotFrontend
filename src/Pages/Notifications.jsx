@@ -45,7 +45,7 @@ const Notifications = () => {
           </div>
         </div>
         <div className="flex gap-4 p-10 flex-wrap">
-          {buttons.map((btn) => <button onClick={() => navigate(`/notifications?type=${btn.type}`)} className={`px-5 py-2 rounded-full font-bold transition-all duration-300 ${btn.type === type ? "bg-sky-500 text-white" : "bg-zinc-200 text-zinc-500 hover:bg-sky-500 hover:text-white"}`}>{btn.name}</button>
+          {buttons.map((btn) => <button onClick={() => navigate(`/notifications?type=${btn.type}`)} key={btn.name} className={`px-5 py-2 rounded-full font-bold transition-all duration-300 ${btn.type === type ? "bg-sky-500 text-white" : "bg-zinc-200 text-zinc-500 hover:bg-sky-500 hover:text-white"}`}>{btn.name}</button>
           )}
         </div>
         <div className="w-full flex flex-col gap-4">

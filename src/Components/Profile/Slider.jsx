@@ -37,7 +37,7 @@ const UserProfileSlider = ({ posts, currentIndex, setCurrentIndex }) => {
             <div className="post-display">
                 {posts.map((post, index) => (
                     <div
-                        key={index}
+                        key={index + 1}
                         className={`post ${index === currentIndex ? 'active' : 'inactive'}`}
                         style={{ display: index === currentIndex ? 'block' : 'none' }} // Only display the active post
                     >

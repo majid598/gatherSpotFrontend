@@ -80,7 +80,7 @@ const Reels = () => {
               {reels?.map((reel, index) => {
                 // setIsLiked(reel.likes.includes(user._id));
                 return (
-                  <SwiperSlide id={`reel-${reel.id}`}>
+                  <SwiperSlide id={`reel-${reel.id}`} key={index + 1}>
                     <Reel
                       reel={reel}
                       index={index}

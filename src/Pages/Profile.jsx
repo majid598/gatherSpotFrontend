@@ -279,7 +279,7 @@ const Profile = () => {
               <nav ref={navRef} className="flex mt-10 relative gap-12 pb-2" >
                 {buttons.map((button, index) => (
                   <button
-                    key={index}
+                    key={index + 1}
                     className={`nav-button font-semibold ${activeIndex === index ? 'active' : ''} ${selectedBtn === button.name ? "text-black" : "text-zinc-500"} transition-all duration-300`}
                     onClick={() => button.handler(index)}
                   >

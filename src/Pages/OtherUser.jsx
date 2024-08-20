@@ -13,7 +13,8 @@ import Videos from "../Components/Profile/Videos";
 import ReelLoader from "../Components/ReelLoader";
 import Layout from "../Layout/Layout";
 import { useGetSingleUser } from "../Requests/GetRequest";
-import { useFollowAUser, useSendFriendRequest } from "../Requests/PostRequests";
+import { useCreateChat, useFollowAUser, useSendFriendRequest } from "../Requests/PostRequests";
+import Loader from "../Components/Loader";
 
 const Profile = () => {
   const { id } = useParams()
@@ -51,6 +52,7 @@ const Profile = () => {
 
   const follow = useFollowAUser()
   const { user: me } = useSelector(state => state.auth)
+  const { createChat, isLoading: chatLoading } = useCreateChat()
 
   const { sendReq, isLoading } = useSendFriendRequest()
 
@@ -152,7 +154,7 @@ const Profile = () => {
   return (
     <Layout>
       <div className="w-full h-full pb-40">
-        {loading && <ReelLoader message={"Profile Editing..."} />}
+        {chatLoading && <Loader />}
         <div className="w-full flex lg:flex-row md:flow-row flex-col gap-10 h-full">
           <div className="w-full">
             <div className="flex gap-4 p-10 items-start w-full relative z-50">
@@ -187,16 +189,21 @@ const Profile = () => {
                       <button onClick={() => follow(user?._id)} className="px-6 py-2 rounded-full bg-sky-500 transition-all duration-300 hover:bg-sky-600 flex items-center gap-2 font-bold text-white border-2 border-sky-500 hover:border-sky-600">
                         Follow
                       </button>}
-                    <button onClick={() => sendReq(user?._id)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
-                      {isLoading ? "Sending..." : <><FaUserPlus /> Add</>}
-                    </button>
+                    {user?.friends?.includes(me?._id) ?
+                      <button onClick={() => createChat(user?._id)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
+                        Message
+                      </button> :
+                      <button onClick={() => sendReq(user?._id)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
+                        {isLoading ? "Sending..." : <><FaUserPlus /> Add</>}
+                      </button>
+                    }
                   </div>
                 </div>
               </div>
               <nav ref={navRef} className="flex mt-10 relative gap-12 pb-2" >
                 {buttons.map((button, index) => (
                   <button
-                    key={index}
+                    key={index + 1}
                     className={`nav-button font-semibold ${activeIndex === index ? 'active' : ''} ${selectedBtn === button.name ? "text-black" : "text-zinc-500"} transition-all duration-300`}
                     onClick={() => button.handler(index)}
                   >

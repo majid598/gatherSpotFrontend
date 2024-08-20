@@ -42,7 +42,7 @@ const OtherUserFollowing = () => {
       </div>
       {user?.following?.map((follower, index) => (
         <div
-          key={index}
+          key={index + 1}
           className="w-full justify-between h-12 flex items-center"
         >
           <div className="flex gap-3 h-full">

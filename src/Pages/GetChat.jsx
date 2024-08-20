@@ -33,9 +33,10 @@ import { getSocket } from "../socket";
 import toast from "react-hot-toast";
 import { InputBox } from "../Components/Custom/custom";
 import Layout from "../Layout/Layout";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaPhone } from "react-icons/fa";
 import { getLastActive } from "../lib/features";
 import { useGetSingleUser } from "../Requests/GetRequest";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 
 const GetChat = ({ user }) => {
@@ -223,25 +224,35 @@ const GetChat = ({ user }) => {
     <Skeleton />
   ) : (
     <Layout>
-      <div className="w-full h-screen relative overflow-hidden">
-        <div className="flex gap-4 px-10 py-7 items-center w-full relative bg-white border-b-2 z-50">
-          <button onClick={() => navigate("/chats")}><FaArrowLeft className="text-xl text-zinc-600" /></button>
-          <button className="w-12 h-12">
-            <Avatar style={{ width: "100%", height: "100%" }} src={headerChat?.data?.chat?.avatar} />
-          </button>
-          <div>
-            <h2 className="font-semibold">{headerChat?.data?.chat?.name}</h2>
-            <h5 className="text-xs font-semibold text-sky-500">
-              {
-                userTyping ?
-                  "Typing..." : isOnline ? "online" : <>last active: {getLastActive(headerChat?.data?.chat?.members?.map((member) => member.lastSeen))}</>
-              }
-            </h5>
+      <div className="w-full h-full relative overflow-hidden">
+        <div className="flex sm:px-4 px-2 sm:py-7 py-4 justify-between items-center w-full relative bg-white border-b-2 z-50">
+          <div className="flex sm:gap-4 gap-2 items-center">
+            <button onClick={() => navigate("/chats")}><FaArrowLeft className="text-xl text-zinc-600" /></button>
+            <button className="sm:w-12 w-10 sm:h-12 h-10">
+              <Avatar style={{ width: "100%", height: "100%" }} src={headerChat?.data?.chat?.avatar} />
+            </button>
+            <div>
+              <h2 className="font-semibold">{headerChat?.data?.chat?.name}</h2>
+              <h5 className="text-xs font-semibold text-sky-500">
+                {
+                  userTyping ?
+                    "Typing..." : isOnline ? "online" : <>last active: {getLastActive(headerChat?.data?.chat?.members?.map((member) => member.lastSeen))}</>
+                }
+              </h5>
+            </div>
+          </div>
+          <div className="flex gap-4 items-center">
+            <button>
+              <FaPhone className="text-zinc-500" />
+            </button>
+            <button>
+              <BsThreeDotsVertical className="text-zinc-500 text-xl" />
+            </button>
           </div>
         </div>
         <div
           ref={containerRef}
-          className="w-full flex flex-col gap-[1rem] p-[1rem] h-[80%] overflow-hidden overflow-y-scroll"
+          className="w-full flex flex-col gap-[1rem] py-4 sm:px-4 px-2 sm:h-[80%] h-[76%] overflow-hidden overflow-y-scroll"
         >
           {allMessages.map((i) => (
             <MessageComponent key={i._id} message={i} user={user} />
@@ -252,20 +263,19 @@ const GetChat = ({ user }) => {
         </div>
 
         <form
-          className="w-full h-[10%] py-4"
+          className="w-full h-[10%] sm:py-4 sm:px-4 px-2 py-1"
           onSubmit={submitHandler}
         >
           <Stack
             direction={"row"}
             height={"100%"}
-            padding={"10px 1rem"}
             alignItems={"center"}
             position={"relative"}
           >
             <IconButton
               sx={{
                 position: "absolute",
-                left: "1.5rem",
+                left: "0.6rem",
                 rotate: "30deg",
               }}
             // onClick={handleFileOpen}

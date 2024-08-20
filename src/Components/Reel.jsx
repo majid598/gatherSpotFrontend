@@ -312,28 +312,20 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
                   key={chat._id}
                   className="py-2 flex items-center justify-between border-b border-white/30 w-full"
                 >
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
                     <div className="w-8 h-8 rounded-full overflow-hidden">
                       <img
-                        src={
-                          chat?.user2?._id === user?._id
-                            ? chat?.user1?.profile
-                            : chat?.user2?.profile
-                        }
+                        src={chat?.avatar}
                         className="w-full h-full"
                         alt=""
                       />
                     </div>
                     <div className="text-sm text-white text-start">
                       <h3>
-                        {chat?.user2?._id === user._id
-                          ? chat?.user1?.fullName
-                          : chat?.user2?.fullName}
+                        {chat?.name}
                       </h3>
                       <h4 className="text-xs">
-                        {chat?.user2?._id === user._id
-                          ? chat?.user1?.username
-                          : chat?.user2?.username}
+                        {}
                       </h4>
                     </div>
                   </div>

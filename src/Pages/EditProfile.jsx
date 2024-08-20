@@ -204,7 +204,7 @@ const EditProfile = () => {
       </div>
       <div ref={menuRef} className={`fixed top-[12rem] right-[30rem] transition-all duration-300 ${isShare ? "scale-100" : "scale-0"} flex gap-4 px-6 py-4 rounded-full bg-white border-2`}>
         {shareLinks.map((link) =>
-          <a href={link.address} className="rounded-full h-6 w-6 inline-block" target="_blank" rel="noopener noreferrer">
+          <a href={link.address} key={link.address} className="rounded-full h-6 w-6 inline-block" target="_blank" rel="noopener noreferrer">
             <img src={`/assets/pngs/${link.img}`} className="w-full h-full object-cover" alt="" />
           </a>)}
       </div>

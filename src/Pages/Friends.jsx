@@ -22,7 +22,7 @@ const Friends = () => {
           </div>
         </div>
         <div className="w-full flex flex-col gap-4 p-10">
-          {friends.map((friend) => <UserItem type="friend" user={friend} />)}
+          {friends.map((friend, index) => <UserItem type="friend" user={friend} key={index + 1} />)}
         </div>
       </div>
     </Layout>

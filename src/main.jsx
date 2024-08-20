@@ -7,7 +7,7 @@ import { store } from "./redux/store.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <div onContextMenu={(e) => e.preventDefault()} className="w-full h-screen !overflow-hidden">
+    <div onContextMenu={(e) => e.preventDefault()} suppressHydrationWarning className="w-full h-screen !overflow-hidden">
       <App />
     </div>
   </Provider>

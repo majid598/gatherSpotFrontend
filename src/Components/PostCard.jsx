@@ -56,7 +56,7 @@ const PostCard = ({ post }) => {
 
 
   return (
-    <div id={`post-${post?._id}`} className="w-full bg-white p-10" >
+    <div id={`post-${post?._id}`} className="w-full bg-white py-10 lg:px-10" >
       <div className="header w-full py-3 flex items-center justify-between">
         <div className="flex gap-4 items-center">
           <Link
@@ -142,7 +142,7 @@ const PostCard = ({ post }) => {
       }}>
         <div className={`flex gap-4 px-6 py-4 rounded-full bg-white border-2`}>
           {shareLinks.map((link) =>
-            <a href={link.address} className="rounded-full h-6 w-6 inline-block" target="_blank" rel="noopener noreferrer">
+            <a href={link.address} key={link.address} className="rounded-full h-6 w-6 inline-block" target="_blank" rel="noopener noreferrer">
               <img src={`/assets/pngs/${link.img}`} className="w-full h-full object-cover" alt="" />
             </a>)}
         </div>
