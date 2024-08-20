@@ -1,18 +1,14 @@
-import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import NewPost from "../Components/Creation/NewPost";
+import Stories from "../Components/Home/Stories";
 import PostCard from "../Components/PostCard";
 import Layout from "../Layout/Layout";
-import { useAllPostsQuery, useGetStoriesQuery } from "../redux/api/api";
-import Stories from "../Components/Home/Stories";
+import { useGetStoriesQuery } from "../redux/api/api";
 import { useGetAllPosts } from "../Requests/GetRequest";
-import { getSocket } from "../socket";
 
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
-  const { posts } = useGetAllPosts()
-
+  const { posts, refetch } = useGetAllPosts()
   const { data: storyData } = useGetStoriesQuery();
   const stories = storyData?.stories;
   return (

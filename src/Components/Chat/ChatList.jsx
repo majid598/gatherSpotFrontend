@@ -14,7 +14,7 @@ const ChatList = ({
 }) => {
 
   return (
-    <div className="w-full h-full py-14 bg-white">
+    <div className="w-full h-full sm:py-14 sm:bg-white">
       {chats?.map((data, index) => {
         const { avatar, _id, name, groupChat, members } = data;
 

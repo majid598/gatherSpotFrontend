@@ -69,7 +69,7 @@ const Reels = () => {
     <Layout>
       <div className="w-full h-full lg:p-10 md:p-10">
         <div className="w-full h-full lg:rounded-2xl md:rounded-2xl bg-white shadow-sm flex justify-center">
-          <div className="h-full lg:w-[30rem] md:w-[30rem] w-full lg:pb-0 md:pb-0 pb-16">
+          <div className="h-full lg:w-[30rem] md:w-[30rem] w-full lg:pb-0 md:pb-0">
             <Swiper
               direction={"vertical"}
               className="mySwiper"

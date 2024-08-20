@@ -5,6 +5,7 @@ import { FaImage, FaMusic, FaVideo } from "react-icons/fa6"
 import RenderAttachment, { previewFileFormat } from "../RenderAttachment"
 import { useCreateNewPost } from "../../Requests/PostRequests"
 import { UploadingLoader } from "../Loader"
+import Svg from "../Svg"
 
 
 const NewPost = () => {
@@ -76,7 +77,7 @@ const NewPost = () => {
                     <IconButton className="text-zinc-500" style={{ padding: "12px" }} onClick={() => {
                         setType("Reel")
                         document.getElementById("reelInput").click()
-                    }}><FaImage className="text-xl" /></IconButton>
+                    }}><Svg /></IconButton>
                 </div>
             </div>
             <div className="w-full rounded-md overflow-hidden mt-5">

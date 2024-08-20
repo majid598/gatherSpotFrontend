@@ -151,6 +151,7 @@ export const useGetSingleUser = (id) => {
 export const useGetAllPosts = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [posts, setPosts] = useState([null])
+    const refetch = () => { }
     useEffect(() => {
         axios.get(`${server}/api/v1/post/all`, {
             withCredentials: true,
@@ -166,7 +167,7 @@ export const useGetAllPosts = () => {
         })
     }, [posts])
 
-    return { posts, isLoading }
+    return { posts, refetch, isLoading }
 }
 
 export const useGetFollowers = (id) => {

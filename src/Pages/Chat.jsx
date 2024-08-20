@@ -62,7 +62,7 @@ const Chat = () => {
   return (
     <Layout>
       <div className="w-full h-full">
-        <div className="flex gap-4 p-10 items-start w-full relative border-b-2 z-50">
+        <div className="flex gap-4 sm:p-10 px-2 p-5 items-start w-full relative border-b-2 z-50">
           <button onClick={() => navigate("/")}><FaArrowLeft className="text-xl text-zinc-600" /></button>
           <div>
             <h2 className="font-semibold text-sky-500">Chats</h2>

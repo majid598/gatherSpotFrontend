@@ -112,7 +112,6 @@ const Sidebar = () => {
     (data) => {
       if (data.chatId === chatId) return;
       dispatch(setNewMessagesAlert(data));
-      console.log(data)
     },
     [chatId]
   );
@@ -164,7 +163,7 @@ const Sidebar = () => {
   }, [socket]);
 
   return (
-    <div className="sidebar lg:w-[22rem] md:w-[16rem] sm:w-16 lg:block md:block sm:block hidden h-full md:border-r border-zinc-500">
+    <div className="sidebar lg:w-[22rem] md:w-[16rem] sm:w-16 sm:block hidden h-full md:border-r border-zinc-500">
       {isChat ? <>
         <Link to="/" className="absolute">Home</Link>
         <ChatList

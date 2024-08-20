@@ -57,8 +57,10 @@ const MessageComponent = ({ message, user }) => {
         {timeAgo}
       </Typography>
       {sameSender &&
-        <div className="flex items-center text-xs justify-end w-full">
-          {status === "read" ? <IoCheckmarkDoneSharp className="text-sky-500 text-lg" /> : status === "delivered" ? <IoCheckmarkDoneSharp className="text-lg" /> : <IoCheckmarkOutline className="text-xl" />}
+        <div className="w-full flex justify-end">
+          <span className="text-xs font-semibold text-zinc-500">
+            {status === "unread" ? "unread" : status}
+          </span>
         </div>
       }
     </motion.div>

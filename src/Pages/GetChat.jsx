@@ -110,7 +110,7 @@ const GetChat = ({ user }) => {
     if (!message.trim()) return;
 
     // Emitting the message to the server
-    socket.emit(NEW_MESSAGE, { chatId, members, message, userId: headerChat?.data?.chat?.members?.map((member) => member._id) });
+    socket.emit(NEW_MESSAGE, { chatId, members, message });
     setMessage("");
   };
 
@@ -203,6 +203,9 @@ const GetChat = ({ user }) => {
   const onlineUsersListener = useCallback((data) => {
     setOnlineUsers(data);
   }, []);
+  const messageReadListener = useCallback((data) => {
+    refetch()
+  }, []);
 
   const eventHandler = {
     [ALERT]: alertListener,
@@ -210,6 +213,7 @@ const GetChat = ({ user }) => {
     [START_TYPING]: startTypingListener,
     [STOP_TYPING]: stopTypingListener,
     [ONLINE_USERS]: onlineUsersListener,
+    [MESSAGE_READ]: messageReadListener
   };
 
   const isOnline = headerChat?.data?.chat?.members?.some((member) =>

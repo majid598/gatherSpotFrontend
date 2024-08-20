@@ -100,10 +100,10 @@ const EditProfile = () => {
                 <label className="flex flex-col items-center cursor-pointer absolute z-50 bottom-10 right-10"><TbCameraPlus className="text-xl" /><input type="file" accept="image/*" hidden onChange={coverPhoto.changeHandler} /></label>
               </> : <label className="flex flex-col items-center text-sky-500 hover:text-sky-600 cursor-pointer transition-all duration-300"><TbCameraPlus className="text-xl" /> <span className="font-semibold text-sm">Add Cover Photo</span><input type="file" accept="image/*" hidden onChange={coverPhoto.changeHandler} /></label>}
             </div>
-            <div className="w-full mt-40 px-10 bg-white min-h-[80vh] relative">
+            <div className="w-full mt-40 sm:px-10 px-2 bg-white min-h-[80vh] relative">
               <div className="w-full h-20 relative">
-                <div className="w-full h-full absolute -top-1/2 flex items-center justify-between">
-                  <div className="flex items-center gap-5">
+                <div className="w-full h-full absolute -top-1/2 flex sm:flex-row flex-col items-center justify-between">
+                  <div className="flex items-center sm:gap-5 gap-2 sm:flex-row flex-col">
                     <div className="w-20 h-20 rounded-full relative">
                       <IconButton onClick={() => document.getElementById("editImage").click()} style={{ position: "absolute", top: -6, right: -6, zIndex: 9 }}><RiEdit2Fill /></IconButton>
                       <input type="file" accept="image/*" onChange={file.changeHandler} hidden id="editImage" />
@@ -125,13 +125,13 @@ const EditProfile = () => {
                         {isLoading ? <LuLoader className="mx-3 text-xl loader" /> : "Save"}
                       </button>
                     }
-                    <button onClick={() => setIsShare(!isShare)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
+                    <button onClick={() => setIsShare(!isShare)} className="px-6 py-2 sm:mt-0 mt-4 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
                       <IoMdShare />  Share
                     </button>
                   </div>
                 </div>
               </div>
-              <span className="font-semibold text-sky-500 cursor-pointer">Add Bio/About</span>
+              <span className="font-semibold text-sky-500 cursor-pointer inline-block sm:mt-0 mt-20">Add Bio/About</span>
               <div className="h-32 mt-2 w-full bg-zinc-100 border-2 rounded-md relative">
                 <textarea name="" id="" value={bio.value} onChange={bio.changeHandler} className="w-full h-full rounded-md resize-none bg-transparent outline-none border-none p-3 placeholder:text-sm" placeholder="Write here..."></textarea>
               </div>
@@ -142,7 +142,7 @@ const EditProfile = () => {
                   </button>
                 </div>
               }
-              <div className="w-full flex gap-10 mt-10">
+              <div className="w-full sm:flex gap-10 mt-10">
                 <label className="w-1/2 cursor-pointer">
                   <span className="font-semibold text-sm text-sky-500 mb-3 inline-block">Change Display Name</span>
                   <input
@@ -152,7 +152,7 @@ const EditProfile = () => {
                     onChange={fullName.changeHandler}
                   />
                 </label>
-                <label className="w-1/2 cursor-pointer">
+                <label className="sm:w-1/2 w-full cursor-pointer inline-block sm:mt-0 mt-2">
                   <span className="font-semibold text-sm text-sky-500 mb-3 inline-block">Change username</span>
                   <input
                     type="text"
@@ -162,8 +162,8 @@ const EditProfile = () => {
                   />
                 </label>
               </div>
-              <div className="w-full flex gap-10 mt-10">
-                <label className="w-1/2 cursor-pointer">
+              <div className="w-full sm:flex gap-10 mt-10 ">
+                <label className="sm:w-1/2 w-full cursor-pointer">
                   <span className="font-semibold text-sm text-sky-500 mb-3 inline-block">Website</span>
                   <input
                     type="text"
@@ -172,7 +172,7 @@ const EditProfile = () => {
                     onChange={website.changeHandler}
                   />
                 </label>
-                <label className="w-1/2 cursor-pointer">
+                <label className="sm:w-1/2 w-full cursor-pointer inline-block sm:mt-0 mt-2">
                   <span className="font-semibold text-sm text-sky-500 mb-3 inline-block">Change username</span>
                   <input type="" className="w-full p-2 rounded-md outline-none bg-transparent border-2 hover:border-black/30 transition-all duration-300 focus:border-sky-500" />
                 </label>

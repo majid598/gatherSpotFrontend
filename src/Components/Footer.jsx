@@ -32,7 +32,7 @@ const Footer = () => {
       name: "Notifications",
       path: "/chats",
       icon: <IoChatbubbleEllipsesOutline className="text-2xl text-zinc-500" />,
-      icon2: <IoChatbubbleEllipsesSharp className="text-2xl text-sky-500" />,
+      icon2: <IoChatbubbleEllipsesSharp className="text-2xl text-white" />,
     },
 
     // {
@@ -51,7 +51,7 @@ const Footer = () => {
             <Link
               key={button.name}
               to={button.path}
-              className={`flex w-full h-full p-2 items-center hover:bg-sky-200 justify-center gap-4 ${location.pathname === button.path
+              className={`flex p-2 h-full rounded-xl items-center hover:bg-sky-200 justify-center ${location.pathname === button.path
                 ? "bg-sky-500"
                 : ""
                 }`}

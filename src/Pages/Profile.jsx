@@ -241,7 +241,7 @@ const Profile = () => {
         {loading && <ReelLoader message={"Profile Editing..."} />}
         <div className="w-full flex lg:flex-row md:flow-row flex-col gap-10 h-full">
           <div className="w-full">
-            <div className="flex gap-4 p-10 items-start w-full relative z-50">
+            <div className="flex gap-4 sm:p-10 p-2 py-5 items-start w-full relative z-50">
               <button onClick={() => navigate("/")}><FaArrowLeft className="text-xl text-zinc-600" /></button>
               <div>
                 <h2 className="font-semibold">{user?.fullName}</h2>
@@ -253,10 +253,10 @@ const Profile = () => {
                 <img src={user?.coverPhoto?.url} className="w-full h-full object-cover" />
               }
             </div>
-            <div className="w-full mt-40 px-10 bg-white min-h-[80vh] relative">
+            <div className="w-full mt-40 sm:px-10 px-2 bg-white min-h-[80vh] relative">
               <div className="w-full h-20 relative">
-                <div className="w-full h-full absolute -top-1/2 flex items-center justify-between">
-                  <div className="flex items-center gap-5">
+                <div className="w-full h-full absolute -top-1/2 flex sm:flex-row flex-col items-center justify-between">
+                  <div className="flex sm:flex-row flex-col items-center sm:gap-5 gap-2">
                     <button onClick={() => setOpenProfilePhoto(true)} className="w-20 h-20 overflow-hidden rounded-full">
                       <Avatar src={user?.profile?.url} style={{ width: "100%", height: "100%" }} alt="" />
                     </button>
@@ -265,7 +265,7 @@ const Profile = () => {
                       <h4 className="font-bold text-zinc-500">@{user?.username}</h4>
                     </div>
                   </div>
-                  <div className="flex gap-4">
+                  <div className="flex gap-4 sm:mt-0 mt-6">
                     <Link to={`/profile/edit?user=${user?.fullName}`} onClick={() => setIsEdit(true)} className="px-6 py-2 rounded-full bg-zinc-100 flex items-center gap-2 font-bold text-zinc-600 border-2">
                       <RiEdit2Fill />  Edit Profile
                     </Link>
@@ -275,8 +275,9 @@ const Profile = () => {
                   </div>
                 </div>
               </div>
+              <div className="sm:hidden mt-28"></div>
               <NewPost />
-              <nav ref={navRef} className="flex mt-10 relative gap-12 pb-2" >
+              <nav ref={navRef} className="flex mt-10 whitespace-nowrap overflow-x-auto relative gap-12 pb-2" >
                 {buttons.map((button, index) => (
                   <button
                     key={index + 1}

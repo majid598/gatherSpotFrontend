@@ -351,7 +351,7 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
         <button onClick={addToFavorites}>
           <div
             className={`w-6 h-8 rounded-sm ${isFavorited ? "bg-black" : ""
-              } after:bg-white z-[999] border-2 border-black border-b-0 after:content-[''] after:absolute after:w-full after:h-4 after:border-2 transition-all duration-300 after:border-black
+              } after:bg- z-[999] border-2 rounded-tr-[4px] rounded-tl-[4px] after:border-white border-white border-b-0 after:content-[''] after:absolute after:w-full after:h-4 after:border-2 transition-all duration-300
                    after:-bottom-2 overflow-hidden after:left-2/5 after:-translate-x-1/2 relative after:rotate-45 after:border-b-0 after:border-r-0`}
           ></div>
           <span className="text-sm text-center">

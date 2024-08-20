@@ -5,7 +5,7 @@ const Stories = ({ stories, user }) => {
     return (
         <div className="w-full border-b border-black/20 relative p-2 my-5 whitespace-nowrap  overflow-y-hidden overscroll-x-scroll bg-[#FAFAFA]">
             <Link
-                to={`/user/story/${user?.story?._id}`}
+                to={`/story/upload`}
                 className="w-24 h-28 rounded-md relative inline-block mx-3"
             >
                 {user?.story ? (

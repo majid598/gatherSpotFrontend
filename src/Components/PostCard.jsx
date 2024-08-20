@@ -77,12 +77,13 @@ const PostCard = ({ post }) => {
           </div>
         </div>
         <div className="relative z-[999]">
-          <button
-            onClick={() => setMenu((prev) => !prev)}
-            className="relative z-[999]"
-          >
-            <BsThreeDots />
-          </button>
+          {post?.user?._id === user?._id &&
+            <button
+              onClick={() => setMenu((prev) => !prev)}
+              className="relative z-[999]"
+            >
+              <BsThreeDots />
+            </button>}
           {menu && (
             <>
               <div
@@ -106,14 +107,16 @@ const PostCard = ({ post }) => {
           )}
         </div>
       </div>
-      <p className="mb-4 font-semibold text-zinc-600">{post?.caption}</p>
+      <p className="mb-4 font-semibold text-zinc-600 text-sm">{post?.caption}</p>
       <div className="w-full h-auto">
         {RenderAttachment(fileFormat(post?.attachMent?.url), post?.attachMent?.url)}
       </div>
       <div className="w-full justify-between flex items-center mt-8 py-3 pr-5">
         <div className="flex gap-4">
           <button
-            onClick={() => like(post?._id)}
+            onClick={() => {
+              like(post?._id)
+            }}
             className="flex flex-col"
           >
             {post?.likes?.includes(user?._id) ? (
