@@ -19,6 +19,8 @@ import {
   ALERT,
   CHAT_JOINED,
   CHAT_LEAVED,
+  MESSAGE_DELIVERED,
+  MESSAGE_READ,
   NEW_MESSAGE,
   ONLINE_USERS,
   START_TYPING,
@@ -64,6 +66,7 @@ const GetChat = ({ user }) => {
   const headerChat = useGetChatNamePhotoQuery(chatId)
 
   const oldMessagesChunk = useGetMessagesQuery({ chatId, page });
+  const { refetch } = useGetMessagesQuery({ chatId, page });
 
   const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
     containerRef,
@@ -107,12 +110,12 @@ const GetChat = ({ user }) => {
     if (!message.trim()) return;
 
     // Emitting the message to the server
-    socket.emit(NEW_MESSAGE, { chatId, members, message });
+    socket.emit(NEW_MESSAGE, { chatId, members, message, userId: headerChat?.data?.chat?.members?.map((member) => member._id) });
     setMessage("");
   };
 
   useEffect(() => {
-    socket.emit(CHAT_JOINED, { userId: user._id, members });
+    socket.emit(CHAT_JOINED, { userId: user._id, members, chatId });
     dispatch(removeNewMessagesAlert(chatId));
 
     return () => {

@@ -128,6 +128,7 @@ const Sidebar = () => {
 
   const onlineUsersListener = useCallback((data) => {
     setOnlineUsers(data);
+
   }, []);
 
   const eventHandlers = {
@@ -158,7 +159,7 @@ const Sidebar = () => {
   useEffect(() => {
     socket.on(NEW_MESSAGE_ALERT, (data) => {
       if (data.chatId === chatId) return
-      toast.info(`You have a new message ${data.chatId}`)
+      // toast.info(`You have a new message ${data.chatId}`)
     });
   }, [socket]);
 

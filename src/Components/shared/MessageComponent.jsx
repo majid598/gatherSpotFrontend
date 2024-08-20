@@ -1,14 +1,11 @@
 import { Box, Typography } from "@mui/material";
-import React, { memo } from "react";
-import { lightBlue } from "../../Constants/color";
-import moment from "moment";
 import { motion } from "framer-motion";
+import moment from "moment";
+import React, { memo } from "react";
+import { IoCheckmarkDoneSharp, IoCheckmarkOutline } from "react-icons/io5";
 import RenderAttachment, { fileFormat } from "../RenderAttachment";
-import { FaCheck } from "react-icons/fa";
-import { IoIosCheckmark } from "react-icons/io";
-import { IoCheckmarkDoneSharp } from "react-icons/io5";
 const MessageComponent = ({ message, user }) => {
-  const { sender, content, attachments = [], createdAt, read } = message;
+  const { sender, content, attachments = [], createdAt, status } = message;
 
   const sameSender = sender?._id === user?._id;
 
@@ -59,9 +56,11 @@ const MessageComponent = ({ message, user }) => {
       <Typography variant="caption" color={"text.secondary"}>
         {timeAgo}
       </Typography>
-      {sameSender && <div className="flex items-center justify-end w-full">
-        <IoCheckmarkDoneSharp className={`${read ? "text-sky-500" : "text-zinc-500"}`} />
-      </div>}
+      {sameSender &&
+        <div className="flex items-center text-xs justify-end w-full">
+          {status === "read" ? <IoCheckmarkDoneSharp className="text-sky-500 text-lg" /> : status === "delivered" ? <IoCheckmarkDoneSharp className="text-lg" /> : <IoCheckmarkOutline className="text-xl" />}
+        </div>
+      }
     </motion.div>
   );
 };
