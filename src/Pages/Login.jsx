@@ -54,9 +54,9 @@ const Login = () => {
         <img src="/assets/logo.png" alt="" />
       </div>
       <div className="w-full h-[100vw] -top-40 -right-[45%] rounded-full bg-sky-500 absolute"></div>
-      <div className="w-full h-full relative flex items-center justify-center">
+      <div className="w-full h-full relative flex px-4 items-center justify-center">
         <form onSubmit={handleSubmit}>
-          <div className="bg-white w-[30rem]  rounded-2xl shadow-sm p-10">
+          <div className="bg-white w-[30rem]  rounded-2xl shadow-sm relative z-50 p-10 sm:px-10 px-4">
             <h1 className="text-2xl font-bold text-center">
               Login to continue <br />{" "}
               <span className="text-sky-500">Gathering</span>

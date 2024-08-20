@@ -53,9 +53,9 @@ const Signup = () => {
         <img src="/assets/logo.png" alt="" />
       </div>
       <div className="w-full h-[100vw] -top-40 -right-[45%] rounded-full bg-sky-500 absolute"></div>
-      <div className="w-full h-full relative flex items-center justify-center">
+      <div className="w-full h-full relative flex items-center px-4 justify-center">
         <form onSubmit={handleSubmit}>
-          <div className="bg-white w-[30rem] h-[] rounded-2xl shadow-sm p-10">
+          <div className="bg-white w-[30rem] h-[] rounded-2xl shadow-sm p-10 relative z-50 sm:px-10 px-4">
             <h1 className="text-3xl font-bold text-center">
               Sign up to start <br />{" "}
               <span className="text-sky-500">Gathering</span>
