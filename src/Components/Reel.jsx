@@ -15,6 +15,7 @@ import {
   useSendMessageMutation
 } from "../redux/api/api";
 import { useViewReel } from "../Requests/PostRequests";
+import { ThreeDots } from 'react-loader-spinner';
 const Reel = ({ index, reel, playerRefs, currentIndex }) => {
   const { user } = useSelector((state) => state.auth);
   const [isComment, setIsComment] = useState(false);
@@ -176,7 +177,14 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
         </div>
       )}
       <div className="h-full w-full relative">
-        {loading && <div className="w-full h-full flex items-center justify-center text-2xl font-semibold absolute top-0 left-0">Loading...</div>
+        {loading && <div className="w-full h-full flex items-center justify-center bg-black text-2xl font-semibold absolute top-0 left-0">
+          <ThreeDots
+            height="80"
+            width="80"
+            color="white"
+            ariaLabel="loading"
+          />
+        </div>
         }
         <ReactPlayer
           ref={(player) => (playerRefs.current[index] = player)}
