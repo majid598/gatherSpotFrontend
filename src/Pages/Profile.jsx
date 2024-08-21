@@ -322,11 +322,10 @@ const Profile = () => {
           backgroundColor: 'transparent',
           boxShadow: 'none',
           width: "100%",
-          height: "100%"
         },
       }}>
         <div className="w-full h-full">
-          <button className="text-white fixed right-5" onClick={() => dispatch(setIsOpenPost(false))}><IoMdClose className="text-5xl" /></button>
+          <button className="text-white fixed right-5 top-5" onClick={() => dispatch(setIsOpenPost(false))}><IoMdClose className="text-5xl" /></button>
           <div className="w-full h-full">
             <Slider posts={useGetMyAllPosts(user?._id).posts} currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} />
           </div>

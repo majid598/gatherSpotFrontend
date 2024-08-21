@@ -28,18 +28,21 @@ const chatSlice = createSlice({
 
     setNewMessagesAlert: (state, action) => {
       const chatId = action.payload.chatId;
-
+      console.log("Action Dispatched:", action);  // Log the action to see if it's called multiple times
+    
       const index = state.newMessagesAlert.findIndex(
         (item) => item.chatId === chatId
       );
-
+    
       if (index !== -1) {
         state.newMessagesAlert[index].count += 1;
+        console.log(`Count incremented to: ${state.newMessagesAlert[index].count}`);
       } else {
         state.newMessagesAlert.push({
           chatId,
           count: 1,
         });
+        console.log("New message alert added:", chatId);
       }
     },
 

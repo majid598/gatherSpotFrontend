@@ -33,7 +33,7 @@ const ChatItem = ({
                 <div className="-ml-8">
                     <h2 className="font-semibold text-lg">{name}</h2>
                     {newMessageAlert && (
-                        <h4 className="text-sm text-sky-600">{newMessageAlert.count} New Message</h4>
+                        <h4 className="text-sm text-sky-600">{newMessageAlert.count === 1 ? <>{newMessageAlert.count} New Message</> : newMessageAlert.count > 99 ? "99+ New Messages" : <>{newMessageAlert.count} New Message</>}</h4>
                     )}
                 </div>
 
