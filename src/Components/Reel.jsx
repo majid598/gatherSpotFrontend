@@ -27,6 +27,7 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
   const [comment, setComment] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isLiked, setIsLiked] = useState(reel.likes.includes(user._id));
+  const [loading, setLoading] = useState(true)
   const handleVideoClick = (index) => {
     const player = playerRefs.current[index].getInternalPlayer();
     if (player.paused) {
@@ -174,7 +175,9 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
           <GoHeartFill className="text-7xl text-red-500" />
         </div>
       )}
-      <div className="h-full w-24">
+      <div className="h-full w-full relative">
+        {loading && <div className="w-full h-full flex items-center justify-center text-2xl font-semibold absolute top-0 left-0">Loading...</div>
+        }
         <ReactPlayer
           ref={(player) => (playerRefs.current[index] = player)}
           url={reel?.attachMent?.url}
@@ -183,6 +186,8 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
           height="100%"
           width="100%"
           loop={true}
+          onBuffer={() => setLoading(true)}  // If the video buffers, show the loader again
+          onBufferEnd={() => setLoading(false)}
           onClick={() => {
             handleVideoClick(index);
             setIsComment(false);
@@ -325,7 +330,7 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
                         {chat?.name}
                       </h3>
                       <h4 className="text-xs">
-                        {}
+                        { }
                       </h4>
                     </div>
                   </div>
