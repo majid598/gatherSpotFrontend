@@ -7,7 +7,7 @@ import { IoChatbubbleEllipsesOutline, IoChatbubbleEllipsesSharp } from "react-ic
 import { MdGroups2 } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { server, useMyChatsQuery } from "../redux/api/api";
 import { userNotExists } from "../redux/reducers/userReducer";
 import Svg from "./Svg";
