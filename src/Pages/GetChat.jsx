@@ -41,6 +41,7 @@ import { useGetSingleUser } from "../Requests/GetRequest";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import FileMenu from "../Components/Chat/FileMenu";
 import { setIsFileMenu } from "../redux/reducers/misc";
+import Call from "../Components/Chat/Call";
 
 
 const GetChat = ({ user }) => {
@@ -253,9 +254,7 @@ const GetChat = ({ user }) => {
             </div>
           </div>
           <div className="flex items-center">
-            <button className="hover:bg-zinc-100 rounded-full p-2">
-              <FaPhone className="text-zinc-500" />
-            </button>
+            <Call userId={headerChat?.data?.chat?.members[0]?._id} />
             <button onClick={handleFileOpen} className="hover:bg-zinc-100 rounded-full p-2">
               <BsThreeDotsVertical className="text-zinc-500 text-xl" />
             </button>
@@ -271,7 +270,6 @@ const GetChat = ({ user }) => {
           ))}
           <div ref={bottomRef} />
         </div>
-
         <form
           className="w-full h-[10%] sm:py-4 sm:px-4 px-2 py-1 relative"
           onSubmit={submitHandler}
