@@ -1,34 +1,28 @@
-import { ListItemText, Menu, MenuItem, MenuList, Tooltip } from "@mui/material";
-import React, { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setIsFileMenu, setUploadingLoader } from "../../redux/reducers/misc";
 import {
-  AudioFile as AudioFileIcon,
-  Image as ImageIcon,
-  UploadFile as UploadFileIcon,
-  VideoFile as VideoFileIcon,
+  Block,
+  DetailsSharp,
+  Report,
+  VolumeMute
 } from "@mui/icons-material";
+import { ListItemText, Menu, MenuItem, MenuList, Tooltip } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import { useSendAttachmentsMutation } from "../../redux/api/api";
+import { setIsFileMenu, setUploadingLoader } from "../../redux/reducers/misc";
+import { useBlockAUser, useUnblockAUser } from "../../Requests/PostRequests";
 
-const FileMenu = ({ anchorE1, chatId }) => {
+const FileMenu = ({ anchorE1, chatId, userId }) => {
+  const { user } = useSelector(state => state.auth)
   const { isFileMenu } = useSelector((state) => state.misc);
 
   const dispatch = useDispatch();
-
-  const imageRef = useRef(null);
-  const audioRef = useRef(null);
-  const videoRef = useRef(null);
-  const fileRef = useRef(null);
+  const { block, isLoading } = useBlockAUser()
+  const { unblock } = useUnblockAUser()
 
   const [sendAttachments] = useSendAttachmentsMutation();
 
   const closeFileMenu = () => dispatch(setIsFileMenu(false));
-
-  const selectImage = () => imageRef.current?.click();
-  const selectAudio = () => audioRef.current?.click();
-  const selectVideo = () => videoRef.current?.click();
-  const selectFile = () => fileRef.current?.click();
 
   const fileChangeHandler = async (e, key) => {
     const files = Array.from(e.target.files);
@@ -70,64 +64,46 @@ const FileMenu = ({ anchorE1, chatId }) => {
         }}
       >
         <MenuList>
-          <MenuItem onClick={selectImage}>
-            <Tooltip title="Image">
-              <ImageIcon />
+          {user?.blockedUsers?.includes(userId) ?
+            <MenuItem onClick={() => {
+              unblock(userId)
+              dispatch(setIsFileMenu(false))
+            }}>
+              <Tooltip title="Block Contact">
+                <Block />
+              </Tooltip>
+              <ListItemText style={{ marginLeft: "0.5rem", fontWeight: "bold" }}>unBlock</ListItemText>
+            </MenuItem> :
+            <MenuItem onClick={() => {
+              block(userId)
+              dispatch(setIsFileMenu(false))
+            }}>
+              <Tooltip title="Block Contact">
+                <Block />
+              </Tooltip>
+              <ListItemText style={{ marginLeft: "0.5rem", fontWeight: "bold" }}>Block</ListItemText>
+            </MenuItem>
+          }
+
+          <MenuItem onClick={() => dispatch(setIsFileMenu(false))}>
+            <Tooltip title="Report">
+              <Report />
             </Tooltip>
-            <ListItemText style={{ marginLeft: "0.5rem" }}>Image</ListItemText>
-            <input
-              type="file"
-              multiple
-              accept="image/png, image/jpeg, image/gif"
-              style={{ display: "none" }}
-              onChange={(e) => fileChangeHandler(e, "Images")}
-              ref={imageRef}
-            />
+            <ListItemText style={{ marginLeft: "0.5rem" }}>Report</ListItemText>
           </MenuItem>
 
-          <MenuItem onClick={selectAudio}>
-            <Tooltip title="Audio">
-              <AudioFileIcon />
+          <MenuItem onClick={() => dispatch(setIsFileMenu(false))}>
+            <Tooltip title="Details">
+              <DetailsSharp />
             </Tooltip>
-            <ListItemText style={{ marginLeft: "0.5rem" }}>Audio</ListItemText>
-            <input
-              type="file"
-              multiple
-              accept="audio/mpeg, audio/wav"
-              style={{ display: "none" }}
-              onChange={(e) => fileChangeHandler(e, "Audios")}
-              ref={audioRef}
-            />
+            <ListItemText style={{ marginLeft: "0.5rem" }}>Details</ListItemText>
           </MenuItem>
 
-          <MenuItem onClick={selectVideo}>
-            <Tooltip title="Video">
-              <VideoFileIcon />
+          <MenuItem onClick={() => dispatch(setIsFileMenu(false))}>
+            <Tooltip title="Mute">
+              <VolumeMute />
             </Tooltip>
-            <ListItemText style={{ marginLeft: "0.5rem" }}>Video</ListItemText>
-            <input
-              type="file"
-              multiple
-              accept="video/mp4, video/webm, video/ogg"
-              style={{ display: "none" }}
-              onChange={(e) => fileChangeHandler(e, "Videos")}
-              ref={videoRef}
-            />
-          </MenuItem>
-
-          <MenuItem onClick={selectFile}>
-            <Tooltip title="File">
-              <UploadFileIcon />
-            </Tooltip>
-            <ListItemText style={{ marginLeft: "0.5rem" }}>File</ListItemText>
-            <input
-              type="file"
-              multiple
-              accept="*"
-              style={{ display: "none" }}
-              onChange={(e) => fileChangeHandler(e, "Files")}
-              ref={fileRef}
-            />
+            <ListItemText style={{ marginLeft: "0.5rem" }}>Mute</ListItemText>
           </MenuItem>
         </MenuList>
       </div>

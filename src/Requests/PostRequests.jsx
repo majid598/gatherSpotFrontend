@@ -318,4 +318,50 @@ export const useCreateChat = () => {
     }
 
     return { createChat, isLoading }
+}
+
+export const useBlockAUser = () => {
+    const [isLoading, setIsLoading] = useState(false)
+    const block = (id) => {
+        setIsLoading(true)
+        axios
+            .get(`${server}/api/v1/user/${id}/block`, {
+                withCredentials: true,
+                headers: {
+                    "token": localStorage.getItem("token")
+                }
+            }).then(({ data }) => {
+                setIsLoading(false)
+                toast.success(data?.message)
+            }).catch((err) => {
+                setIsLoading(false)
+                toast.error(err?.response?.data?.message)
+                console.log(err)
+            })
+    }
+
+    return { block, isLoading }
+} 
+
+export const useUnblockAUser = () => {
+    const [isLoading, setIsLoading] = useState(false)
+    const unblock = (id) => {
+        setIsLoading(true)
+        axios
+            .get(`${server}/api/v1/user/${id}/unblock`, {
+                withCredentials: true,
+                headers: {
+                    "token": localStorage.getItem("token")
+                }
+            }).then(({ data }) => {
+                setIsLoading(false)
+                toast.success(data?.message)
+            }).catch((err) => {
+                setIsLoading(false)
+                toast.error(err?.response?.data?.message)
+                console.log(err)
+            })
+    }
+
+    return { unblock, isLoading }
 } 

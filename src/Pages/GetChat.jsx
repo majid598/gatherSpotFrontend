@@ -3,7 +3,7 @@ import {
   AttachFile as AttachFileIcon,
   Send as SendIcon,
 } from "@mui/icons-material";
-import { Avatar, IconButton, Skeleton, Stack } from "@mui/material";
+import { Avatar, IconButton, Skeleton, Stack, Tooltip } from "@mui/material";
 import React, {
   Fragment,
   useCallback,
@@ -39,6 +39,8 @@ import { FaArrowLeft, FaPhone } from "react-icons/fa";
 import { getLastActive } from "../lib/features";
 import { useGetSingleUser } from "../Requests/GetRequest";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import FileMenu from "../Components/Chat/FileMenu";
+import { setIsFileMenu } from "../redux/reducers/misc";
 
 
 const GetChat = ({ user }) => {
@@ -55,7 +57,7 @@ const GetChat = ({ user }) => {
   const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(1);
   const [onlineUsers, setOnlineUsers] = useState([]);
-
+  const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
 
   const [IamTyping, setIamTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
@@ -113,6 +115,8 @@ const GetChat = ({ user }) => {
     socket.emit(NEW_MESSAGE, { chatId, members, message });
     setMessage("");
   };
+
+  const isBlocked = user?.blockedUsers?.includes(headerChat?.data?.chat?.members[0]?._id)
 
   useEffect(() => {
     socket.emit(CHAT_JOINED, { userId: user._id, members, chatId });
@@ -241,21 +245,22 @@ const GetChat = ({ user }) => {
             <div>
               <h2 className="font-semibold">{headerChat?.data?.chat?.name}</h2>
               <h5 className="text-xs font-semibold text-sky-500">
-                {
+                {isBlocked ? "blocked" :
                   userTyping ?
                     "Typing..." : isOnline ? "online" : <>last active: {getLastActive(headerChat?.data?.chat?.members?.map((member) => member.lastSeen))}</>
                 }
               </h5>
             </div>
           </div>
-          <div className="flex gap-4 items-center">
-            <button>
+          <div className="flex items-center">
+            <button className="hover:bg-zinc-100 rounded-full p-2">
               <FaPhone className="text-zinc-500" />
             </button>
-            <button>
+            <button onClick={handleFileOpen} className="hover:bg-zinc-100 rounded-full p-2">
               <BsThreeDotsVertical className="text-zinc-500 text-xl" />
             </button>
           </div>
+          <FileMenu anchorE1={fileMenuAnchor} userId={headerChat?.data?.chat?.members[0]?._id} />
         </div>
         <div
           ref={containerRef}
@@ -264,15 +269,16 @@ const GetChat = ({ user }) => {
           {allMessages.map((i) => (
             <MessageComponent key={i._id} message={i} user={user} />
           ))}
-
-
           <div ref={bottomRef} />
         </div>
 
         <form
-          className="w-full h-[10%] sm:py-4 sm:px-4 px-2 py-1"
+          className="w-full h-[10%] sm:py-4 sm:px-4 px-2 py-1 relative"
           onSubmit={submitHandler}
         >
+          {isBlocked && <Tooltip title="unblock to chat">
+            <div className="w-full h-full absolute cursor-not-allowed z-[999] top-0 left-0"></div>
+          </Tooltip>}
           <Stack
             direction={"row"}
             height={"100%"}
