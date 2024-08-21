@@ -5,8 +5,9 @@ import {
   VolumeMute
 } from "@mui/icons-material";
 import { ListItemText, Menu, MenuItem, MenuList, Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import toast from "react-hot-toast";
+import { LuLoader } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { useSendAttachmentsMutation } from "../../redux/api/api";
 import { setIsFileMenu, setUploadingLoader } from "../../redux/reducers/misc";
@@ -18,7 +19,7 @@ const FileMenu = ({ anchorE1, chatId, userId }) => {
 
   const dispatch = useDispatch();
   const { block, isLoading } = useBlockAUser()
-  const { unblock } = useUnblockAUser()
+  const { unblock, isLoading: unblockingLoader } = useUnblockAUser()
 
   const [sendAttachments] = useSendAttachmentsMutation();
 
@@ -69,8 +70,8 @@ const FileMenu = ({ anchorE1, chatId, userId }) => {
               unblock(userId)
               dispatch(setIsFileMenu(false))
             }}>
-              <Tooltip title="Block Contact">
-                <Block />
+              <Tooltip title="unBlock Contact">
+                {unblockingLoader ? <LuLoader className="text-2xl loader" /> : <Block />}
               </Tooltip>
               <ListItemText style={{ marginLeft: "0.5rem", fontWeight: "bold" }}>unBlock</ListItemText>
             </MenuItem> :
@@ -79,7 +80,7 @@ const FileMenu = ({ anchorE1, chatId, userId }) => {
               dispatch(setIsFileMenu(false))
             }}>
               <Tooltip title="Block Contact">
-                <Block />
+                {isLoading ? <LuLoader className="text-2xl loader" /> : <Block />}
               </Tooltip>
               <ListItemText style={{ marginLeft: "0.5rem", fontWeight: "bold" }}>Block</ListItemText>
             </MenuItem>
