@@ -114,7 +114,6 @@ export const useGetMyPrivate = (id) => {
 
     return { reels, isLoading }
 }
-
 export const useGetUsers = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [users, setUsers] = useState([null])
@@ -147,7 +146,6 @@ export const useGetSingleUser = (id) => {
 
     return { user, isLoading }
 }
-
 export const useGetAllPosts = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [posts, setPosts] = useState([null])
@@ -168,6 +166,27 @@ export const useGetAllPosts = () => {
     }, [posts])
 
     return { posts, refetch, isLoading }
+}
+export const useGetAllReels = () => {
+    const [isLoading, setIsLoading] = useState(true)
+    const [reels, setReels] = useState([null])
+    const refetch = () => { }
+    useEffect(() => {
+        axios.get(`${server}/api/v1/post/reel/all`, {
+            withCredentials: true,
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then(({ data }) => {
+            setIsLoading(false)
+            setReels(data?.reels)
+        }).catch((err) => {
+            setIsLoading(false)
+            console.log(err)
+        })
+    }, [reels])
+
+    return { reels, refetch, isLoading }
 }
 
 export const useGetFollowers = (id) => {

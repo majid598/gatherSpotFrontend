@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FaCommentDots } from "react-icons/fa";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { PiShareFatFill } from "react-icons/pi";
+import { ThreeDots } from 'react-loader-spinner';
 import ReactPlayer from "react-player";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -10,24 +11,21 @@ import { toast } from "react-toastify";
 import {
   useAddCommentToReelMutation,
   useAddToFavofitesMutation,
-  useLikeReelMutation,
   useMyChatsQuery,
   useSendMessageMutation
 } from "../redux/api/api";
-import { useViewReel } from "../Requests/PostRequests";
-import { ThreeDots } from 'react-loader-spinner';
+import { useLikeAPost, useViewReel } from "../Requests/PostRequests";
 const Reel = ({ index, reel, playerRefs, currentIndex }) => {
   const { user } = useSelector((state) => state.auth);
   const [isComment, setIsComment] = useState(false);
   const [isFavorited, setIsFavorited] = useState(
     reel?.favorites?.includes(user?._id)
   );
-  const [isLike, setIsLike] = useState(false);
   const [isShareMenu, setIsShareMenu] = useState(false);
+  const [isLike, setIsLike] = useState(false)
   const [selectedChat, setSelectedChat] = useState(null);
   const [comment, setComment] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [isLiked, setIsLiked] = useState(reel.likes.includes(user._id));
   const [loading, setLoading] = useState(true)
   const handleVideoClick = (index) => {
     const player = playerRefs.current[index].getInternalPlayer();
@@ -38,8 +36,8 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
     }
   };
 
-  const [likeReel] = useLikeReelMutation();
   const [addTo] = useAddToFavofitesMutation();
+  const like = useLikeAPost()
   const viewPlus = useViewReel(reel?._id)
 
   const likeToReel = (reelId) => {
@@ -50,12 +48,13 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
       .unwrap()
       .then((data) => {
         toast.success(data?.message);
-        isLiked ? setIsLiked(false) : setIsLiked(true);
       })
       .catch((err) => {
         toast.error(err?.data?.message);
       });
   };
+
+  const isLiked = reel?.likes?.includes(user?._id)
 
   const addToFavorites = () => {
     const data = {
@@ -162,6 +161,12 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
   const handleEmojiSelect = (emoji) => {
     setComment(comment + emoji.native);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLike(false)
+    }, 2000);
+  }, [isLike])
   return (
     <div
       onDoubleClick={() => {
@@ -281,9 +286,9 @@ const Reel = ({ index, reel, playerRefs, currentIndex }) => {
           ))}
         </div>
       </div>
-      <div className="absolute bottom-0 lg:text-black md:text-black text-white w-[15%] h-2/5 right-0 flex flex-col gap-2 items-center">
+      <div className="absolute bottom-0 text-white w-[15%] h-2/5 right-0 flex flex-col gap-2 items-center">
         <button
-          onClick={() => likeToReel(reel._id)}
+          onClick={() => like(reel._id)}
           className="flex flex-col items-center"
         >
           {isLiked ? (

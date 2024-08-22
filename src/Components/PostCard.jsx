@@ -137,6 +137,20 @@ const PostCard = ({ post }) => {
       <div className="px-2">
         <h4 className="text-zinc-500 font-semibold">{post?.likes?.length} likes this</h4>
       </div>
+      {/* <div className="w-full flex flex-col mt-4">
+        <h4 className="font-semibold">Comments</h4>
+        <div className="w-full flex mt-2 justify-between">
+          <div className='flex gap-3 items-center'>
+            <Link to={`/user/`} className='w-12 h-12 rounded-full flex overflow-hidden'>
+              <Avatar style={{ width: "100%", height: "100%" }} alt="" />
+            </Link>
+            <div>
+              <Link to={`/user/`} className='font-semibold'>Majid lai</Link>
+              <h4 className='text-sm font-semibold text-zinc-500'>@majid</h4>
+            </div>
+          </div>
+        </div>
+      </div> */}
       {isShareMenu && <Dialog open={isShareMenu} onClose={() => setIsShareMenu(false)} PaperProps={{
         style: {
           backgroundColor: 'transparent',

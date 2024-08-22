@@ -21,15 +21,14 @@ import { shuffleArray } from "../Components/RenderAttachment";
 import Loader from "../Components/Loader";
 import { useViewReel } from "../Requests/PostRequests";
 import { useLocation } from "react-router-dom";
+import { useGetAllReels } from "../Requests/GetRequest";
 const Reels = () => {
   const { user } = useSelector((state) => state.auth);
   const swiperRef = useRef(null);
   const location = useLocation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const playerRefs = useRef([]);
-  const { data, isLoading, isError } = useAllReelsQuery();
-  const reels = data?.reels;
-
+  const { reels, isLoading } = useGetAllReels()
   const viewPlus = useViewReel()
 
   const handleSlideChange = (newIndex) => {
