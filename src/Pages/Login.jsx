@@ -36,7 +36,6 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      // navigate("/profile");
       localStorage.setItem("token", data?.token)
       dispatch(userExists(true));
       toast.success(data?.message);

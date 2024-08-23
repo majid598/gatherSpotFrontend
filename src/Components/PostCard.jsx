@@ -57,7 +57,7 @@ const PostCard = ({ post }) => {
 
   return (
     <div id={`post-${post?._id}`} className="w-full bg-white py-10 lg:px-10" >
-      <div className="header w-full py-3 flex items-center justify-between">
+      <div className="header w-full py-3 flex items-center sm:px-0 px-3 justify-between">
         <div className="flex gap-4 items-center">
           <Link
             to={
@@ -107,11 +107,11 @@ const PostCard = ({ post }) => {
           )}
         </div>
       </div>
-      <p className="mb-4 font-semibold text-zinc-600 text-sm">{post?.caption}</p>
+      <p className="mb-4 font-semibold text-zinc-600 text-sm sm:px-0 px-3">{post?.caption}</p>
       <div className="w-full h-auto">
         {RenderAttachment(fileFormat(post?.attachMent?.url), post?.attachMent?.url)}
       </div>
-      <div className="w-full justify-between flex items-center mt-8 py-3 pr-5">
+      <div className="w-full justify-between sm:px-0 px-3 flex items-center mt-8 py-3 pr-5">
         <div className="flex gap-4">
           <button
             onClick={() => {
@@ -134,7 +134,7 @@ const PostCard = ({ post }) => {
         </div>
         <button className="w-5 h-6 rounded-[3px] border-2 border-zinc-500 border-b-0 after:content-[''] after:absolute after:w-full after:h-4 after:border-2 after:border-zinc-500 after:rounded-[4px] after:-bottom-2 overflow-hidden after:left-1/2 after:-translate-x-1/2 relative after:rotate-45 after:border-b-0 after:border-r-0"></button>
       </div>
-      <div className="px-2">
+      <div className="sm:px-2 px-5">
         <h4 className="text-zinc-500 font-semibold">{post?.likes?.length} likes this</h4>
       </div>
       {/* <div className="w-full flex flex-col mt-4">

@@ -35,6 +35,7 @@ const GetChat = lazy(() => import("./Pages/GetChat"));
 const NewChat = lazy(() => import("./Pages/NewChat"));
 const GetReel = lazy(() => import("./Pages/GetReel"));
 import { ToastContainer } from 'react-toastify'
+import LandPage from "./Layout/LandPage"
 
 const App = () => {
   const dispatch = useDispatch();
@@ -97,7 +98,7 @@ const App = () => {
             <Route path="/forgot/password" element={<ForgotPassword />} />
             <Route path="/password/reset/:token" element={<ResetPassword />} />
           </Route>
-          <Route path="/test" element={<Test />} />
+          <Route path="/test" element={<LandPage />} />
         </Routes>
       </Suspense>
       <Toaster position="top-center" />
